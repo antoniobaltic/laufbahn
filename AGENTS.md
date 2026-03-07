@@ -12,6 +12,13 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - **Icons:** `lucide-react`
 - **Utilities:** `clsx`, `tailwind-merge`, `date-fns`, `zod`
 
+## Deployment Status
+- Production is deployed on Vercel under project `laufbahn`.
+- Current production domain is `https://laufbahn.vercel.app`.
+- GitHub repo is `https://github.com/antoniobaltic/laufbahn`.
+- The repo is linked to Vercel and production deploys from `main`.
+- Supabase remains the only backend; no separate worker or custom server is in front of Vercel.
+
 ## Product Feel
 
 ### Core Aesthetic
@@ -206,6 +213,8 @@ src/
 │   ├── layout.tsx
 │   ├── page.tsx
 │   ├── globals.css
+│   ├── api/
+│   │   └── scraper/route.ts
 │   ├── (auth)/
 │   │   ├── layout.tsx
 │   │   ├── anmelden/page.tsx
@@ -237,6 +246,7 @@ src/
 │   │   ├── application-list-card.tsx
 │   │   ├── application-notes-card.tsx
 │   │   ├── application-status-editor.tsx
+│   │   ├── application-workflow-card.tsx
 │   │   └── status-pill.tsx
 │   ├── board/
 │   │   ├── add-application-dialog.tsx
@@ -269,6 +279,8 @@ src/
 ├── hooks/
 │   └── use-kanban.ts
 ├── lib/
+│   ├── scraper/
+│   │   └── index.ts
 │   ├── supabase/
 │   │   ├── client.ts
 │   │   ├── middleware.ts
@@ -281,6 +293,9 @@ src/
 │       ├── dates.ts
 │       ├── reminders.ts
 │       └── url.ts
+├── middleware.ts
+├── vercel.json
+├── package.json
 └── types/
     ├── analytics.ts
     ├── activity.ts
@@ -298,6 +313,14 @@ src/
 3. Protected routes live under `/(app)`.
 4. Server components always call `supabase.auth.getUser()`.
 5. Signup still uses email confirmation via Supabase auth callback.
+
+### Vercel Deployment Pattern
+- Vercel is the canonical hosting target for this app.
+- `main` is the production deployment branch.
+- Keep `middleware.ts` compatible with Vercel production builds.
+- The project currently uses `npm run vercel-build`, which maps to `next build --webpack`.
+- Do not remove that Webpack build override casually. It was added to stabilize a real production `MIDDLEWARE_INVOCATION_FAILED` issue on Vercel.
+- `vercel.json` currently stays intentionally small; avoid speculative config churn there.
 
 ### Server Actions
 All application-related reads and mutations live in [applications.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/actions/applications.ts).
@@ -351,6 +374,12 @@ Board-specific rule:
 - Analytics currently depend on `applications`, `activities`, `application_contacts`, and `application_documents`; no separate analytics table exists.
 - Keep analytics derivation server-side so the page arrives rendered and the UI layer only concerns itself with presentation.
 
+### Deployment Guardrails
+- If Vercel prod breaks while local dev still works, check middleware and build-runtime differences first.
+- Treat `laufbahn.vercel.app` as the production smoke-test URL after every deployment-sensitive change.
+- Keep server-only Supabase credentials in non-public env vars only.
+- Prefer the modern `SUPABASE_SECRET_KEY` naming. Do not reintroduce `SUPABASE_SERVICE_ROLE_KEY` unless there is a concrete compatibility reason.
+
 ## Database Schema (Supabase)
 
 ### Project
@@ -398,10 +427,18 @@ SUPABASE_SECRET_KEY=<set in .env.local>
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
+### Vercel Environment Variables
+- `NEXT_PUBLIC_SUPABASE_URL` is configured in `production`, `preview`, and `development`.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` is configured in `production`, `preview`, and `development`.
+- `NEXT_PUBLIC_APP_URL` is configured in `production`, `preview`, and `development`.
+- `SUPABASE_SECRET_KEY` is configured in `production`, `preview`, and `development`.
+- `SUPABASE_SECRET_KEY` is server-only. Never expose it via a `NEXT_PUBLIC_*` variable.
+
 ## Commands
 - `npm run dev`
 - `npm run build`
 - `npm run lint`
+- `npm run vercel-build`
 
 ## Phase Status
 - **Phase 1 ✅ COMPLETE** — foundation, auth, board, landing
