@@ -19,32 +19,44 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
   const routeMeta = getRouteMeta(pathname);
+  const showRouteMeta = routeMeta.showInTopbar;
   const initials = userEmail?.slice(0, 2).toUpperCase() || "LB";
 
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-white/70 bg-background/78 backdrop-blur-md md:backdrop-blur-xl">
-        <div className="mx-auto flex h-[78px] w-full max-w-[1520px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <button
-            className="lg:hidden rounded-full p-2 text-dark-500 transition-colors hover:bg-white cursor-pointer"
-            onClick={() => setMobileNavOpen(true)}
-          >
-            <Menu size={20} />
-          </button>
+        <div
+          className={cn(
+            "mx-auto flex w-full max-w-[1520px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8",
+            showRouteMeta ? "h-[78px]" : "h-16 sm:h-[68px]"
+          )}
+        >
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <button
+              className="lg:hidden rounded-full p-2 text-dark-500 transition-colors hover:bg-white cursor-pointer"
+              onClick={() => setMobileNavOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
 
-          <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-              <span className="hidden sm:inline">{routeMeta.kicker}</span>
-              <span className="sm:hidden">Laufbahn</span>
-            </div>
-            <div className="mt-1">
-              <h1 className="truncate font-heading text-base font-semibold text-dark sm:text-lg">
-                {routeMeta.title}
-              </h1>
-            </div>
-            <p className="mt-1 hidden truncate text-xs font-body text-dark-500 md:block">
-              {routeMeta.description}
-            </p>
+            {showRouteMeta ? (
+              <div className="min-w-0 flex-1">
+                <div className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  <span className="hidden sm:inline">{routeMeta.kicker}</span>
+                  <span className="sm:hidden">Laufbahn</span>
+                </div>
+                <div className="mt-1">
+                  <h1 className="truncate font-heading text-base font-semibold text-dark sm:text-lg">
+                    {routeMeta.title}
+                  </h1>
+                </div>
+                <p className="mt-1 hidden truncate text-xs font-body text-dark-500 md:block">
+                  {routeMeta.description}
+                </p>
+              </div>
+            ) : (
+              <div className="flex-1" />
+            )}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -119,6 +131,7 @@ function getRouteMeta(pathname: string) {
       title: "Bewerbungen verstehen",
       description:
         "Sieh, wie viele Bewerbungen offen sind, wo Antworten kommen und was gerade Aufmerksamkeit braucht.",
+      showInTopbar: false,
     };
   }
 
@@ -128,6 +141,7 @@ function getRouteMeta(pathname: string) {
       title: "Alle Details an einem Ort",
       description:
         "Bearbeite Stand, Notizen, Kontakte, Unterlagen und Gespräche ohne zwischen Tools zu wechseln.",
+      showInTopbar: true,
     };
   }
 
@@ -137,6 +151,7 @@ function getRouteMeta(pathname: string) {
       title: "Alle Einträge",
       description:
         "Hier findest du jede Bewerbung gesammelt und kommst mit einem Klick zu allen Details.",
+      showInTopbar: false,
     };
   }
 
@@ -145,5 +160,6 @@ function getRouteMeta(pathname: string) {
     title: "Übersicht",
     description:
       "Behalte offene Bewerbungen, Gespräche und Fristen in einem ruhigen Überblick im Blick.",
+    showInTopbar: false,
   };
 }

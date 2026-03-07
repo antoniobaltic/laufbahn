@@ -262,6 +262,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Frosted sidebar on desktop.
 - Glassy sticky topbar with route context, notification center, and compact account control.
 - Route metadata in the topbar should explain the current surface in one sentence.
+- Do not repeat the same title/subtitle in both the topbar and the page hero on the main app tabs. For `/board`, `/bewerbung`, and `/analytics`, prefer a quieter utility topbar and let the page body carry the headline.
 - Notifications should feel like calm prioritization, not noisy alerts: concise copy, urgency chips, direct links back into detail pages.
 - Positive milestones such as `angebot` should feel elevated through restrained celebration, not loud arcade-style effects.
 - Navigation should expose only what is currently useful. Do not show dormant product areas just because routes exist.
