@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Laufbahn
 
-## Getting Started
+Laufbahn is a premium job application tracker for the DACH market, built with Next.js 16 and Supabase. The product combines a kanban workflow, structured application detail pages, reminders, analytics, and a warm Anthropic-inspired UI.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router
+- TypeScript
+- Supabase Auth + Postgres
+- Tailwind CSS v4
+- `@hello-pangea/dnd`
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app expects Supabase environment variables in `.env.local`. See [AGENTS.md](/Users/antoniobaltic/Desktop/apps/laufbahn/AGENTS.md) for project structure, product phases, design rules, and implementation patterns.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Current Product Surface
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Landing page and German auth flow
+- Protected app shell
+- Kanban board for applications
+- Structured detail workspace with notes, contacts, documents, interviews, and deadlines
+- In-app reminders and analytics
+- Restrained celebration for offer-stage transitions
