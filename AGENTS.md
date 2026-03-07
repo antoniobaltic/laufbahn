@@ -394,7 +394,7 @@ All app tables use `user_id = auth.uid()` ownership policies.
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://wqsndsezguuiryxgqcaj.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<set in .env.local>
-SUPABASE_SERVICE_ROLE_KEY=<set in .env.local>
+SUPABASE_SECRET_KEY=<set in .env.local>
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 

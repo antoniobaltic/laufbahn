@@ -181,7 +181,7 @@ All tables use `user_id = auth.uid()` for row-level security. Every query is aut
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://wqsndsezguuiryxgqcaj.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<set in .env.local>
-SUPABASE_SERVICE_ROLE_KEY=<set in .env.local — needed for Phase 5+ webhooks>
+SUPABASE_SECRET_KEY=<set in .env.local — needed for Phase 5+ webhooks>
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
