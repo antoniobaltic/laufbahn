@@ -284,6 +284,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - `deadline` is a date-only field and must be treated as a local calendar day, not a UTC timestamp.
 - Relative labels such as `heute`, `morgen`, and `in 2 Tagen` should come from the shared date helper layer so reminder and workflow states stay consistent.
 - Analytics and reminder calculations should share the same date helper layer so dashboards and workspaces never disagree about urgency.
+- `next_interview_at` must be formatted and normalized through the shared date helper layer with a fixed DACH timezone so local dev, Vercel SSR, and browser hydration never disagree about wall-clock interview times.
 
 ### Analytics Rules
 - `/analytics` is a real app surface, not a placeholder.

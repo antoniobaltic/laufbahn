@@ -10,6 +10,7 @@ import {
   buildReminderNotifications,
   type ReminderApplication,
 } from "@/lib/utils/reminders";
+import { dateTimeInputToISOString } from "@/lib/utils/dates";
 import type { ApplicationStatus } from "@/lib/utils/constants";
 import type { Activity, ActivityMetadata, ActivityType } from "@/types/activity";
 import type { AnalyticsSnapshot } from "@/types/analytics";
@@ -126,13 +127,7 @@ function normalizeDateTimeValue(value?: string | null) {
     return null;
   }
 
-  const date = new Date(trimmed);
-
-  if (Number.isNaN(date.getTime())) {
-    throw new Error("Ungueltiges Datumsformat.");
-  }
-
-  return date.toISOString();
+  return dateTimeInputToISOString(trimmed);
 }
 
 function buildExcerpt(value: string, maxLength = 140) {
