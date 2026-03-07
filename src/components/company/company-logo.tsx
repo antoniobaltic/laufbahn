@@ -5,6 +5,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
 
 interface CompanyLogoProps {
+  logoUrl?: string | null;
   domain?: string | null;
   companyName: string;
   size?: number;
@@ -25,18 +26,19 @@ function nameToColor(name: string): string {
 }
 
 export function CompanyLogo({
+  logoUrl,
   domain,
   companyName,
   size = 28,
   className,
 }: CompanyLogoProps) {
-  const [imgError, setImgError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+  const [faviconError, setFaviconError] = useState(false);
 
   const initial = companyName.charAt(0).toUpperCase();
   const colorClass = nameToColor(companyName);
 
-  // No domain or both sources failed → monogram
-  if (!domain || imgError) {
+  if (!logoUrl && (!domain || faviconError)) {
     return (
       <div
         className={cn(
@@ -56,7 +58,31 @@ export function CompanyLogo({
     );
   }
 
-  const src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+  const src = !logoError && logoUrl
+    ? logoUrl
+    : domain
+      ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+      : null;
+
+  if (!src) {
+    return (
+      <div
+        className={cn(
+          "rounded-md flex items-center justify-center shrink-0",
+          colorClass,
+          className
+        )}
+        style={{ width: size, height: size }}
+      >
+        <span
+          className="font-heading font-semibold leading-none"
+          style={{ fontSize: size * 0.45 }}
+        >
+          {initial}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -72,7 +98,14 @@ export function CompanyLogo({
         width={size}
         height={size}
         className="object-contain"
-        onError={() => setImgError(true)}
+        onError={() => {
+          if (!logoError && logoUrl) {
+            setLogoError(true);
+            return;
+          }
+
+          setFaviconError(true);
+        }}
         unoptimized
       />
     </div>

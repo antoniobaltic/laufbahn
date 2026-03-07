@@ -14,11 +14,12 @@ interface ApplicationListCardProps {
 }
 
 export function ApplicationListCard({ application }: ApplicationListCardProps) {
-  const domain = application.job_url ? extractDomain(application.job_url) : null;
-  const salaryDisplay = formatSalaryRange(
-    application.salary_min,
-    application.salary_max
+  const domain = extractDomain(
+    application.company_website_url || application.job_url || ""
   );
+  const salaryDisplay =
+    formatSalaryRange(application.salary_min, application.salary_max) ||
+    application.salary_note;
 
   return (
     <Link href={`/bewerbung/${application.id}`} prefetch={false} className="group block">
@@ -27,6 +28,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
           <div className="flex min-w-0 items-center gap-3">
             <CompanyLogo
               companyName={application.company_name}
+              logoUrl={application.company_logo_url}
               domain={domain}
               size={40}
             />

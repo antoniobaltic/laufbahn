@@ -54,9 +54,13 @@ export function AddApplicationDialog({
   const [loading, setLoading] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [error, setError] = useState("");
+  const [importMode, setImportMode] = useState<"url" | "text">("url");
   const [scraperUrl, setScraperUrl] = useState("");
+  const [scraperText, setScraperText] = useState("");
+  const [scraperCompanyWebsite, setScraperCompanyWebsite] = useState("");
   const [scrapeError, setScrapeError] = useState("");
   const [duplicate, setDuplicate] = useState<ApplicationOverview | null>(null);
+  const [importedJob, setImportedJob] = useState<ScrapedJob | null>(null);
   const [fields, setFields] = useState({
     company_name: "",
     role_title: "",
@@ -67,6 +71,7 @@ export function AddApplicationDialog({
     deadline: "",
     salary_min: "",
     salary_max: "",
+    salary_note: "",
     notes: "",
     description: "",
   });
@@ -78,15 +83,36 @@ export function AddApplicationDialog({
     job_url: fields.job_url.trim() || undefined,
     salary_min: fields.salary_min ? Number(fields.salary_min) : undefined,
     salary_max: fields.salary_max ? Number(fields.salary_max) : undefined,
+    salary_note: fields.salary_note.trim() || importedJob?.salary_note || undefined,
     employment_type: fields.employment_type || undefined,
     remote_policy: fields.remote_policy || undefined,
     deadline: fields.deadline || undefined,
     notes: fields.notes.trim() || undefined,
-    description: fields.description.trim() || undefined,
+    description: fields.description.trim() || importedJob?.description || undefined,
+    requirements:
+      importedJob?.requirements && importedJob.requirements.length > 0
+        ? importedJob.requirements
+        : undefined,
+    benefits:
+      importedJob?.benefits && importedJob.benefits.length > 0
+        ? importedJob.benefits
+        : undefined,
+    company_website_url: importedJob?.company_website_url || undefined,
+    company_logo_url: importedJob?.company_logo_url || undefined,
+    initial_contact: importedJob?.recruiter_name
+      ? {
+          full_name: importedJob.recruiter_name,
+          role_title: importedJob.recruiter_role || undefined,
+          email: importedJob.recruiter_email || undefined,
+          phone: importedJob.recruiter_phone || undefined,
+          is_primary: true,
+        }
+      : undefined,
   });
 
   const handleScrape = async () => {
-    if (!scraperUrl.trim()) return;
+    if (importMode === "url" && !scraperUrl.trim()) return;
+    if (importMode === "text" && !scraperText.trim()) return;
 
     setScrapeError("");
     setScraping(true);
@@ -95,7 +121,14 @@ export function AddApplicationDialog({
       const res = await fetch("/api/scraper", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: scraperUrl }),
+        body: JSON.stringify(
+          importMode === "url"
+            ? { url: scraperUrl }
+            : {
+                text: scraperText,
+                companyWebsiteUrl: scraperCompanyWebsite || undefined,
+              }
+        ),
       });
 
       if (!res.ok) {
@@ -105,17 +138,21 @@ export function AddApplicationDialog({
       }
 
       const data: ScrapedJob = await res.json();
+      setImportedJob(data);
 
       setFields((prev) => ({
         ...prev,
         company_name: data.company_name || prev.company_name,
         role_title: data.role_title || prev.role_title,
         location: data.location || prev.location,
-        job_url: scraperUrl,
+        job_url:
+          data.job_url ||
+          (importMode === "url" ? scraperUrl.trim() : prev.job_url),
         employment_type: data.employment_type || prev.employment_type,
         remote_policy: data.remote_policy || prev.remote_policy,
         salary_min: data.salary_min ? String(data.salary_min) : prev.salary_min,
         salary_max: data.salary_max ? String(data.salary_max) : prev.salary_max,
+        salary_note: data.salary_note || prev.salary_note,
         description: data.description || prev.description,
       }));
     } catch {
@@ -177,13 +214,18 @@ export function AddApplicationDialog({
       deadline: "",
       salary_min: "",
       salary_max: "",
+      salary_note: "",
       notes: "",
       description: "",
     });
+    setImportMode("url");
     setScraperUrl("");
+    setScraperText("");
+    setScraperCompanyWebsite("");
     setScrapeError("");
     setError("");
     setDuplicate(null);
+    setImportedJob(null);
     onClose();
   };
 
@@ -207,18 +249,45 @@ export function AddApplicationDialog({
         </p>
 
         <div className="surface-muted mb-6 rounded-[24px] p-4 sm:p-5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
-            <div className="flex-1">
-              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-blue-600">
-                Job-Link einfügen
-              </p>
-              <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-                Wenn du einen Link zur Ausschreibung hast, füllen wir Rolle,
-                Unternehmen und erste Angaben so weit wie möglich vor.
-              </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-blue-600">
+                  Ausschreibung übernehmen
+                </p>
+                <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
+                  Wir lesen Rolle, Unternehmen, Gehalt, Ansprechpartner, Benefits
+                  und den Ausschreibungstext so weit wie möglich automatisch aus.
+                </p>
+              </div>
+
+              <div className="inline-flex rounded-full border border-border/80 bg-white/80 p-1">
+                <button
+                  type="button"
+                  onClick={() => setImportMode("url")}
+                  className={`rounded-full px-3 py-1.5 text-xs font-heading transition-colors ${
+                    importMode === "url"
+                      ? "bg-dark text-white"
+                      : "text-dark-500 hover:text-dark"
+                  }`}
+                >
+                  Mit Link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImportMode("text")}
+                  className={`rounded-full px-3 py-1.5 text-xs font-heading transition-colors ${
+                    importMode === "text"
+                      ? "bg-dark text-white"
+                      : "text-dark-500 hover:text-dark"
+                  }`}
+                >
+                  Mit Text
+                </button>
+              </div>
             </div>
 
-            <div className="flex-[1.35]">
+            {importMode === "url" ? (
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Link2
@@ -235,7 +304,7 @@ export function AddApplicationDialog({
                         handleScrape();
                       }
                     }}
-                    placeholder="https://www.stepstone.de/job/..."
+                    placeholder="https://www.karriere.at/jobs/... oder LinkedIn ..."
                     className="w-full rounded-xl border border-blue-200/80 bg-white/90 py-2.5 pl-9 pr-3 text-sm font-body text-dark shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition-[border-color,box-shadow] duration-200 placeholder:text-muted-foreground focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-300/20"
                   />
                 </div>
@@ -249,17 +318,100 @@ export function AddApplicationDialog({
                   {scraping ? (
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
-                    "Übernehmen"
+                    "Ausschreibung lesen"
                   )}
                 </Button>
               </div>
-            </div>
+            ) : (
+              <div className="grid gap-4">
+                <Textarea
+                  id="job_import_text"
+                  label="Ausschreibungstext"
+                  value={scraperText}
+                  onChange={(e) => setScraperText(e.target.value)}
+                  placeholder="Füge hier den Text aus der Stellenanzeige ein. Wir übernehmen daraus die wichtigsten Angaben und speichern den vollständigen Ausschreibungstext in der Bewerbung."
+                  rows={7}
+                />
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+                  <Input
+                    id="company_website_import"
+                    label="Firmen-Website (optional)"
+                    type="url"
+                    value={scraperCompanyWebsite}
+                    onChange={(e) => setScraperCompanyWebsite(e.target.value)}
+                    placeholder="https://www.allergosan.at"
+                  />
+                  <div className="flex items-end">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleScrape}
+                      disabled={scraping || !scraperText.trim()}
+                    >
+                      {scraping ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        "Text auslesen"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-xs font-body leading-relaxed text-dark-500">
+                  Für das Firmenlogo hilft ein Link oder eine Firmen-Website. Ohne
+                  Domain können wir nur ein Monogramm zeigen.
+                </p>
+              </div>
+            )}
           </div>
 
           {scrapeError && (
             <p className="mt-3 text-xs font-heading text-orange-600">
               {scrapeError}
             </p>
+          )}
+
+          {importedJob && !scrapeError && (
+            <div className="mt-4 rounded-[20px] border border-blue-200/80 bg-white/85 p-4">
+              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-blue-600">
+                Übernommen
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs font-heading text-dark-500">
+                {importedJob.salary_note && (
+                  <span className="rounded-full border border-border/80 bg-dark-50 px-3 py-1.5">
+                    {importedJob.salary_note}
+                  </span>
+                )}
+                {importedJob.recruiter_name && (
+                  <span className="rounded-full border border-border/80 bg-dark-50 px-3 py-1.5">
+                    Kontakt: {importedJob.recruiter_name}
+                  </span>
+                )}
+                {importedJob.benefits && importedJob.benefits.length > 0 && (
+                  <span className="rounded-full border border-border/80 bg-dark-50 px-3 py-1.5">
+                    {importedJob.benefits.length} Benefits
+                  </span>
+                )}
+                {importedJob.requirements &&
+                  importedJob.requirements.length > 0 && (
+                    <span className="rounded-full border border-border/80 bg-dark-50 px-3 py-1.5">
+                      {importedJob.requirements.length} Anforderungen
+                    </span>
+                  )}
+                {(importedJob.company_logo_url ||
+                  importedJob.company_website_url) && (
+                  <span className="rounded-full border border-border/80 bg-dark-50 px-3 py-1.5">
+                    Firmenlogo gefunden
+                  </span>
+                )}
+              </div>
+              {(importedJob.description || importedJob.recruiter_name) && (
+                <p className="mt-3 text-sm font-body leading-relaxed text-dark-500">
+                  Beschreibung, Benefits und ein gefundener Ansprechpartner werden
+                  beim Speichern direkt mit übernommen.
+                </p>
+              )}
+            </div>
           )}
         </div>
 
@@ -396,7 +548,7 @@ export function AddApplicationDialog({
                   Weitere Angaben
                 </p>
                 <p className="mt-1 text-sm font-body text-dark-500">
-                  Füge Arbeitsmodell, Frist, Gehalt oder eine Kurzbeschreibung hinzu.
+                  Füge Arbeitsmodell, Frist, Gehalt oder den Ausschreibungstext hinzu.
                 </p>
               </div>
               <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white/86 text-dark-500">
@@ -450,16 +602,26 @@ export function AddApplicationDialog({
                     placeholder="z. B. 70000"
                   />
                 </div>
+
+                <div className="mt-4">
+                  <Input
+                    id="salary_note"
+                    label="Gehalt laut Ausschreibung"
+                    value={fields.salary_note}
+                    onChange={setField("salary_note")}
+                    placeholder="z. B. Mindestbruttoentgelt von 3.500 EUR auf Vollzeitbasis"
+                  />
+                </div>
               </section>
 
               <section>
                 <Textarea
                   id="description"
-                  label="Kurzbeschreibung der Rolle"
+                  label="Ausschreibungstext"
                   value={fields.description}
                   onChange={setField("description")}
-                  placeholder="Worum geht es in der Rolle? Welche Schwerpunkte springen ins Auge?"
-                  rows={5}
+                  placeholder="Hier kann die vollständige Beschreibung der Rolle stehen. In den Details wird sie später vollständig angezeigt."
+                  rows={7}
                 />
               </section>
             </div>

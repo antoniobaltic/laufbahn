@@ -33,11 +33,12 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
   const isDeadlineSoon =
     deadlineDiffDays !== null && deadlineDiffDays >= 0 && deadlineDiffDays < 3;
   const isDeadlinePast = deadlineDiffDays !== null && deadlineDiffDays < 0;
-  const domain = application.job_url ? extractDomain(application.job_url) : null;
-  const salaryDisplay = formatSalaryRange(
-    application.salary_min,
-    application.salary_max
+  const domain = extractDomain(
+    application.company_website_url || application.job_url || ""
   );
+  const salaryDisplay =
+    formatSalaryRange(application.salary_min, application.salary_max) ||
+    application.salary_note;
 
   return (
     <Draggable draggableId={application.id} index={index}>
@@ -62,6 +63,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
             >
               <CompanyLogo
                 companyName={application.company_name}
+                logoUrl={application.company_logo_url}
                 domain={domain}
                 size={28}
               />

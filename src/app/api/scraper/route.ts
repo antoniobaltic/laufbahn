@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { scrapeJobPosting } from "@/lib/scraper";
+import { parseJobInput, scrapeJobPosting } from "@/lib/scraper";
 
 export async function POST(request: Request) {
   // Auth check
@@ -13,23 +13,58 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let url: string;
+  let url: string | undefined;
+  let text: string | undefined;
+  let companyWebsiteUrl: string | undefined;
+  let jobUrl: string | undefined;
+
   try {
     const body = await request.json();
-    url = body.url;
-    if (!url || typeof url !== "string") throw new Error("No URL");
-    new URL(url); // validate
+    url = typeof body.url === "string" ? body.url.trim() : undefined;
+    text = typeof body.text === "string" ? body.text.trim() : undefined;
+    companyWebsiteUrl =
+      typeof body.companyWebsiteUrl === "string"
+        ? body.companyWebsiteUrl.trim()
+        : undefined;
+    jobUrl =
+      typeof body.jobUrl === "string" ? body.jobUrl.trim() : undefined;
+
+    if (url) {
+      new URL(url);
+    }
+
+    if (companyWebsiteUrl) {
+      new URL(companyWebsiteUrl);
+    }
+
+    if (jobUrl) {
+      new URL(jobUrl);
+    }
+
+    if (!url && !text) {
+      throw new Error("No import source");
+    }
   } catch {
-    return NextResponse.json({ error: "Ungueltige URL" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Bitte gib einen Link oder einen Text aus der Ausschreibung ein." },
+      { status: 400 }
+    );
   }
 
   try {
-    const data = await scrapeJobPosting(url);
+    const data = url
+      ? await scrapeJobPosting(url)
+      : parseJobInput({
+          text: text!,
+          companyWebsiteUrl,
+          jobUrl,
+        });
+
     return NextResponse.json(data);
   } catch (error) {
     console.error("Scraper error:", error);
     return NextResponse.json(
-      { error: "Diese Seite konnte nicht gelesen werden." },
+      { error: "Diese Ausschreibung konnte nicht zuverlässig gelesen werden." },
       { status: 422 }
     );
   }

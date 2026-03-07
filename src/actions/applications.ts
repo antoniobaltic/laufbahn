@@ -204,6 +204,8 @@ export async function getApplications(): Promise<ApplicationOverview[]> {
         "id",
         "user_id",
         "company_name",
+        "company_website_url",
+        "company_logo_url",
         "role_title",
         "location",
         "job_url",
@@ -511,6 +513,8 @@ export async function createApplication(input: CreateApplicationInput) {
     .insert({
       user_id: user.id,
       company_name: input.company_name,
+      company_website_url: input.company_website_url || null,
+      company_logo_url: input.company_logo_url || null,
       role_title: input.role_title,
       location: input.location || null,
       job_url: input.job_url || null,
@@ -521,6 +525,8 @@ export async function createApplication(input: CreateApplicationInput) {
       position_in_column: position,
       deadline: input.deadline || null,
       description: input.description || null,
+      requirements: input.requirements?.length ? input.requirements : null,
+      benefits: input.benefits?.length ? input.benefits : null,
       employment_type: input.employment_type || null,
       remote_policy: input.remote_policy || null,
       notes: input.notes || null,
@@ -531,6 +537,46 @@ export async function createApplication(input: CreateApplicationInput) {
   if (error) {
     console.error("Error creating application:", error);
     throw new Error("Bewerbung konnte nicht erstellt werden.");
+  }
+
+  if (input.initial_contact?.full_name?.trim()) {
+    const contact = normalizeContactInput({
+      ...input.initial_contact,
+      is_primary: true,
+    });
+
+    try {
+      const { error: contactError } = await supabase
+        .from("application_contacts")
+        .insert({
+          user_id: user.id,
+          application_id: data.id,
+          full_name: contact.full_name,
+          role_title: contact.role_title,
+          email: contact.email,
+          phone: contact.phone,
+          linkedin_url: contact.linkedin_url,
+          notes: contact.notes,
+          is_primary: true,
+        });
+
+      if (contactError) {
+        console.error("Error creating imported contact:", contactError);
+      } else {
+        await insertActivity(supabase, {
+          userId: user.id,
+          applicationId: data.id,
+          activityType: "contact_added",
+          title: `${contact.full_name} hinterlegt`,
+          metadata: {
+            contact_name: contact.full_name,
+            contact_role: contact.role_title || undefined,
+          },
+        });
+      }
+    } catch (contactInsertError) {
+      console.error("Error creating imported contact:", contactInsertError);
+    }
   }
 
   revalidateApplicationPaths([data.id]);

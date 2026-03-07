@@ -208,6 +208,10 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - New-entry flows should default to the shortest believable path.
 - Optional detail fields should be grouped under a calm “more details” affordance instead of appearing all at once.
 - When a record has no contacts or documents yet, show a short explanation and one clear add action before rendering a full editor.
+- The add dialog should support both:
+  - job-link import
+  - pasted job text import
+- Text import should stay honest about branding limits: if no reliable company domain is known, fall back to a monogram instead of inventing a logo.
 
 ## Copy Rules
 
@@ -283,6 +287,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Dedicated workflow card for interviews and deadlines.
 - Timeline as the narrative spine.
 - Notes, contacts, and documents are first-class, editable cards.
+- Imported job-posting content should be visible inside the detail view, not discarded after creation.
 - Contacts should support a clear primary-contact workflow and preserve quick mail/phone/profile actions.
 - Documents should expose an at-a-glance readiness check so the workspace feels actionable, not archival.
 - Deadlines and interview planning should feel reminder-ready: dates, context, and prep notes live in structured fields, not only in free text.
@@ -290,6 +295,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Empty detail modules should stay summary-first. Do not auto-open editors for notes, contacts, documents, deadlines, or interviews just because there is no data yet.
 - Contacts and documents should feel optional until the user needs them, not mandatory upfront complexity.
 - Quick metrics in the hero should be immediately useful, not vanity counters.
+- If requirements, benefits, or full posting text were imported, present them in a calm dedicated card such as `Aus der Ausschreibung`.
 
 ### Reminder Rules
 - Reminders are derived from structured application fields, not manually created notification records.
@@ -506,6 +512,9 @@ Every meaningful detail mutation should:
 - insert timeline activity when the user would expect a narrative record
 - `revalidatePath` for `/board`, `/bewerbung`, and `/bewerbung/[id]`
 
+Import rule:
+- `createApplication()` may persist imported recruiter/contact context during creation when the scraper found a clear human contact. Do not ask the user to re-enter information the scraper already extracted reliably.
+
 Board-specific rule:
 - Because the shell reminders are server-derived, board mutations should trigger a refresh after persistence so topbar reminder state stays aligned.
 - Board moves into `angebot` should also trigger the shared celebration treatment after a successful server write.
@@ -534,12 +543,39 @@ Read-path rule:
 ### Scraper Pattern
 - The job scraper lives behind [route.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/api/scraper/route.ts) and requires an authenticated user session.
 - The scraper is best-effort and intentionally lightweight:
-  - tries JSON-LD first
+  - supports both URL import and pasted-text import
+  - tries `JobPosting` JSON-LD first
+  - then domain-specific DOM extraction where that meaningfully improves results
   - then Open Graph/meta tags
-  - then a generic HTML fallback
+  - then a generic HTML/text fallback
 - It uses `fetch` plus `cheerio`, not a headless browser.
 - Expect some job sites to fail because of anti-bot measures, JS-only rendering, or unusual markup.
 - Scraped data is assistive input for the add dialog, not a guaranteed normalized ingestion pipeline.
+- Scraper priorities:
+  - company name
+  - role title
+  - location
+  - salary note / range
+  - recruiter/contact if clearly named
+  - company branding
+  - requirements
+  - benefits
+  - full posting text
+- Prefer company branding from structured company data or company-specific assets, not the job-board favicon.
+- If the source is a job board and the company site is known, prefer the company site for branding fallback.
+- For salary:
+  - keep annual min/max when the source clearly exposes a yearly range
+  - otherwise store a human-readable `salary_note` such as `ab 3.500 € / Monat`
+  - do not pretend a monthly collective-agreement minimum is an annual range
+- For recruiter extraction:
+  - create a contact only when a real person is clearly present
+  - ignore vague HR labels or unrelated page chrome
+- LinkedIn guest pages currently need DOM heuristics because public pages do not consistently expose usable `JobPosting` JSON-LD.
+- Pasted text can recover salary, contact, benefits, and full text reasonably well, but logo quality depends on whether a trustworthy company domain or website is available.
+- For pasted text, infer role, company, and location from the first meaningful lines before scanning the body:
+  - line 1 is usually the role
+  - line 2 is often the company
+  - line 3 may be a plain location such as `Graz` or `Wien`, even without a `Standort:` prefix
 
 ### Deployment Guardrails
 - If Vercel prod breaks while local dev still works, check middleware and build-runtime differences first.
@@ -590,6 +626,7 @@ Read-path rule:
 - `00004_create_application_detail_entities.sql`
 - `00005_extend_activity_types_for_detail_workflows.sql`
 - `00006_add_workflow_fields_to_applications.sql`
+- `00007_add_company_branding_to_applications.sql`
 
 ### Key Tables
 - `profiles`
@@ -602,6 +639,7 @@ Read-path rule:
 - `profiles` extends `auth.users`.
 - `applications` stores the kanban item and detail record.
   - Includes structured workflow fields for deadline notes and upcoming interview planning.
+  - Also stores imported company-branding and posting-content metadata such as company website/logo plus requirements/benefits text.
 - `activities` stores timeline events.
 - `application_contacts` stores people tied to a specific application.
 - `application_documents` stores linked document references per application.

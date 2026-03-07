@@ -6,6 +6,7 @@ import {
   Clock3,
   ExternalLink,
   FileText,
+  Globe,
   MapPin,
 } from "lucide-react";
 import { ActivityTimeline } from "@/components/application/activity-timeline";
@@ -49,11 +50,12 @@ export function ApplicationDetailView({
   contacts,
   documents,
 }: ApplicationDetailViewProps) {
-  const domain = application.job_url ? extractDomain(application.job_url) : null;
-  const salaryDisplay = formatSalaryRange(
-    application.salary_min,
-    application.salary_max
+  const domain = extractDomain(
+    application.company_website_url || application.job_url || ""
   );
+  const salaryDisplay =
+    formatSalaryRange(application.salary_min, application.salary_max) ||
+    application.salary_note;
 
   const milestoneRows = [
     { label: "Gemerkt", value: application.date_saved },
@@ -90,6 +92,7 @@ export function ApplicationDetailView({
                 <div className="flex items-center gap-3">
                   <CompanyLogo
                     companyName={application.company_name}
+                    logoUrl={application.company_logo_url}
                     domain={domain}
                     size={52}
                   />
@@ -140,19 +143,23 @@ export function ApplicationDetailView({
                     <ExternalLink size={14} />
                   </Link>
                 )}
+                {application.company_website_url &&
+                  application.company_website_url !== application.job_url && (
+                    <Link
+                      href={application.company_website_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-white/78 px-4 py-2 text-xs font-heading font-medium text-dark transition-all duration-200",
+                        "hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
+                      )}
+                    >
+                      Unternehmensseite
+                      <Globe size={14} />
+                    </Link>
+                  )}
               </div>
             </div>
-
-            {application.description && (
-              <div className="rounded-[24px] border border-border/80 bg-dark-50/72 p-4">
-                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                  Kurzbeschreibung
-                </p>
-                <p className="text-sm font-body leading-7 text-dark-700">
-                  {application.description}
-                </p>
-              </div>
-            )}
 
             <div className="grid gap-3 sm:grid-cols-3">
               <OverviewPill
@@ -201,6 +208,7 @@ export function ApplicationDetailView({
             applicationId={application.id}
             initialNotes={application.notes}
           />
+          <JobPostingCard application={application} />
         </div>
 
         <div className="space-y-6">
@@ -285,6 +293,78 @@ export function ApplicationDetailView({
             initialDocuments={documents}
           />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function JobPostingCard({ application }: { application: Application }) {
+  if (
+    !application.description &&
+    (!application.requirements || application.requirements.length === 0) &&
+    (!application.benefits || application.benefits.length === 0)
+  ) {
+    return null;
+  }
+
+  return (
+    <Card className="rounded-[28px]">
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <FileText size={16} className="text-accent-orange" />
+          <h2 className="text-lg font-heading font-medium text-dark">
+            Aus der Ausschreibung
+          </h2>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        {application.requirements && application.requirements.length > 0 && (
+          <JobSection
+            label="Anforderungen"
+            items={application.requirements}
+          />
+        )}
+
+        {application.benefits && application.benefits.length > 0 && (
+          <JobSection label="Benefits" items={application.benefits} />
+        )}
+
+        {application.description && (
+          <div className="space-y-2">
+            <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+              Vollständiger Ausschreibungstext
+            </p>
+            <div className="rounded-[22px] border border-border/70 bg-dark-50/60 p-4 text-sm font-body leading-7 whitespace-pre-line text-dark-700">
+              {application.description}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function JobSection({
+  label,
+  items,
+}: {
+  label: string;
+  items: string[];
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </p>
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <div
+            key={`${label}-${item}`}
+            className="rounded-[18px] border border-border/70 bg-white/80 px-4 py-3 text-sm font-body leading-relaxed text-dark-700"
+          >
+            {item}
+          </div>
+        ))}
       </div>
     </div>
   );

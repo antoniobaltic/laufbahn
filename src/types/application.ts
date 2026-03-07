@@ -1,10 +1,13 @@
 import type { ApplicationStatus } from "@/lib/utils/constants";
+import type { CreateApplicationContactInput } from "@/types/application-detail";
 
 export interface Application {
   id: string;
   user_id: string;
   company_id: string | null;
   company_name: string;
+  company_website_url: string | null;
+  company_logo_url: string | null;
   role_title: string;
   location: string | null;
   job_url: string | null;
@@ -39,6 +42,8 @@ export type ApplicationOverview = Pick<
   | "id"
   | "user_id"
   | "company_name"
+  | "company_website_url"
+  | "company_logo_url"
   | "role_title"
   | "location"
   | "job_url"
@@ -62,6 +67,8 @@ export type ApplicationOverview = Pick<
 
 export interface CreateApplicationInput {
   company_name: string;
+  company_website_url?: string;
+  company_logo_url?: string;
   role_title: string;
   location?: string;
   job_url?: string;
@@ -71,7 +78,10 @@ export interface CreateApplicationInput {
   status?: ApplicationStatus;
   deadline?: string;
   description?: string;
+  requirements?: string[];
+  benefits?: string[];
   employment_type?: string;
   remote_policy?: string;
   notes?: string;
+  initial_contact?: CreateApplicationContactInput;
 }
