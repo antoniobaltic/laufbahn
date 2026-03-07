@@ -449,6 +449,13 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - **Phase 6** — Gmail integration
 - **Phase 7** — final polish, legal pages, landing refinement
 
+## Current Next Step
+- The current product-development priority is **Phase 5: Stripe monetization**.
+- Start with pricing, plan limits, and upgrade surfaces that fit the existing premium product language before wiring full billing flows.
+- Keep free-tier behavior legible in-product: limit messaging should feel calm and high-end, not naggy.
+- Any monetization UI must match the existing Anthropic-inspired premium system and work cleanly on mobile.
+- After monetization, the next planned platform step is **Phase 6: Gmail integration**.
+
 ## Implementation Guardrails For Future Work
 - Reuse the premium shell and surface classes before inventing new containers.
 - New pages should start with a kicker, a clear title, and one line of explanatory copy.
