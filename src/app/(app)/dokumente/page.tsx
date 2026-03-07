@@ -14,9 +14,9 @@ export default async function DocumentsPage() {
           Lebensläufe und Anschreiben in Ruhe pflegen
         </h1>
         <p className="mt-2 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-          Halte deine Fassungen an einem Ort, starte Varianten aus einer soliden
-          Basis und sieh jederzeit, welche Version bereits in einer Bewerbung
-          steckt.
+          Halte deine Fassungen an einem Ort, leite Varianten aus einer soliden
+          Basis ab und sieh jederzeit, welche feste Version schon in einer
+          Bewerbung steckt.
         </p>
       </div>
 

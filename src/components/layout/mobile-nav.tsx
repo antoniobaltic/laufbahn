@@ -99,8 +99,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               Tipp
             </p>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Öffne eine Bewerbung, sobald du mehr Kontext brauchst. Notizen,
-              Gespräche und Unterlagen liegen dort direkt bereit.
+              Öffne eine Bewerbung, sobald du mehr Kontext brauchst. Gespräche,
+              Kontakte und feste Dokumentversionen liegen dort direkt bereit.
             </p>
           </div>
         </div>

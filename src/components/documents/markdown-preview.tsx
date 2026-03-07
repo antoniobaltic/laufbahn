@@ -31,11 +31,11 @@ export function MarkdownPreview({
   return (
     <div
       className={cn(
-        "rounded-[24px] border border-border/75 bg-white/84 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]",
+        "overflow-hidden rounded-[24px] border border-border/75 bg-white/84 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.68)]",
         className
       )}
     >
-      <div className="space-y-4 text-sm font-body leading-7 text-dark-700">
+      <div className="space-y-4 break-words text-sm font-body leading-7 text-dark-700">
         <Markdown
           remarkPlugins={[remarkGfm]}
           components={{
@@ -77,8 +77,42 @@ export function MarkdownPreview({
                 {children}
               </blockquote>
             ),
-            code: ({ children }) => (
-              <code className="rounded bg-dark-50 px-1.5 py-0.5 font-mono text-[13px] text-dark">
+            table: ({ children }) => (
+              <div className="overflow-x-auto rounded-[20px] border border-border/80 bg-dark-50/45">
+                <table className="min-w-full border-collapse text-left text-sm">
+                  {children}
+                </table>
+              </div>
+            ),
+            thead: ({ children }) => (
+              <thead className="bg-white/80 font-heading text-xs uppercase tracking-[0.08em] text-dark-500">
+                {children}
+              </thead>
+            ),
+            th: ({ children }) => (
+              <th className="border-b border-border/80 px-4 py-3 font-heading font-medium">
+                {children}
+              </th>
+            ),
+            td: ({ children }) => (
+              <td className="border-b border-border/70 px-4 py-3 align-top last:border-b-0">
+                {children}
+              </td>
+            ),
+            pre: ({ children }) => (
+              <pre className="overflow-x-auto rounded-[20px] bg-dark px-4 py-4 font-mono text-[13px] leading-6 text-light">
+                {children}
+              </pre>
+            ),
+            code: ({ children, className }) => (
+              <code
+                className={cn(
+                  "font-mono text-[13px]",
+                  className
+                    ? "bg-transparent px-0 py-0 text-light"
+                    : "rounded bg-dark-50 px-1.5 py-0.5 text-dark"
+                )}
+              >
                 {children}
               </code>
             ),

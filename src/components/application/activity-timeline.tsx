@@ -157,16 +157,22 @@ function buildTimeline(application: Application, activities: Activity[]): Timeli
 
     if (
       activity.activity_type === "document_uploaded" ||
-      activity.activity_type === "document_updated"
+      activity.activity_type === "document_updated" ||
+      activity.activity_type === "document_removed"
     ) {
       const documentTitle = activity.metadata?.document_title;
       const documentType = activity.metadata?.document_type;
       const versionLabel = activity.metadata?.version_label;
       const isUpdated = activity.activity_type === "document_updated";
+      const isRemoved = activity.activity_type === "document_removed";
 
       return {
         id: activity.id,
-        title: isUpdated ? "Dokument aktualisiert" : "Dokument hinzugefügt",
+        title: isRemoved
+          ? "Dokument entfernt"
+          : isUpdated
+            ? "Dokument aktualisiert"
+            : "Dokument hinzugefügt",
         description:
           typeof documentTitle === "string"
             ? [
@@ -180,10 +186,12 @@ function buildTimeline(application: Application, activities: Activity[]): Timeli
                 .join(" · ")
             : activity.title,
         createdAt: activity.created_at,
-        icon: isUpdated ? PencilLine : FileText,
-        color: isUpdated
-          ? "var(--color-accent-blue)"
-          : "var(--color-accent-orange)",
+        icon: isRemoved ? FileText : isUpdated ? PencilLine : FileText,
+        color: isRemoved
+          ? "var(--color-mid-gray)"
+          : isUpdated
+            ? "var(--color-accent-blue)"
+            : "var(--color-accent-orange)",
       };
     }
 

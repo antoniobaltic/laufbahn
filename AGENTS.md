@@ -664,7 +664,7 @@ Document-action rules:
 
 ### Timeline Rules
 - `status_change` still comes from the database trigger.
-- `note_added`, `deadline_set`, `interview_scheduled`, `contact_added`, `contact_updated`, `document_uploaded`, and `document_updated` are created in server actions.
+- `note_added`, `deadline_set`, `interview_scheduled`, `contact_added`, `contact_updated`, `document_uploaded`, `document_updated`, and `document_removed` are created in server actions.
 - The UI also synthesizes a first “Eintrag erstellt” timeline item from the application row.
 
 ### Reminder Pattern
@@ -701,6 +701,16 @@ Document-action rules:
 - Application detail should show two document concepts side by side:
   - fixed CV / cover-letter snapshots from `Dokumente`
   - lighter additional links in `application_documents`
+- The document workspace must explain the current relationship clearly above the fold:
+  - basis vs variant
+  - current version
+  - where it came from
+  - where it is already used
+- The default document editing surface is guided writing plus live preview.
+- Raw Markdown is an advanced mode, not the default first impression.
+- Switching guided vs raw editing is a persisted preference for the current document and should not require a new content version on its own.
+- Import mode must not let the user save accidentally before the selected file has actually been converted.
+- If a selected basis becomes invalid because the user changes document type, clear the basis selection in the UI before submit instead of surfacing a server error.
 - The import route at `/api/documents/import` is authenticated and Node-runtime only.
 - The import pipeline is intentionally lightweight and local to the request:
   - accept file
@@ -750,6 +760,9 @@ Document-action rules:
 - Treat `laufbahn.vercel.app` as the production smoke-test URL after every deployment-sensitive change.
 - Keep server-only Supabase credentials in non-public env vars only.
 - Prefer the modern `SUPABASE_SECRET_KEY` naming. Do not reintroduce `SUPABASE_SERVICE_ROLE_KEY` unless there is a concrete compatibility reason.
+- Supabase security-definer functions must set an explicit immutable `search_path`.
+- Database extensions should live in `extensions`, not `public`, unless there is a concrete exception.
+- Leaked-password protection is a Supabase Auth project setting, not app code. If the advisor flags it, enable it in Supabase project auth settings or via a management API path with proper project auth; repo changes alone do not clear that warning.
 
 ## Release Validation
 - After meaningful UI, copy, or routing changes, run:
@@ -778,6 +791,7 @@ Document-action rules:
 - Documents are currently metadata records with URLs. There is no Supabase Storage upload pipeline yet.
 - The new global document library stores Markdown only. Original uploaded files are intentionally not retained.
 - PDF and DOCX import quality depends on the source file structure; the review/edit step is mandatory product behavior, not optional polish.
+- Markdown preview must style tables, code blocks, and long imported content cleanly. Imported documents should never feel like raw developer output.
 - Contacts and documents are first-class detail entities, but they are still relational records inside the same core app flow, not separate modules.
 - `/einstellungen` is now implemented. Keep it behind the authenticated app shell.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
@@ -803,6 +817,8 @@ Document-action rules:
 - `00008_add_profile_preferences.sql`
 - `00009_add_profile_insert_policy.sql`
 - `00010_create_source_documents.sql`
+- `00011_harden_database_security.sql`
+- `00012_add_document_removed_activity_type.sql`
 
 ### Key Tables
 - `profiles`

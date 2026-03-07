@@ -76,6 +76,8 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
             documentType: item.document.document_type,
             tags: item.document.tags,
             currentVersionId: item.currentVersion.id,
+            currentVersionNumber: item.currentVersion.version_number,
+            currentVersionLabel: item.currentVersion.version_label,
             currentVersionMarkdown: item.currentVersion.markdown_content,
           },
         ];
@@ -110,7 +112,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
             hint="Abgeleitete Fassungen für andere Rollen oder Schwerpunkte."
           />
           <OverviewCard
-            label="Verwendet"
+            label="Mit Bewerbungen verknüpft"
             value={`${totals.usedInApplications}`}
             hint="So oft sind feste Versionen bereits mit Bewerbungen verknüpft."
           />
@@ -124,7 +126,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
                   id="documents-search"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Titel oder Tag suchen"
+                  placeholder="Titel, Tag oder Inhalt durchsuchen"
                 />
               </div>
               <div className="flex flex-wrap gap-2">
@@ -163,7 +165,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
                     : "border-border/80 bg-white/88 text-dark-500"
                 )}
               >
-                {advancedView ? "Einfache Ansicht" : "Erweiterte Ansicht"}
+                {advancedView ? "Kartenansicht" : "Basis & Varianten"}
               </button>
               <Button type="button" onClick={() => setDialogOpen(true)}>
                 <FilePenLine size={15} />
@@ -361,6 +363,11 @@ function DocumentCard({
   compact?: boolean;
 }) {
   const currentVersion = item.currentVersion;
+  const documentRoleLabel = item.document.parent_document_id
+    ? "Variante"
+    : item.childCount > 0
+      ? "Basisdokument"
+      : "Eigenständig";
 
   return (
     <div
@@ -378,6 +385,11 @@ function DocumentCard({
               </h3>
               <Badge variant="muted">
                 {getSourceDocumentTypeLabel(item.document.document_type)}
+              </Badge>
+              <Badge
+                variant={item.document.parent_document_id ? "blue" : "muted"}
+              >
+                {documentRoleLabel}
               </Badge>
               {item.parentTitle && (
                 <Badge variant="blue">Basis: {item.parentTitle}</Badge>

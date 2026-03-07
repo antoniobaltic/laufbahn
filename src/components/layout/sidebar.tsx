@@ -100,8 +100,8 @@ export function Sidebar() {
             Kurz gesagt
           </p>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Alles Wichtige zu jeder Bewerbung bleibt an einem Ort: Stand, Frist,
-            Gespräch und Unterlagen.
+            Jede Bewerbung bleibt komplett an einem Ort: Stand, Fristen,
+            Gespräche und die passende Version deiner Unterlagen.
           </p>
         </div>
       </div>

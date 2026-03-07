@@ -40,40 +40,63 @@ interface DocumentWorkspaceProps {
 export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const initialTagInput = formatDocumentTagInput(workspace.document.tags);
+  const initialMarkdown = workspace.currentVersion?.markdown_content || "";
+  const initialRawMode = workspace.currentVersion?.editor_mode === "markdown";
   const [title, setTitle] = useState(workspace.document.title);
-  const [tagInput, setTagInput] = useState(
-    formatDocumentTagInput(workspace.document.tags)
-  );
+  const [tagInput, setTagInput] = useState(initialTagInput);
   const [changeNote, setChangeNote] = useState("");
   const [versionLabel, setVersionLabel] = useState("");
-  const [markdown, setMarkdown] = useState(
-    workspace.currentVersion?.markdown_content || ""
-  );
-  const [rawMode, setRawMode] = useState(
-    workspace.currentVersion?.editor_mode === "markdown"
-  );
+  const [markdown, setMarkdown] = useState(initialMarkdown);
+  const [rawMode, setRawMode] = useState(initialRawMode);
   const [variantDialogOpen, setVariantDialogOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [restoreVersionId, setRestoreVersionId] = useState<string | null>(null);
 
   useEffect(() => {
     setTitle(workspace.document.title);
-    setTagInput(formatDocumentTagInput(workspace.document.tags));
-    setMarkdown(workspace.currentVersion?.markdown_content || "");
+    setTagInput(initialTagInput);
+    setMarkdown(initialMarkdown);
     setVersionLabel("");
     setChangeNote("");
-    setRawMode(workspace.currentVersion?.editor_mode === "markdown");
-  }, [workspace]);
+    setRawMode(initialRawMode);
+  }, [initialMarkdown, initialRawMode, initialTagInput, workspace]);
+
+  const titleChanged = title.trim() !== workspace.document.title;
+  const tagsChanged = tagInput.trim() !== initialTagInput;
+  const contentChanged = markdown.trim() !== initialMarkdown.trim();
+  const editorModeChanged = rawMode !== initialRawMode;
+  const createsVersion = Boolean(
+    contentChanged || versionLabel.trim() || changeNote.trim()
+  );
+  const saveLabel = createsVersion
+    ? "Neue Version speichern"
+    : editorModeChanged && !titleChanged && !tagsChanged
+      ? "Ansicht speichern"
+      : "Angaben aktualisieren";
+  const documentRoleLabel = workspace.document.parent_document_id
+    ? "Variante"
+    : workspace.childDocuments.length > 0
+      ? "Basisdokument"
+      : "Eigenständig";
 
   const isDirty = useMemo(() => {
     return (
-      title.trim() !== workspace.document.title ||
-      tagInput.trim() !== formatDocumentTagInput(workspace.document.tags) ||
-      markdown.trim() !== (workspace.currentVersion?.markdown_content || "").trim() ||
+      titleChanged ||
+      tagsChanged ||
+      contentChanged ||
+      editorModeChanged ||
       versionLabel.trim().length > 0 ||
       changeNote.trim().length > 0
     );
-  }, [changeNote, markdown, tagInput, title, versionLabel, workspace]);
+  }, [
+    changeNote,
+    contentChanged,
+    editorModeChanged,
+    tagsChanged,
+    titleChanged,
+    versionLabel,
+  ]);
 
   const handleSave = () => {
     startTransition(async () => {
@@ -93,7 +116,9 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
         toast(
           result.createdNewVersion
             ? "Neue Version gespeichert"
-            : "Dokument aktualisiert",
+            : editorModeChanged && !titleChanged && !tagsChanged
+              ? "Ansicht gespeichert"
+              : "Dokument aktualisiert",
           "success"
         );
         router.refresh();
@@ -149,6 +174,8 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
         documentType: workspace.document.document_type,
         tags: workspace.document.tags,
         currentVersionId: workspace.currentVersion.id,
+        currentVersionNumber: workspace.currentVersion.version_number,
+        currentVersionLabel: workspace.currentVersion.version_label,
         currentVersionMarkdown: workspace.currentVersion.markdown_content,
       }
     : null;
@@ -174,6 +201,11 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="muted">
                     {getSourceDocumentTypeLabel(workspace.document.document_type)}
+                  </Badge>
+                  <Badge
+                    variant={workspace.document.parent_document_id ? "blue" : "muted"}
+                  >
+                    {documentRoleLabel}
                   </Badge>
                   {workspace.currentVersion && (
                     <Badge variant="green">
@@ -221,6 +253,56 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                     ))}
                   </div>
                 )}
+
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  <InfoTile
+                    label="Aktuelle Fassung"
+                    value={
+                      workspace.currentVersion
+                        ? formatDocumentVersionLabel(
+                            workspace.currentVersion.version_number,
+                            workspace.currentVersion.version_label
+                          )
+                        : "Noch keine Version"
+                    }
+                  />
+                  <InfoTile
+                    label="Entstanden aus"
+                    value={
+                      workspace.currentVersion
+                        ? getSourceKindLabel(workspace.currentVersion.source_kind)
+                        : "Noch offen"
+                    }
+                  />
+                  <InfoTile
+                    label="Verwendet in"
+                    value={`${workspace.usages.length} Bewerbung${
+                      workspace.usages.length === 1 ? "" : "en"
+                    }`}
+                  />
+                  <InfoTile
+                    label="Struktur"
+                    value={
+                      workspace.lineage.at(-1)?.title ||
+                      (workspace.document.parent_document_id
+                        ? "Variante"
+                        : workspace.childDocuments.length > 0
+                          ? "Basis für Varianten"
+                          : "Eigenständiges Dokument")
+                    }
+                  />
+                </div>
+
+                {workspace.currentVersion?.change_note && (
+                  <div className="rounded-[22px] border border-border/80 bg-dark-50/62 px-4 py-4">
+                    <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                      Aktuelle Notiz
+                    </p>
+                    <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                      {workspace.currentVersion.change_note}
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -232,7 +314,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   Kurzstatus
                 </p>
                 <h2 className="text-lg font-heading font-semibold text-dark">
-                  Gerade wichtig
+                  Schnellüberblick
                 </h2>
               </div>
             </CardHeader>
@@ -242,7 +324,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                 value={relativeDate(workspace.document.updated_at)}
               />
               <SummaryRow
-                label="Aktuelle Quelle"
+                label="Entstanden aus"
                 value={
                   workspace.currentVersion
                     ? getSourceKindLabel(workspace.currentVersion.source_kind)
@@ -318,6 +400,14 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   />
                 </div>
 
+                <div className="rounded-[22px] border border-border/80 bg-dark-50/62 px-4 py-4">
+                  <p className="text-sm font-body leading-relaxed text-dark-500">
+                    Titel und Tags ändern nur die Dokumentkarte. Eine neue Version
+                    entsteht erst, wenn du Inhalt oder Versionsnotizen anpasst. Die
+                    Schreibansicht merkt sich Laufbahn separat.
+                  </p>
+                </div>
+
                 <DocumentEditor
                   value={markdown}
                   onChange={setMarkdown}
@@ -332,11 +422,11 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                     size="sm"
                     onClick={() => {
                       setTitle(workspace.document.title);
-                      setTagInput(formatDocumentTagInput(workspace.document.tags));
-                      setMarkdown(workspace.currentVersion?.markdown_content || "");
+                      setTagInput(initialTagInput);
+                      setMarkdown(initialMarkdown);
                       setVersionLabel("");
                       setChangeNote("");
-                      setRawMode(workspace.currentVersion?.editor_mode === "markdown");
+                      setRawMode(initialRawMode);
                     }}
                     disabled={!isDirty || isPending}
                   >
@@ -356,7 +446,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                     ) : (
                       <>
                         <Save size={14} />
-                        Neue Version speichern
+                        {saveLabel}
                       </>
                     )}
                   </Button>
@@ -550,6 +640,17 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between gap-3 rounded-[20px] border border-border/80 bg-dark-50/58 px-4 py-3">
       <span className="text-sm font-body text-dark-500">{label}</span>
       <span className="text-sm font-heading text-dark">{value}</span>
+    </div>
+  );
+}
+
+function InfoTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[22px] border border-border/80 bg-dark-50/58 px-4 py-4">
+      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-2 text-sm font-heading text-dark">{value}</p>
     </div>
   );
 }

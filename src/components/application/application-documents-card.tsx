@@ -32,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { getDocumentTypeLabel } from "@/lib/utils/applications";
 import {
+  buildDocumentPreview,
   formatDocumentVersionLabel,
   getSourceDocumentTypeLabel,
 } from "@/lib/utils/documents";
@@ -719,7 +720,11 @@ function LibraryLinkCard({
             <h4 className="text-sm font-heading font-semibold text-dark">
               {getSourceDocumentTypeLabel(documentType)}
             </h4>
-            {linkedDocument ? <Badge variant="green">Fixiert</Badge> : <Badge variant="muted">Noch offen</Badge>}
+            {linkedDocument ? (
+              <Badge variant="green">Fixiert</Badge>
+            ) : (
+              <Badge variant="muted">Noch offen</Badge>
+            )}
           </div>
           <p className="text-sm font-body leading-relaxed text-dark-500">
             {linkedDocument
@@ -741,13 +746,16 @@ function LibraryLinkCard({
                 )}
               </Badge>
             </div>
+            <p className="mt-3 text-sm font-body leading-relaxed text-dark-500">
+              {buildDocumentPreview(linkedDocument.markdown_snapshot, 160)}
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href={`/dokumente/${linkedDocument.source_document_id}`}
                 prefetch={false}
                 className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-white/88 px-3 py-1.5 text-xs font-heading text-dark-500 transition-colors hover:text-dark"
               >
-                Im Dokumente-Bereich öffnen
+                In Dokumente öffnen
                 <ExternalLink size={12} />
               </Link>
             </div>

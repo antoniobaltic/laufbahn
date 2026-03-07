@@ -61,8 +61,8 @@ export function DocumentEditor({
   const helperText = useMemo(
     () =>
       rawMode
-        ? "Direkt im Markdown. Änderungen sind sofort in der Vorschau sichtbar."
-        : "Du kannst normal schreiben und bei Bedarf kleine Formatierungen nutzen.",
+        ? "Direkt im Markdown. Gut für Feinschliff oder sauberes Copy-Paste aus anderen Tools."
+        : "Schreibe natürlich und nutze bei Bedarf Überschriften, Listen oder Links.",
     [rawMode]
   );
 
@@ -139,7 +139,7 @@ export function DocumentEditor({
                   : "border-border/80 bg-white/86 text-dark-500 hover:text-dark"
               )}
             >
-              {rawMode ? "Markdown direkt" : "Markdown-Modus"}
+              {rawMode ? "Markdown direkt" : "Erweiterter Modus"}
             </button>
           </div>
         </div>

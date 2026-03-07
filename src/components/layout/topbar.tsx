@@ -187,7 +187,7 @@ function getRouteMeta(pathname: string) {
       kicker: "Dokumente",
       title: "Versionen und Varianten pflegen",
       description:
-        "Bearbeite Fassungen, stelle frühere Versionen wieder her und sieh, wo das Dokument bereits verwendet wird.",
+        "Bearbeite Fassungen, stelle frühere Versionen wieder her und sieh, wo sie schon verwendet werden.",
       showInTopbar: true,
     };
   }
@@ -197,7 +197,7 @@ function getRouteMeta(pathname: string) {
       kicker: "Dokumente",
       title: "Lebensläufe und Anschreiben",
       description:
-        "Halte ruhige Basisdokumente bereit, leite Varianten daraus ab und verknüpfe feste Versionen mit Bewerbungen.",
+        "Halte gute Basisdokumente bereit, leite Varianten daraus ab und verknüpfe feste Versionen mit Bewerbungen.",
       showInTopbar: false,
     };
   }

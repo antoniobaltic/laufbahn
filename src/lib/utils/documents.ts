@@ -29,7 +29,7 @@ export function getSourceKindLabel(sourceKind: SourceDocumentSourceKind) {
     case "restore":
       return "Aus älterer Version wiederhergestellt";
     case "variant":
-      return "Als Variante gestartet";
+      return "Aus einer Basis gestartet";
     default:
       return "Manuell erstellt";
   }

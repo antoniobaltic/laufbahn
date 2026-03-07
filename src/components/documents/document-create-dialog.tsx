@@ -18,7 +18,9 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import {
+  buildDocumentPreview,
   formatDocumentTagInput,
+  formatDocumentVersionLabel,
   getDocumentTemplate,
   SOURCE_DOCUMENT_TYPE_OPTIONS,
 } from "@/lib/utils/documents";
@@ -30,6 +32,8 @@ interface DocumentBaseOption {
   documentType: SourceDocumentType;
   tags: string[];
   currentVersionId: string;
+  currentVersionNumber: number;
+  currentVersionLabel: string | null;
   currentVersionMarkdown: string;
 }
 
@@ -41,8 +45,8 @@ interface DocumentCreateDialogProps {
 }
 
 const importModeOptions = [
-  { value: "manual", label: "Neu schreiben" },
-  { value: "import", label: "PDF oder DOCX übernehmen" },
+  { value: "manual", label: "Neu anlegen" },
+  { value: "import", label: "Aus Datei umwandeln" },
 ] as const;
 
 export function DocumentCreateDialog({
@@ -54,7 +58,7 @@ export function DocumentCreateDialog({
   const router = useRouter();
   const { toast } = useToast();
   const [mode, setMode] = useState<(typeof importModeOptions)[number]["value"]>(
-    variantFrom ? "manual" : "manual"
+    "manual"
   );
   const [title, setTitle] = useState("");
   const [documentType, setDocumentType] = useState<SourceDocumentType>(
@@ -130,6 +134,20 @@ export function DocumentCreateDialog({
       return current;
     });
   }, [documentType, importResult, variantFrom]);
+
+  useEffect(() => {
+    if (!parentDocumentId) {
+      return;
+    }
+
+    const isValidParent = filteredBaseOptions.some(
+      (option) => option.documentId === parentDocumentId
+    );
+
+    if (!isValidParent) {
+      setParentDocumentId("");
+    }
+  }, [filteredBaseOptions, parentDocumentId]);
 
   const handleImport = async () => {
     if (!selectedFile) {
@@ -207,7 +225,10 @@ export function DocumentCreateDialog({
     });
   };
 
-  const canCreate = title.trim().length > 0 && markdown.trim().length > 0;
+  const canCreate =
+    title.trim().length > 0 &&
+    markdown.trim().length > 0 &&
+    (mode !== "import" || Boolean(importResult));
 
   return (
     <Dialog open={open} onClose={onClose} className="w-[min(calc(100%-1.25rem),72rem)]">
@@ -265,19 +286,25 @@ export function DocumentCreateDialog({
                   placeholder="z.B. IT, Backend, SaaS"
                 />
 
-                <Select
-                  id="document-create-base"
-                  label="Basis"
-                  value={parentDocumentId}
-                  onChange={(event) => setParentDocumentId(event.target.value)}
-                  options={[
-                    { value: "", label: "Eigenständiges Dokument" },
-                    ...filteredBaseOptions.map((option) => ({
-                      value: option.documentId,
-                      label: option.title,
-                    })),
-                  ]}
-                />
+                <div className="space-y-2">
+                  <Select
+                    id="document-create-base"
+                    label="Basis"
+                    value={parentDocumentId}
+                    onChange={(event) => setParentDocumentId(event.target.value)}
+                    options={[
+                      { value: "", label: "Eigenständiges Dokument" },
+                      ...filteredBaseOptions.map((option) => ({
+                        value: option.documentId,
+                        label: option.title,
+                      })),
+                    ]}
+                  />
+                  <p className="text-xs font-body leading-relaxed text-dark-500">
+                    Optional. Nutze eine Basis, wenn du von einer bestehenden Fassung
+                    aus starten möchtest.
+                  </p>
+                </div>
 
                 {selectedBase && (
                   <div className="rounded-[22px] border border-border/80 bg-dark-50/72 px-4 py-4">
@@ -289,12 +316,21 @@ export function DocumentCreateDialog({
                       Diese Version kann direkt als Ausgangspunkt übernommen werden.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
+                      <Badge variant="green">
+                        {formatDocumentVersionLabel(
+                          selectedBase.currentVersionNumber,
+                          selectedBase.currentVersionLabel
+                        )}
+                      </Badge>
                       {selectedBase.tags.map((tag) => (
                         <Badge key={tag} variant="muted">
                           {tag}
                         </Badge>
                       ))}
                     </div>
+                    <p className="mt-3 text-sm font-body leading-relaxed text-dark-500">
+                      {buildDocumentPreview(selectedBase.currentVersionMarkdown, 160)}
+                    </p>
                     <div className="mt-4">
                       <Button
                         type="button"
@@ -345,7 +381,14 @@ export function DocumentCreateDialog({
                       accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       className="hidden"
                       onChange={(event) => {
-                        setSelectedFile(event.target.files?.[0] || null);
+                        const nextFile = event.target.files?.[0] || null;
+                        setSelectedFile(nextFile);
+                        setImportResult(null);
+                        if (nextFile && !title.trim()) {
+                          setTitle(
+                            nextFile.name.replace(/\.(pdf|docx)$/i, "").trim()
+                          );
+                        }
                         setImportError(null);
                       }}
                     />
@@ -365,6 +408,18 @@ export function DocumentCreateDialog({
                   {selectedFile && (
                     <div className="rounded-[18px] border border-border/80 bg-white px-4 py-3 text-sm font-body text-dark-500">
                       {selectedFile.name}
+                    </div>
+                  )}
+
+                  {importResult && (
+                    <div className="rounded-[22px] border border-green-200 bg-green-50/75 px-4 py-4">
+                      <p className="text-sm font-heading text-green-800">
+                        Import übernommen
+                      </p>
+                      <p className="mt-2 text-sm font-body leading-relaxed text-green-800">
+                        Prüfe den Inhalt kurz und passe ihn bei Bedarf direkt an,
+                        bevor du das Dokument speicherst.
+                      </p>
                     </div>
                   )}
 

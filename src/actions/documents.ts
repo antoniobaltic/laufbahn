@@ -587,8 +587,10 @@ export async function getDocumentWorkspace(documentId: string) {
 
   const lineage: Pick<SourceDocument, "id" | "title" | "document_type">[] = [];
   let currentParentId = document.parent_document_id;
+  const seenParentIds = new Set<string>();
 
-  while (currentParentId) {
+  while (currentParentId && !seenParentIds.has(currentParentId)) {
+    seenParentIds.add(currentParentId);
     const parent = await getOwnedDocument(supabase, user.id, currentParentId);
     lineage.unshift({
       id: parent.id,
@@ -716,17 +718,41 @@ export async function saveSourceDocumentVersion(
     JSON.stringify(payload.tags) !== JSON.stringify(document.tags ?? []);
   const contentChanged =
     payload.markdown_content !== (currentVersion?.markdown_content ?? "");
+  const editorModeChanged =
+    payload.editor_mode !== (currentVersion?.editor_mode ?? "guided");
   const shouldCreateVersion =
     contentChanged || Boolean(payload.version_label) || Boolean(payload.change_note);
+  const nextUpdatedAt = new Date().toISOString();
 
   if (!shouldCreateVersion) {
-    if (titleChanged || tagsChanged) {
+    let nextVersion = currentVersion;
+
+    if (currentVersion && editorModeChanged) {
+      const { data: updatedVersion, error: versionError } = await supabase
+        .from("source_document_versions")
+        .update({
+          editor_mode: payload.editor_mode,
+        })
+        .eq("id", currentVersion.id)
+        .eq("user_id", user.id)
+        .select("*")
+        .single();
+
+      if (versionError) {
+        console.error("Error updating source document editor mode:", versionError);
+        throw new Error("Ansicht konnte nicht gespeichert werden.");
+      }
+
+      nextVersion = updatedVersion as SourceDocumentVersion;
+    }
+
+    if (titleChanged || tagsChanged || editorModeChanged) {
       const { error } = await supabase
         .from("source_documents")
         .update({
           title: normalizedTitle,
           tags: payload.tags,
-          updated_at: new Date().toISOString(),
+          updated_at: nextUpdatedAt,
         })
         .eq("id", documentId)
         .eq("user_id", user.id);
@@ -744,8 +770,11 @@ export async function saveSourceDocumentVersion(
         ...document,
         title: normalizedTitle,
         tags: payload.tags,
+        updated_at: titleChanged || tagsChanged || editorModeChanged
+          ? nextUpdatedAt
+          : document.updated_at,
       } satisfies SourceDocument,
-      version: currentVersion,
+      version: nextVersion,
       createdNewVersion: false,
     };
   }
@@ -769,7 +798,7 @@ export async function saveSourceDocumentVersion(
       title: normalizedTitle,
       tags: payload.tags,
       current_version_id: version.id,
-      updated_at: new Date().toISOString(),
+      updated_at: nextUpdatedAt,
     })
     .eq("id", documentId)
     .eq("user_id", user.id);
@@ -787,6 +816,7 @@ export async function saveSourceDocumentVersion(
       title: normalizedTitle,
       tags: payload.tags,
       current_version_id: version.id,
+      updated_at: nextUpdatedAt,
     } satisfies SourceDocument,
     version,
     createdNewVersion: true,
@@ -931,7 +961,9 @@ export async function unlinkSourceDocumentFromApplication(
   const { supabase, user } = await getAuthenticatedClient();
   const { data: existing, error: existingError } = await supabase
     .from("application_source_documents")
-    .select("id, source_document_id")
+    .select(
+      "id, source_document_id, title_snapshot, version_number_snapshot, version_label_snapshot, document_type"
+    )
     .eq("application_id", applicationId)
     .eq("user_id", user.id)
     .eq("document_type", documentType)
@@ -956,6 +988,22 @@ export async function unlinkSourceDocumentFromApplication(
     console.error("Error unlinking source document from application:", error);
     throw new Error("Dokumentverknüpfung konnte nicht entfernt werden.");
   }
+
+  await insertActivity(supabase, {
+    userId: user.id,
+    applicationId,
+    activityType: "document_removed",
+    title: `${
+      documentType === "lebenslauf" ? "Lebenslauf" : "Anschreiben"
+    } entfernt: ${existing.title_snapshot}`,
+    metadata: {
+      document_title: existing.title_snapshot,
+      document_type: existing.document_type,
+      version_label:
+        existing.version_label_snapshot ||
+        `Version ${existing.version_number_snapshot}`,
+    },
+  });
 
   revalidateDocumentPaths({
     documentIds: [existing.source_document_id],

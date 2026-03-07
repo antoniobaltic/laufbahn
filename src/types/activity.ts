@@ -6,6 +6,7 @@ export type ActivityType =
   | "note_added"
   | "document_uploaded"
   | "document_updated"
+  | "document_removed"
   | "contact_added"
   | "contact_updated"
   | "email_received"
