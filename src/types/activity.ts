@@ -6,7 +6,6 @@ export type ActivityType =
   | "note_added"
   | "document_uploaded"
   | "document_updated"
-  | "document_removed"
   | "contact_added"
   | "contact_updated"
   | "email_received"
@@ -26,6 +25,7 @@ export interface ActivityMetadata {
   document_title?: string;
   document_type?: ApplicationDocumentType;
   version_label?: string;
+  document_action?: "linked" | "updated" | "removed";
   interview_at?: string;
   interview_format?: string;
   interview_location?: string;

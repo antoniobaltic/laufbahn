@@ -992,13 +992,14 @@ export async function unlinkSourceDocumentFromApplication(
   await insertActivity(supabase, {
     userId: user.id,
     applicationId,
-    activityType: "document_removed",
+    activityType: "document_updated",
     title: `${
       documentType === "lebenslauf" ? "Lebenslauf" : "Anschreiben"
     } entfernt: ${existing.title_snapshot}`,
     metadata: {
       document_title: existing.title_snapshot,
       document_type: existing.document_type,
+      document_action: "removed",
       version_label:
         existing.version_label_snapshot ||
         `Version ${existing.version_number_snapshot}`,

@@ -664,7 +664,8 @@ Document-action rules:
 
 ### Timeline Rules
 - `status_change` still comes from the database trigger.
-- `note_added`, `deadline_set`, `interview_scheduled`, `contact_added`, `contact_updated`, `document_uploaded`, `document_updated`, and `document_removed` are created in server actions.
+- `note_added`, `deadline_set`, `interview_scheduled`, `contact_added`, `contact_updated`, `document_uploaded`, and `document_updated` are created in server actions.
+- Fixed-document removals from `Dokumente` should currently reuse `document_updated` with metadata that marks the removal, unless and until the database schema introduces a dedicated activity type.
 - The UI also synthesizes a first “Eintrag erstellt” timeline item from the application row.
 
 ### Reminder Pattern
@@ -818,7 +819,6 @@ Document-action rules:
 - `00009_add_profile_insert_policy.sql`
 - `00010_create_source_documents.sql`
 - `00011_harden_database_security.sql`
-- `00012_add_document_removed_activity_type.sql`
 
 ### Key Tables
 - `profiles`

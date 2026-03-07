@@ -157,14 +157,15 @@ function buildTimeline(application: Application, activities: Activity[]): Timeli
 
     if (
       activity.activity_type === "document_uploaded" ||
-      activity.activity_type === "document_updated" ||
-      activity.activity_type === "document_removed"
+      activity.activity_type === "document_updated"
     ) {
       const documentTitle = activity.metadata?.document_title;
       const documentType = activity.metadata?.document_type;
       const versionLabel = activity.metadata?.version_label;
       const isUpdated = activity.activity_type === "document_updated";
-      const isRemoved = activity.activity_type === "document_removed";
+      const isRemoved =
+        activity.metadata?.document_action === "removed" &&
+        activity.activity_type === "document_updated";
 
       return {
         id: activity.id,

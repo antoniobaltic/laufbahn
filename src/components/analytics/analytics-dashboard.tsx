@@ -565,11 +565,7 @@ function StatusChip({ type }: { type: ActivityType }) {
     return <Badge variant="green">Gespräch</Badge>;
   }
 
-  if (
-    type === "document_uploaded" ||
-    type === "document_updated" ||
-    type === "document_removed"
-  ) {
+  if (type === "document_uploaded" || type === "document_updated") {
     return <Badge variant="muted">Dokument</Badge>;
   }
 
