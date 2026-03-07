@@ -1,8 +1,11 @@
-import { getApplications } from "@/actions/applications";
+import { getApplications, getNextStepPrompts } from "@/actions/applications";
 import { KanbanBoard } from "@/components/board/kanban-board";
 
 export default async function BoardPage() {
-  const applications = await getApplications();
+  const [applications, prompts] = await Promise.all([
+    getApplications(),
+    getNextStepPrompts(3),
+  ]);
   const boardKey =
     applications.length > 0
       ? applications
@@ -10,5 +13,11 @@ export default async function BoardPage() {
           .join("|")
       : "empty";
 
-  return <KanbanBoard key={boardKey} initialApplications={applications} />;
+  return (
+    <KanbanBoard
+      key={boardKey}
+      initialApplications={applications}
+      prompts={prompts}
+    />
+  );
 }

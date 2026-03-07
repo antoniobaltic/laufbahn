@@ -1,7 +1,7 @@
 "use client";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Globe,
@@ -67,10 +67,17 @@ export function ApplicationContactsCard({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     setContacts(sortContacts(initialContacts));
   }, [initialContacts]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const primaryContact = contacts.find((contact) => contact.is_primary) ?? null;
 
@@ -168,21 +175,57 @@ export function ApplicationContactsCard({
   };
 
   const handleDelete = (contactId: string) => {
-    startTransition(async () => {
+    const deletedContact =
+      contacts.find((contact) => contact.id === contactId) || null;
+    const wasEditing = editingId === contactId;
+
+    if (!deletedContact) {
+      return;
+    }
+
+    setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
+
+    if (wasEditing) {
+      setEditingId(null);
+      setEditingForm(initialFormState);
+    }
+
+    const timeoutId = window.setTimeout(async () => {
       try {
         await deleteApplicationContact(contactId, applicationId);
-        setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
-
-        if (editingId === contactId) {
-          setEditingId(null);
-          setEditingForm(initialFormState);
+        if (isMountedRef.current) {
+          router.refresh();
         }
-
-        toast("Kontakt entfernt", "success");
-        router.refresh();
       } catch {
-        toast("Kontakt konnte nicht entfernt werden", "error");
+        if (isMountedRef.current) {
+          setContacts((prev) => sortContacts(prev.concat(deletedContact)));
+          if (wasEditing) {
+            setEditingId(contactId);
+            setEditingForm(toFormState(deletedContact));
+          }
+          toast("Kontakt konnte nicht entfernt werden", "error");
+        }
       }
+    }, 5200);
+
+    toast({
+      message: "Kontakt entfernt",
+      variant: "success",
+      duration: 5200,
+      action: {
+        label: "Rückgängig",
+        onClick: () => {
+          clearTimeout(timeoutId);
+          if (isMountedRef.current) {
+            setContacts((prev) => sortContacts(prev.concat(deletedContact)));
+            if (wasEditing) {
+              setEditingId(contactId);
+              setEditingForm(toFormState(deletedContact));
+            }
+            toast("Kontakt wiederhergestellt", "success");
+          }
+        },
+      },
     });
   };
 

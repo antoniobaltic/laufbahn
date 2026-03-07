@@ -8,14 +8,23 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { ToastProvider } from "@/components/ui/toast";
 import type { ReminderItem } from "@/types/reminder";
+import type { AvatarColor } from "@/types/profile";
 
 interface AppShellProps {
   userEmail?: string;
+  userName?: string;
+  avatarColor?: AvatarColor;
   reminders: ReminderItem[];
   children: React.ReactNode;
 }
 
-export function AppShell({ userEmail, reminders, children }: AppShellProps) {
+export function AppShell({
+  userEmail,
+  userName,
+  avatarColor,
+  reminders,
+  children,
+}: AppShellProps) {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
 
@@ -33,6 +42,8 @@ export function AppShell({ userEmail, reminders, children }: AppShellProps) {
           <div className="flex min-w-0 flex-1 flex-col">
             <Topbar
               userEmail={userEmail}
+              userName={userName}
+              avatarColor={avatarColor}
               reminders={reminders}
               onSignOut={handleSignOut}
             />

@@ -24,7 +24,18 @@ export function useKanban(initialApplications: ApplicationOverview[]) {
   );
 
   const handleDragEnd = useCallback(
-    (result: DropResult) => {
+    (
+      result: DropResult,
+      options?: {
+        onStatusMoveCommitted?: (payload: {
+          movedApplication: ApplicationOverview;
+          previousApplications: ApplicationOverview[];
+          sourceStatus: ApplicationStatus;
+          destStatus: ApplicationStatus;
+        }) => void;
+        onStatusMoveFailed?: () => void;
+      }
+    ) => {
       const { source, destination } = result;
 
       if (!destination) return;
@@ -110,10 +121,25 @@ export function useKanban(initialApplications: ApplicationOverview[]) {
               roleTitle: movedItem.role_title,
             });
           }
-          router.refresh();
+          if (sourceStatus !== destStatus) {
+            options?.onStatusMoveCommitted?.({
+              movedApplication: updatedItem,
+              previousApplications,
+              sourceStatus,
+              destStatus,
+            });
+          }
+          if (sourceStatus === destStatus) {
+            router.refresh();
+          } else {
+            window.setTimeout(() => {
+              router.refresh();
+            }, 5400);
+          }
         } catch (error) {
           console.error("Failed to reorder:", error);
           setApplications(previousApplications);
+          options?.onStatusMoveFailed?.();
         }
       });
     },
@@ -128,12 +154,17 @@ export function useKanban(initialApplications: ApplicationOverview[]) {
     setApplications((prev) => prev.filter((app) => app.id !== id));
   }, []);
 
+  const replaceApplications = useCallback((nextApplications: ApplicationOverview[]) => {
+    setApplications(nextApplications);
+  }, []);
+
   return {
     applications,
     getColumnApplications,
     handleDragEnd,
     addApplication,
     removeApplication,
+    replaceApplications,
     isPending,
     columns: COLUMN_ORDER,
   };

@@ -87,7 +87,7 @@ export function buildAnalyticsSnapshot({
     (application) =>
       RESPONSE_STATUSES.has(application.status) || Boolean(application.date_rejected)
   );
-  const reminders = buildReminderNotifications(applications, now);
+  const reminders = buildReminderNotifications(applications, undefined, now);
   const applicationLookup = new Map(
     applications.map((application) => [application.id, application])
   );

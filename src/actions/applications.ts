@@ -10,6 +10,10 @@ import {
   buildReminderNotifications,
   type ReminderApplication,
 } from "@/lib/utils/reminders";
+import {
+  buildNextStepPrompts,
+  type NextStepApplication,
+} from "@/lib/utils/next-steps";
 import { dateTimeInputToISOString } from "@/lib/utils/dates";
 import type { ApplicationStatus } from "@/lib/utils/constants";
 import type { Activity, ActivityMetadata, ActivityType } from "@/types/activity";
@@ -18,6 +22,7 @@ import type {
   Application,
   ApplicationOverview,
   CreateApplicationInput,
+  CreateApplicationResult,
 } from "@/types/application";
 import type {
   ApplicationContact,
@@ -25,7 +30,9 @@ import type {
   CreateApplicationContactInput,
   CreateApplicationDocumentInput,
 } from "@/types/application-detail";
+import type { NextStepPrompt } from "@/types/next-step";
 import type { ReminderItem } from "@/types/reminder";
+import type { UserProfile } from "@/types/profile";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -189,6 +196,85 @@ function documentMatchesInput(
   );
 }
 
+async function getReminderPreferences(
+  supabase: SupabaseServerClient,
+  userId: string
+) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("deadline_reminder_days, interview_reminder_hours")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching reminder preferences:", error);
+    return {
+      deadlineReminderDays: 3,
+      interviewReminderHours: 48,
+    };
+  }
+
+  const profile = data as Pick<
+    UserProfile,
+    "deadline_reminder_days" | "interview_reminder_hours"
+  > | null;
+
+  return {
+    deadlineReminderDays: profile?.deadline_reminder_days ?? 3,
+    interviewReminderHours: profile?.interview_reminder_hours ?? 48,
+  };
+}
+
+async function deleteRecentStatusChangeActivities(
+  supabase: SupabaseServerClient,
+  userId: string,
+  applicationId: string,
+  previousStatus: ApplicationStatus,
+  currentStatus: ApplicationStatus
+) {
+  const { data, error } = await supabase
+    .from("activities")
+    .select("id, metadata")
+    .eq("user_id", userId)
+    .eq("application_id", applicationId)
+    .eq("activity_type", "status_change")
+    .order("created_at", { ascending: false })
+    .limit(6);
+
+  if (error) {
+    console.error("Error fetching status change activities for undo:", error);
+    return;
+  }
+
+  const matchingIds = (data ?? [])
+    .filter((activity) => {
+      const metadata = activity.metadata as ActivityMetadata | null;
+
+      return (
+        (metadata?.old_status === previousStatus &&
+          metadata?.new_status === currentStatus) ||
+        (metadata?.old_status === currentStatus &&
+          metadata?.new_status === previousStatus)
+      );
+    })
+    .slice(0, 2)
+    .map((activity) => activity.id);
+
+  if (matchingIds.length === 0) {
+    return;
+  }
+
+  const { error: deleteError } = await supabase
+    .from("activities")
+    .delete()
+    .eq("user_id", userId)
+    .in("id", matchingIds);
+
+  if (deleteError) {
+    console.error("Error deleting status change activities for undo:", deleteError);
+  }
+}
+
 export async function getApplications(): Promise<ApplicationOverview[]> {
   const supabase = await createClient();
   const {
@@ -246,6 +332,8 @@ export async function getNotificationReminders(limit?: number) {
 
   if (!user) return [] as ReminderItem[];
 
+  const preferences = await getReminderPreferences(supabase, user.id);
+
   const { data, error } = await supabase
     .from("applications")
     .select(
@@ -273,8 +361,55 @@ export async function getNotificationReminders(limit?: number) {
   }
 
   const reminderApplications = (data ?? []) as unknown as ReminderApplication[];
-  const reminders = buildReminderNotifications(reminderApplications);
+  const reminders = buildReminderNotifications(reminderApplications, preferences);
   return typeof limit === "number" ? reminders.slice(0, limit) : reminders;
+}
+
+export async function getNextStepPrompts(limit?: number) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return [] as NextStepPrompt[];
+
+  const [preferences, applicationsResult] = await Promise.all([
+    getReminderPreferences(supabase, user.id),
+    supabase
+      .from("applications")
+      .select(
+        [
+          "id",
+          "company_name",
+          "role_title",
+          "status",
+          "date_applied",
+          "date_interview",
+          "deadline",
+          "deadline_note",
+          "next_interview_at",
+          "interview_format",
+          "interview_location",
+          "interview_prep",
+          "notes",
+        ].join(", ")
+      )
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false }),
+  ]);
+
+  if (applicationsResult.error) {
+    console.error("Error fetching next-step prompts:", applicationsResult.error);
+    return [] as NextStepPrompt[];
+  }
+
+  return buildNextStepPrompts(
+    (applicationsResult.data ?? []) as unknown as NextStepApplication[],
+    {
+      ...preferences,
+      limit,
+    }
+  );
 }
 
 export async function getAnalyticsSnapshot(): Promise<AnalyticsSnapshot> {
@@ -503,10 +638,13 @@ export async function getApplicationWorkspace(id: string) {
   };
 }
 
-export async function createApplication(input: CreateApplicationInput) {
+export async function createApplication(
+  input: CreateApplicationInput
+): Promise<CreateApplicationResult> {
   const { supabase, user } = await getAuthenticatedClient();
   const status = input.status || "gemerkt";
   const position = await getNextPosition(supabase, user.id, status);
+  let importedContact: ApplicationContact | null = null;
 
   const { data, error } = await supabase
     .from("applications")
@@ -546,7 +684,7 @@ export async function createApplication(input: CreateApplicationInput) {
     });
 
     try {
-      const { error: contactError } = await supabase
+      const { data: contactData, error: contactError } = await supabase
         .from("application_contacts")
         .insert({
           user_id: user.id,
@@ -558,11 +696,14 @@ export async function createApplication(input: CreateApplicationInput) {
           linkedin_url: contact.linkedin_url,
           notes: contact.notes,
           is_primary: true,
-        });
+        })
+        .select()
+        .single();
 
       if (contactError) {
         console.error("Error creating imported contact:", contactError);
       } else {
+        importedContact = contactData as unknown as ApplicationContact;
         await insertActivity(supabase, {
           userId: user.id,
           applicationId: data.id,
@@ -580,7 +721,10 @@ export async function createApplication(input: CreateApplicationInput) {
   }
 
   revalidateApplicationPaths([data.id]);
-  return data as Application;
+  return {
+    application: data as Application,
+    importedContact,
+  };
 }
 
 export async function updateApplicationStatus(
@@ -651,6 +795,189 @@ export async function updateApplicationStatusFromDetail(
   }
 
   revalidateApplicationPaths([id]);
+  return {
+    positionInColumn: nextPosition,
+  };
+}
+
+export async function restoreApplicationSnapshots(
+  snapshots: Pick<
+    ApplicationOverview,
+    | "id"
+    | "status"
+    | "position_in_column"
+    | "date_saved"
+    | "date_applied"
+    | "date_interview"
+    | "date_offer"
+    | "date_rejected"
+  >[]
+) {
+  if (snapshots.length === 0) {
+    return;
+  }
+
+  const { supabase, user } = await getAuthenticatedClient();
+  const snapshotIds = snapshots.map((snapshot) => snapshot.id);
+
+  const { data: currentApplications, error: currentError } = await supabase
+    .from("applications")
+    .select("id, status")
+    .in("id", snapshotIds)
+    .eq("user_id", user.id);
+
+  if (currentError) {
+    console.error("Error fetching snapshots for restore:", currentError);
+    throw new Error("Status konnte nicht wiederhergestellt werden.");
+  }
+
+  const currentStatusById = new Map(
+    (currentApplications ?? []).map((application) => [
+      application.id,
+      application.status as ApplicationStatus,
+    ])
+  );
+
+  const updateTimestamp = new Date().toISOString();
+  const updates = await Promise.all(
+    snapshots.map((snapshot) =>
+      supabase
+        .from("applications")
+        .update({
+          status: snapshot.status,
+          position_in_column: snapshot.position_in_column,
+          updated_at: updateTimestamp,
+        })
+        .eq("id", snapshot.id)
+        .eq("user_id", user.id)
+    )
+  );
+
+  const updateErrors = updates.filter((result) => result.error);
+
+  if (updateErrors.length > 0) {
+    console.error("Error restoring application snapshots:", updateErrors);
+    throw new Error("Status konnte nicht wiederhergestellt werden.");
+  }
+
+  const milestoneUpdates = await Promise.all(
+    snapshots.map((snapshot) =>
+      supabase
+        .from("applications")
+        .update({
+          date_saved: snapshot.date_saved,
+          date_applied: snapshot.date_applied,
+          date_interview: snapshot.date_interview,
+          date_offer: snapshot.date_offer,
+          date_rejected: snapshot.date_rejected,
+          updated_at: updateTimestamp,
+        })
+        .eq("id", snapshot.id)
+        .eq("user_id", user.id)
+    )
+  );
+
+  const milestoneErrors = milestoneUpdates.filter((result) => result.error);
+
+  if (milestoneErrors.length > 0) {
+    console.error(
+      "Error restoring application milestone dates:",
+      milestoneErrors
+    );
+    throw new Error("Status konnte nicht wiederhergestellt werden.");
+  }
+
+  await Promise.all(
+    snapshots.map(async (snapshot) => {
+      const currentStatus = currentStatusById.get(snapshot.id);
+
+      if (!currentStatus || currentStatus === snapshot.status) {
+        return;
+      }
+
+      await deleteRecentStatusChangeActivities(
+        supabase,
+        user.id,
+        snapshot.id,
+        snapshot.status,
+        currentStatus
+      );
+    })
+  );
+
+  revalidateApplicationPaths(snapshotIds);
+}
+
+export async function undoImportedContactCreation(
+  applicationId: string,
+  contactId: string
+) {
+  const { supabase, user } = await getAuthenticatedClient();
+
+  const { data: contact, error: contactError } = await supabase
+    .from("application_contacts")
+    .select("id, full_name")
+    .eq("id", contactId)
+    .eq("application_id", applicationId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (contactError) {
+    console.error("Error loading imported contact for undo:", contactError);
+    throw new Error("Kontakt konnte nicht rückgängig gemacht werden.");
+  }
+
+  if (!contact) {
+    revalidateApplicationPaths([applicationId]);
+    return;
+  }
+
+  const { error: deleteContactError } = await supabase
+    .from("application_contacts")
+    .delete()
+    .eq("id", contactId)
+    .eq("application_id", applicationId)
+    .eq("user_id", user.id);
+
+  if (deleteContactError) {
+    console.error("Error deleting imported contact during undo:", deleteContactError);
+    throw new Error("Kontakt konnte nicht rückgängig gemacht werden.");
+  }
+
+  const { data: activities, error: activitiesError } = await supabase
+    .from("activities")
+    .select("id, metadata")
+    .eq("user_id", user.id)
+    .eq("application_id", applicationId)
+    .eq("activity_type", "contact_added")
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (activitiesError) {
+    console.error("Error loading contact activities for undo:", activitiesError);
+  } else {
+    const matchingActivity = (activities ?? []).find((activity) => {
+      const metadata = activity.metadata as ActivityMetadata | null;
+      return metadata?.contact_name === contact.full_name;
+    });
+
+    if (matchingActivity) {
+      const { error: deleteActivityError } = await supabase
+        .from("activities")
+        .delete()
+        .eq("id", matchingActivity.id)
+        .eq("user_id", user.id);
+
+      if (deleteActivityError) {
+        console.error(
+          "Error deleting imported contact activity during undo:",
+          deleteActivityError
+        );
+      }
+    }
+  }
+
+  revalidateApplicationPaths([applicationId]);
 }
 
 export async function updateApplicationNotes(id: string, notes: string) {

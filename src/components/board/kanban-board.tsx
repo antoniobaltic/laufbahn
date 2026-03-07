@@ -1,25 +1,36 @@
 "use client";
 
-import { useCallback, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { Briefcase, MoveRight, Plus } from "lucide-react";
-import { deleteApplication } from "@/actions/applications";
+import {
+  deleteApplication,
+  restoreApplicationSnapshots,
+  undoImportedContactCreation,
+} from "@/actions/applications";
 import { AddApplicationDialog } from "@/components/board/add-application-dialog";
 import { KanbanColumn } from "@/components/board/kanban-column";
+import { NextStepPromptsCard } from "@/components/next-step/next-step-prompts-card";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { getStatusLabel } from "@/lib/utils/applications";
 import { cn } from "@/lib/utils/cn";
 import { COLUMN_CONFIG } from "@/lib/utils/constants";
 import { useKanban } from "@/hooks/use-kanban";
-import type { Application, ApplicationOverview } from "@/types/application";
+import type {
+  ApplicationOverview,
+  CreateApplicationResult,
+} from "@/types/application";
+import type { NextStepPrompt } from "@/types/next-step";
 
 interface KanbanBoardProps {
   initialApplications: ApplicationOverview[];
+  prompts: NextStepPrompt[];
 }
 
-export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
+export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const isClient = useSyncExternalStore(
     () => () => {},
@@ -37,34 +48,154 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
     isPending,
   } = useKanban(initialApplications);
   const { toast } = useToast();
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleApplicationCreated = useCallback(
-    (application: Application) => {
-      addApplication(application);
-      router.refresh();
+    (result: CreateApplicationResult) => {
+      addApplication(result.application);
+
+      if (result.importedContact) {
+        toast({
+          message: "Kontakt aus der Ausschreibung übernommen",
+          variant: "success",
+          duration: 5200,
+          action: {
+            label: "Rückgängig",
+            onClick: async () => {
+              try {
+                await undoImportedContactCreation(
+                  result.application.id,
+                  result.importedContact!.id
+                );
+                router.refresh();
+                toast("Kontakt wieder entfernt", "success");
+              } catch {
+                toast("Kontakt konnte nicht rückgängig gemacht werden", "error");
+              }
+            },
+          },
+        });
+        window.setTimeout(() => {
+          if (isMountedRef.current) {
+            router.refresh();
+          }
+        }, 5400);
+        return;
+      }
+
       toast("Bewerbung gespeichert", "success");
+      window.setTimeout(() => {
+        if (isMountedRef.current) {
+          router.refresh();
+        }
+      }, 800);
     },
     [addApplication, router, toast]
   );
 
   const handleDelete = useCallback(
-    async (id: string) => {
+    (id: string) => {
       const removedApplication =
         applications.find((application) => application.id === id) || null;
 
-      try {
-        removeApplication(id);
-        await deleteApplication(id);
-        router.refresh();
-        toast("Bewerbung gelöscht", "success");
-      } catch {
-        if (removedApplication) {
-          addApplication(removedApplication);
-        }
-        toast("Bewerbung konnte nicht gelöscht werden", "error");
+      if (!removedApplication) {
+        return;
       }
+
+      removeApplication(id);
+
+      const timeoutId = window.setTimeout(async () => {
+        try {
+          await deleteApplication(id);
+          if (isMountedRef.current) {
+            router.refresh();
+          }
+        } catch {
+          if (isMountedRef.current) {
+            addApplication(removedApplication);
+            toast("Bewerbung konnte nicht gelöscht werden", "error");
+          }
+        }
+      }, 5200);
+
+      toast({
+        message: "Bewerbung entfernt",
+        variant: "success",
+        duration: 5200,
+        action: {
+          label: "Rückgängig",
+          onClick: () => {
+            clearTimeout(timeoutId);
+            if (isMountedRef.current) {
+              addApplication(removedApplication);
+              toast("Bewerbung wiederhergestellt", "success");
+            }
+          },
+        },
+      });
     },
     [addApplication, applications, removeApplication, router, toast]
+  );
+
+  const handleBoardDragEnd = useCallback(
+    (result: Parameters<typeof handleDragEnd>[0]) => {
+      handleDragEnd(result, {
+        onStatusMoveCommitted: ({
+          previousApplications,
+          sourceStatus,
+          destStatus,
+        }) => {
+          const snapshot = previousApplications
+            .filter(
+              (application) =>
+                application.status === sourceStatus ||
+                application.status === destStatus
+            )
+            .map((application) => ({
+              id: application.id,
+              status: application.status,
+              position_in_column: application.position_in_column,
+              date_saved: application.date_saved,
+              date_applied: application.date_applied,
+              date_interview: application.date_interview,
+              date_offer: application.date_offer,
+              date_rejected: application.date_rejected,
+            }));
+
+          toast({
+            message: `Nach ${getStatusLabel(destStatus)} verschoben`,
+            variant: "success",
+            duration: 5200,
+            action: {
+              label: "Rückgängig",
+              onClick: async () => {
+                try {
+                  await restoreApplicationSnapshots(snapshot);
+                  router.refresh();
+                  toast(
+                    `Status wieder auf ${getStatusLabel(sourceStatus)} gesetzt`,
+                    "success"
+                  );
+                } catch {
+                  router.refresh();
+                  toast("Status konnte nicht zurückgesetzt werden", "error");
+                }
+              },
+            },
+          });
+        },
+        onStatusMoveFailed: () => {
+          toast("Status konnte nicht aktualisiert werden", "error");
+        },
+      });
+    },
+    [handleDragEnd, router, toast]
   );
 
   const hasApplications = applications.length > 0;
@@ -132,9 +263,11 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
         />
       </div>
 
+      <NextStepPromptsCard prompts={prompts} />
+
       {hasApplications ? (
         isClient ? (
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext onDragEnd={handleBoardDragEnd}>
           <div className="surface-panel rounded-[32px] p-3 sm:p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-1 sm:px-2">
               <div className="text-sm font-body leading-relaxed text-dark-500">

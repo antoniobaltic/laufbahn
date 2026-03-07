@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getNotificationReminders } from "@/actions/applications";
+import { getCurrentProfile } from "@/actions/profile";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "./app-shell";
 
@@ -17,10 +18,18 @@ export default async function AppLayout({
     redirect("/anmelden");
   }
 
-  const reminders = await getNotificationReminders();
+  const [reminders, profile] = await Promise.all([
+    getNotificationReminders(),
+    getCurrentProfile(),
+  ]);
 
   return (
-    <AppShell userEmail={user.email} reminders={reminders}>
+    <AppShell
+      userEmail={user.email}
+      userName={profile?.full_name || undefined}
+      avatarColor={profile?.avatar_color}
+      reminders={reminders}
+    >
       {children}
     </AppShell>
   );

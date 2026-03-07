@@ -1,7 +1,7 @@
 "use client";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   ExternalLink,
@@ -77,10 +77,17 @@ export function ApplicationDocumentsCard({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     setDocuments(initialDocuments);
   }, [initialDocuments]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const documentChecklist = useMemo(() => {
     const hasType = (type: ApplicationDocumentType) =>
@@ -149,23 +156,57 @@ export function ApplicationDocumentsCard({
   };
 
   const handleDelete = (documentId: string) => {
-    startTransition(async () => {
+    const deletedDocument =
+      documents.find((document) => document.id === documentId) || null;
+    const wasEditing = editingId === documentId;
+
+    if (!deletedDocument) {
+      return;
+    }
+
+    setDocuments((prev) => prev.filter((document) => document.id !== documentId));
+
+    if (wasEditing) {
+      setEditingId(null);
+      setEditingForm(initialFormState);
+    }
+
+    const timeoutId = window.setTimeout(async () => {
       try {
         await deleteApplicationDocument(documentId, applicationId);
-        setDocuments((prev) =>
-          prev.filter((document) => document.id !== documentId)
-        );
-
-        if (editingId === documentId) {
-          setEditingId(null);
-          setEditingForm(initialFormState);
+        if (isMountedRef.current) {
+          router.refresh();
         }
-
-        toast("Dokument entfernt", "success");
-        router.refresh();
       } catch {
-        toast("Dokument konnte nicht entfernt werden", "error");
+        if (isMountedRef.current) {
+          setDocuments((prev) => [deletedDocument, ...prev]);
+          if (wasEditing) {
+            setEditingId(documentId);
+            setEditingForm(toFormState(deletedDocument));
+          }
+          toast("Dokument konnte nicht entfernt werden", "error");
+        }
       }
+    }, 5200);
+
+    toast({
+      message: "Dokument entfernt",
+      variant: "success",
+      duration: 5200,
+      action: {
+        label: "Rückgängig",
+        onClick: () => {
+          clearTimeout(timeoutId);
+          if (isMountedRef.current) {
+            setDocuments((prev) => [deletedDocument, ...prev]);
+            if (wasEditing) {
+              setEditingId(documentId);
+              setEditingForm(toFormState(deletedDocument));
+            }
+            toast("Dokument wiederhergestellt", "success");
+          }
+        },
+      },
     });
   };
 

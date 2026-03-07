@@ -15,15 +15,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { createApplication } from "@/actions/applications";
 import type { ScrapedJob } from "@/lib/scraper";
 import type {
-  Application,
   ApplicationOverview,
   CreateApplicationInput,
+  CreateApplicationResult,
 } from "@/types/application";
 
 interface AddApplicationDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreated: (application: Application) => void;
+  onCreated: (result: CreateApplicationResult) => void;
   existingApplications?: ApplicationOverview[];
 }
 
@@ -177,8 +177,8 @@ export function AddApplicationDialog({
   const duplicateCandidate = checkDuplicate(fields.company_name, fields.role_title);
 
   const persistApplication = async () => {
-    const application = await createApplication(buildApplicationInput());
-    onCreated(application);
+    const result = await createApplication(buildApplicationInput());
+    onCreated(result);
     handleClose();
   };
 

@@ -266,6 +266,11 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Notifications should feel like calm prioritization, not noisy alerts: concise copy, urgency chips, direct links back into detail pages.
 - Positive milestones such as `angebot` should feel elevated through restrained celebration, not loud arcade-style effects.
 - Navigation should expose only what is currently useful. Do not show dormant product areas just because routes exist.
+- The top-right account control is the entry point to `Profil & Einstellungen`.
+- Profile presentation is intentionally simple:
+  - initials avatar, no photo upload
+  - customizable background color
+  - clear display name
 - User-facing shell labels should stay simple:
   - `/board` route is shown as `Übersicht`
   - `/analytics` is shown as `Auswertung`
@@ -274,6 +279,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 ### Board
 - Header with kicker, title, helper copy, and clear CTA.
 - Metric cards above the board.
+- Small next-step prompts may sit above the board if they help the user decide what to do next.
 - Board area wrapped in `surface-panel`.
 - Empty board still shows the structure of the workflow.
 - Treat the board as the calm “home” view, not as a methodology lesson.
@@ -301,12 +307,47 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 ### Reminder Rules
 - Reminders are derived from structured application fields, not manually created notification records.
 - The topbar bell is the global entry point for reminders.
+- Reminder windows respect profile defaults from `profiles.deadline_reminder_days` and `profiles.interview_reminder_hours`.
 - Current reminder sources are:
   - upcoming deadlines
   - upcoming interviews
   - stale applications in `beworben` that likely need a follow-up
 - Reminders should link straight into the affected application detail page.
 - When board interactions change server-derived reminder state, the shell must refresh so counts stay honest.
+
+### Next-Step Prompt Rules
+- Smart next-step prompts are assistive, not noisy.
+- They should answer: `What is the most sensible next action right now?`
+- Keep them to a small capped set on the board.
+- Good prompt triggers:
+  - `Vor X Tagen beworben. Nachfassen einplanen?`
+  - `Gespräch morgen. Vorbereitung ergänzen?`
+  - `Frist in 2 Tagen. Nächsten Schritt festhalten?`
+- The copy should sound natural in German and never like system alerts or CRM automation.
+- Prompts should link directly into the affected application detail page.
+- Prompt timing should stay aligned with reminder defaults where that makes sense.
+
+### Undo Rules
+- Destructive or trust-sensitive actions should offer a calm `Rückgängig` affordance when technically feasible.
+- Current undo surfaces include:
+  - deleting an application
+  - deleting a contact
+  - deleting a document
+  - changing application status
+  - accepting an imported contact during application creation
+- If an undo toast is shown, do not immediately force a route refresh that wipes out the toast before the user can react.
+- Undo should restore real data integrity, not only optimistic UI state. If timeline or milestone side effects were created, clean them up as part of the undo path where practical.
+
+### Profile & Settings Rules
+- `Profil & Einstellungen` is a real app surface under `/einstellungen`.
+- The page currently owns:
+  - display name
+  - email display
+  - initials-avatar background color
+  - deadline reminder lead time
+  - interview reminder lead time
+- Settings copy should stay calm and personal, not technical.
+- Profile settings should update both the page itself and the compact shell account control.
 
 ### Date Handling Rules
 - Do not parse stored app dates with bare `new Date(value)` in UI or reminder logic.
@@ -366,6 +407,8 @@ src/
 │       ├── board/
 │       │   ├── page.tsx
 │       │   └── loading.tsx
+│       ├── einstellungen/
+│       │   └── page.tsx
 │       └── bewerbung/
 │           ├── page.tsx
 │           ├── loading.tsx
@@ -401,6 +444,10 @@ src/
 │   │   ├── mobile-nav.tsx
 │   │   ├── sidebar.tsx
 │   │   └── topbar.tsx
+│   ├── next-step/
+│   │   └── next-step-prompts-card.tsx
+│   ├── settings/
+│   │   └── profile-settings-form.tsx
 │   └── ui/
 │       ├── badge.tsx
 │       ├── button.tsx
@@ -413,7 +460,8 @@ src/
 │       ├── textarea.tsx
 │       └── toast.tsx
 ├── actions/
-│   └── applications.ts
+│   ├── applications.ts
+│   └── profile.ts
 ├── hooks/
 │   └── use-kanban.ts
 ├── lib/
@@ -429,6 +477,8 @@ src/
 │       ├── cn.ts
 │       ├── constants.ts
 │       ├── dates.ts
+│       ├── next-steps.ts
+│       ├── profile.ts
 │       ├── reminders.ts
 │       └── url.ts
 ├── middleware.ts
@@ -440,6 +490,8 @@ src/
     ├── application-detail.ts
     ├── application.ts
     ├── kanban.ts
+    ├── next-step.ts
+    ├── profile.ts
     └── reminder.ts
 ```
 
@@ -487,6 +539,7 @@ All application-related reads and mutations live in [applications.ts](/Users/ant
 Current responsibilities:
 - `getApplications()`
 - `getAnalyticsSnapshot()`
+- `getNextStepPrompts()`
 - `getNotificationReminders()`
 - `getApplicationById()`
 - `getApplicationWorkspace()`
@@ -500,6 +553,8 @@ Current responsibilities:
 - `updateApplicationDeadline()`
 - `updateApplicationInterview()`
 - `reorderApplications()`
+- `restoreApplicationSnapshots()`
+- `undoImportedContactCreation()`
 - `createApplicationContact()`
 - `updateApplicationContact()`
 - `deleteApplicationContact()`
@@ -516,9 +571,11 @@ Every meaningful detail mutation should:
 
 Import rule:
 - `createApplication()` may persist imported recruiter/contact context during creation when the scraper found a clear human contact. Do not ask the user to re-enter information the scraper already extracted reliably.
+- If an imported contact is created automatically, the user should get a short-lived `Rückgängig` path instead of being forced to edit manually afterward.
 
 Board-specific rule:
 - Because the shell reminders are server-derived, board mutations should trigger a refresh after persistence so topbar reminder state stays aligned.
+- If a board mutation offers undo via toast, it is acceptable to delay that refresh until the undo window closes so the toast stays actionable.
 - Board moves into `angebot` should also trigger the shared celebration treatment after a successful server write.
 
 Read-path rule:
@@ -535,6 +592,12 @@ Read-path rule:
 - The notification center currently displays a capped visible list but counts all derived reminders.
 - Reminder queries should only select fields that the derivation logic actually needs.
 - There is currently no persisted notification table and no email/push delivery path.
+- Reminder derivation should respect user-level lead-time defaults from the profile row.
+
+### Next-Step Pattern
+- `buildNextStepPrompts()` in [next-steps.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/lib/utils/next-steps.ts) is the single source of truth for board-level next-step prompts.
+- Prompt generation is derived from the same structured application data as reminders; do not invent separate prompt tables.
+- Prompts should remain capped and relevance-sorted so the board never turns into a notification feed.
 
 ### Analytics Pattern
 - `buildAnalyticsSnapshot()` in [analytics.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/lib/utils/analytics.ts) is the single source of truth for analytics aggregation.
@@ -605,10 +668,11 @@ Read-path rule:
 - `@hello-pangea/dnd` is sensitive to scroll behavior. Do not reintroduce global smooth scrolling or nested droppable scroll containers.
 - Date-only values such as `deadline` must stay on the shared date helper path. Bare `new Date(string)` calls in UI logic are a regression risk.
 - Board state is optimistic in the client, then reconciled via server write plus `router.refresh()`.
+- When an undo toast is active, prefer delaying the reconciliation refresh rather than erasing the undo affordance immediately.
 - The reminder count in the shell is server-derived, so board mutations must refresh the shell after persistence.
 - Documents are currently metadata records with URLs. There is no Supabase Storage upload pipeline yet.
 - Contacts and documents are first-class detail entities, but they are still relational records inside the same core app flow, not separate modules.
-- `middleware.ts` protects some planned routes such as `/unternehmen` and `/einstellungen` even though those surfaces are not built yet.
+- `/einstellungen` is now implemented. Keep it behind the authenticated app shell.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
 - Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
 - In development, `@hello-pangea/dnd` can produce hydration/setup noise if drag-and-drop SSR markup differs. Keep the board’s DnD layer behind a client-only mount guard if needed.
@@ -629,6 +693,8 @@ Read-path rule:
 - `00005_extend_activity_types_for_detail_workflows.sql`
 - `00006_add_workflow_fields_to_applications.sql`
 - `00007_add_company_branding_to_applications.sql`
+- `00008_add_profile_preferences.sql`
+- `00009_add_profile_insert_policy.sql`
 
 ### Key Tables
 - `profiles`

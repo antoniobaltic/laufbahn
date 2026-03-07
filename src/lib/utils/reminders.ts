@@ -24,10 +24,14 @@ const HOUR_IN_MS = 1000 * 60 * 60;
 
 export function buildReminderNotifications(
   applications: ReminderApplication[],
+  options?: {
+    deadlineReminderDays?: number;
+    interviewReminderHours?: number;
+  },
   now = new Date()
 ) {
   const reminders = applications.flatMap((application) =>
-    buildApplicationReminders(application, now)
+    buildApplicationReminders(application, options, now)
   );
 
   return reminders.sort((a, b) => {
@@ -52,26 +56,37 @@ export function getReminderCounts(reminders: ReminderItem[]) {
   );
 }
 
-function buildApplicationReminders(application: ReminderApplication, now: Date) {
+function buildApplicationReminders(
+  application: ReminderApplication,
+  options: {
+    deadlineReminderDays?: number;
+    interviewReminderHours?: number;
+  } = {},
+  now: Date
+) {
   if (DECISION_STATUSES.has(application.status)) {
     return [];
   }
 
   return [
-    buildDeadlineReminder(application, now),
-    buildInterviewReminder(application, now),
+    buildDeadlineReminder(application, options.deadlineReminderDays ?? 7, now),
+    buildInterviewReminder(application, options.interviewReminderHours ?? 96, now),
     buildFollowUpReminder(application, now),
   ].filter(Boolean) as ReminderItem[];
 }
 
-function buildDeadlineReminder(application: ReminderApplication, now: Date) {
+function buildDeadlineReminder(
+  application: ReminderApplication,
+  deadlineReminderDays: number,
+  now: Date
+) {
   if (!application.deadline) {
     return null;
   }
 
   const diffDays = getCalendarDayDifference(application.deadline, now);
 
-  if (diffDays > 7 || diffDays < -2) {
+  if (diffDays > deadlineReminderDays || diffDays < -2) {
     return null;
   }
 
@@ -99,7 +114,11 @@ function buildDeadlineReminder(application: ReminderApplication, now: Date) {
   } satisfies ReminderItem;
 }
 
-function buildInterviewReminder(application: ReminderApplication, now: Date) {
+function buildInterviewReminder(
+  application: ReminderApplication,
+  interviewReminderHours: number,
+  now: Date
+) {
   if (!application.next_interview_at) {
     return null;
   }
@@ -107,7 +126,7 @@ function buildInterviewReminder(application: ReminderApplication, now: Date) {
   const diffMs = toTimestamp(application.next_interview_at) - now.getTime();
   const diffHours = Math.ceil(diffMs / HOUR_IN_MS);
 
-  if (diffHours > 96 || diffHours < -8) {
+  if (diffHours > interviewReminderHours || diffHours < -8) {
     return null;
   }
 

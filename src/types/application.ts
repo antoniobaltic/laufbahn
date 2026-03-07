@@ -1,5 +1,8 @@
 import type { ApplicationStatus } from "@/lib/utils/constants";
-import type { CreateApplicationContactInput } from "@/types/application-detail";
+import type {
+  ApplicationContact,
+  CreateApplicationContactInput,
+} from "@/types/application-detail";
 
 export interface Application {
   id: string;
@@ -84,4 +87,9 @@ export interface CreateApplicationInput {
   remote_policy?: string;
   notes?: string;
   initial_contact?: CreateApplicationContactInput;
+}
+
+export interface CreateApplicationResult {
+  application: Application;
+  importedContact: ApplicationContact | null;
 }

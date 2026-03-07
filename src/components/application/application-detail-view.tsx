@@ -196,6 +196,12 @@ export function ApplicationDetailView({
         <ApplicationStatusEditor
           applicationId={application.id}
           currentStatus={application.status}
+          currentPositionInColumn={application.position_in_column}
+          dateSaved={application.date_saved}
+          dateApplied={application.date_applied}
+          dateInterview={application.date_interview}
+          dateOffer={application.date_offer}
+          dateRejected={application.date_rejected}
           companyName={application.company_name}
           roleTitle={application.role_title}
         />

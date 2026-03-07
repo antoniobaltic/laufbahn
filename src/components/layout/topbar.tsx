@@ -2,25 +2,42 @@
 
 import type { ReminderItem } from "@/types/reminder";
 import { useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import {
+  getAvatarColorOption,
+  getDisplayName,
+  getUserInitials,
+} from "@/lib/utils/profile";
 import { NotificationCenter } from "./notification-center";
 import { MobileNav } from "./mobile-nav";
+import type { AvatarColor } from "@/types/profile";
 
 interface TopbarProps {
   userEmail?: string;
+  userName?: string;
+  avatarColor?: AvatarColor;
   reminders: ReminderItem[];
   onSignOut: () => void;
 }
 
-export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
+export function Topbar({
+  userEmail,
+  userName,
+  avatarColor,
+  reminders,
+  onSignOut,
+}: TopbarProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
   const routeMeta = getRouteMeta(pathname);
   const showRouteMeta = routeMeta.showInTopbar;
-  const initials = userEmail?.slice(0, 2).toUpperCase() || "LB";
+  const initials = getUserInitials(userName, userEmail);
+  const avatarStyle = getAvatarColorOption(avatarColor);
+  const displayName = getDisplayName(userName, userEmail);
 
   return (
     <>
@@ -67,13 +84,19 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="surface-panel flex items-center gap-2 rounded-full p-1.5 pr-3 transition-colors hover:bg-white/90 cursor-pointer"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-dark text-xs font-heading font-semibold text-light">
+                <div
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-heading font-semibold"
+                  style={{
+                    backgroundColor: avatarStyle.backgroundColor,
+                    color: avatarStyle.textColor,
+                  }}
+                >
                   {initials}
                 </div>
                 <div className="hidden text-left sm:block">
                   <p className="text-xs font-heading text-muted-foreground">Konto</p>
                   <p className="max-w-40 truncate text-sm font-heading text-dark">
-                    {userEmail || "Laufbahn"}
+                    {displayName}
                   </p>
                 </div>
               </button>
@@ -90,11 +113,25 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
                         <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
                           Angemeldet als
                         </p>
-                        <p className="truncate text-xs font-heading text-muted-foreground">
+                        <p className="truncate text-sm font-heading text-dark">
+                          {displayName}
+                        </p>
+                        <p className="mt-1 truncate text-xs font-heading text-muted-foreground">
                           {userEmail}
                         </p>
                       </div>
                     )}
+                    <Link
+                      href="/einstellungen"
+                      onClick={() => setUserMenuOpen(false)}
+                      className={cn(
+                        "mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-heading",
+                        "text-dark-500 transition-colors hover:bg-white hover:text-dark cursor-pointer"
+                      )}
+                    >
+                      <Settings2 size={16} />
+                      <span>Profil & Einstellungen</span>
+                    </Link>
                     <button
                       onClick={() => {
                         setUserMenuOpen(false);
@@ -125,6 +162,16 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
 }
 
 function getRouteMeta(pathname: string) {
+  if (pathname.startsWith("/einstellungen")) {
+    return {
+      kicker: "Konto",
+      title: "Profil & Einstellungen",
+      description:
+        "Passe Name, Erinnerungen und die Darstellung deines Profils an.",
+      showInTopbar: false,
+    };
+  }
+
   if (pathname.startsWith("/analytics")) {
     return {
       kicker: "Auswertung",

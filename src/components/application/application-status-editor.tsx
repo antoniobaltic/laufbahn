@@ -3,7 +3,10 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCcw, Sparkles } from "lucide-react";
-import { updateApplicationStatusFromDetail } from "@/actions/applications";
+import {
+  restoreApplicationSnapshots,
+  updateApplicationStatusFromDetail,
+} from "@/actions/applications";
 import { useOfferCelebration } from "@/components/celebration/offer-celebration-provider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -20,6 +23,12 @@ import {
 interface ApplicationStatusEditorProps {
   applicationId: string;
   currentStatus: ApplicationStatus;
+  currentPositionInColumn: number;
+  dateSaved: string;
+  dateApplied: string | null;
+  dateInterview: string | null;
+  dateOffer: string | null;
+  dateRejected: string | null;
   companyName?: string;
   roleTitle?: string;
 }
@@ -27,6 +36,12 @@ interface ApplicationStatusEditorProps {
 export function ApplicationStatusEditor({
   applicationId,
   currentStatus,
+  currentPositionInColumn,
+  dateSaved,
+  dateApplied,
+  dateInterview,
+  dateOffer,
+  dateRejected,
   companyName,
   roleTitle,
 }: ApplicationStatusEditorProps) {
@@ -49,8 +64,38 @@ export function ApplicationStatusEditor({
         if (selectedStatus === "angebot" && currentStatus !== "angebot") {
           celebrateOffer({ companyName, roleTitle });
         }
-        toast("Status aktualisiert", "success");
-        router.refresh();
+        toast({
+          message: "Status aktualisiert",
+          variant: "success",
+          duration: 5200,
+          action: {
+            label: "Rückgängig",
+            onClick: async () => {
+              try {
+                await restoreApplicationSnapshots([
+                  {
+                    id: applicationId,
+                    status: currentStatus,
+                    position_in_column: currentPositionInColumn,
+                    date_saved: dateSaved,
+                    date_applied: dateApplied,
+                    date_interview: dateInterview,
+                    date_offer: dateOffer,
+                    date_rejected: dateRejected,
+                  },
+                ]);
+                router.refresh();
+                toast("Status wiederhergestellt", "success");
+              } catch {
+                router.refresh();
+                toast("Status konnte nicht zurückgesetzt werden", "error");
+              }
+            },
+          },
+        });
+        window.setTimeout(() => {
+          router.refresh();
+        }, 5400);
       } catch {
         toast("Status konnte nicht gespeichert werden", "error");
       }
