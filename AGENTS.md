@@ -450,6 +450,7 @@ src/
 3. Protected routes live under `/(app)`.
 4. Server components always call `supabase.auth.getUser()`.
 5. Signup still uses email confirmation via Supabase auth callback.
+- Public-facing routes that should react to an existing session, especially `/`, `/anmelden`, and `/registrieren`, must also check auth server-side instead of relying only on middleware. If a signed-in user lands there, send them straight to `/board`.
 
 ### Client / Server Boundary
 - Server components own data loading for app routes wherever possible.

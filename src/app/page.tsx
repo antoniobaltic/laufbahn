@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -7,6 +8,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
 const benefits = [
   {
@@ -53,7 +55,16 @@ const steps = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/board");
+  }
+
   return (
     <div className="app-frame min-h-screen bg-background">
       <header className="sticky top-0 z-30 border-b border-white/70 bg-background/82 backdrop-blur-md md:backdrop-blur-xl">
