@@ -6,21 +6,14 @@ import {
   X,
   LayoutDashboard,
   BarChart3,
-  Settings,
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const navItems = [
-  { href: "/board", label: "Board", icon: LayoutDashboard },
+  { href: "/board", label: "Übersicht", icon: LayoutDashboard },
   { href: "/bewerbung", label: "Bewerbungen", icon: Briefcase },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  {
-    href: "/einstellungen",
-    label: "Einstellungen",
-    icon: Settings,
-    disabled: true,
-  },
+  { href: "/analytics", label: "Auswertung", icon: BarChart3 },
 ];
 
 interface MobileNavProps {
@@ -55,7 +48,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 Laufbahn
               </span>
               <span className="block text-xs font-heading text-muted-foreground">
-                Bewerbungen im Griff
+                Bewerbungen entspannt organisieren
               </span>
             </div>
           </div>
@@ -71,21 +64,6 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
-
-            if (item.disabled) {
-              return (
-                <div
-                  key={item.href}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-heading text-muted-foreground opacity-55"
-                >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
-                  <span className="ml-auto rounded-full border border-border bg-light-gray/70 px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]">
-                    Bald
-                  </span>
-                </div>
-              );
-            }
 
             return (
               <Link
@@ -119,8 +97,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               Tipp
             </p>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Nutze das Board für Tempo und die Detailansicht für Gesprächsnotizen,
-              Kontakte und Dokumente.
+              Öffne eine Bewerbung, sobald du mehr Kontext brauchst. Notizen,
+              Gespräche und Unterlagen liegen dort direkt bereit.
             </p>
           </div>
         </div>

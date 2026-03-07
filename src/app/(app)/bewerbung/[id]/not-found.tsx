@@ -19,7 +19,7 @@ export default function ApplicationNotFound() {
             )}
           >
             <ArrowLeft size={16} />
-            Zur Übersicht
+            Zur Liste
           </Link>
         }
       />

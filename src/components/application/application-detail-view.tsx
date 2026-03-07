@@ -7,8 +7,6 @@ import {
   ExternalLink,
   FileText,
   MapPin,
-  NotebookPen,
-  Users,
 } from "lucide-react";
 import { ActivityTimeline } from "@/components/application/activity-timeline";
 import { ApplicationContactsCard } from "@/components/application/application-contacts-card";
@@ -27,6 +25,7 @@ import {
 import {
   formatDate,
   formatDateShort,
+  formatDateTime,
   relativeDate,
 } from "@/lib/utils/dates";
 import { extractDomain } from "@/lib/utils/url";
@@ -72,13 +71,13 @@ export function ApplicationDetailView({
           className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/78 px-4 py-2 transition-colors duration-150 hover:bg-white hover:text-dark"
         >
           <ArrowLeft size={14} />
-          Zur Übersicht
+          Zur Liste
         </Link>
         <Link
           href="/board"
           className="inline-flex items-center rounded-full border border-border/80 bg-white/78 px-4 py-2 transition-colors duration-150 hover:bg-white hover:text-dark"
         >
-          Zum Board
+          Zur Übersicht
         </Link>
       </div>
 
@@ -125,7 +124,7 @@ export function ApplicationDetailView({
               <div className="flex flex-col items-start gap-3 text-sm font-heading text-muted-foreground lg:items-end">
                 <div className="flex items-center gap-2">
                   <Clock3 size={14} />
-                  <span>Zuletzt aktualisiert {relativeDate(application.updated_at)}</span>
+                  <span>Zuletzt geändert {relativeDate(application.updated_at)}</span>
                 </div>
                 {application.job_url && (
                   <Link
@@ -146,6 +145,9 @@ export function ApplicationDetailView({
 
             {application.description && (
               <div className="rounded-[24px] border border-border/80 bg-dark-50/72 p-4">
+                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  Kurzbeschreibung
+                </p>
                 <p className="text-sm font-body leading-7 text-dark-700">
                   {application.description}
                 </p>
@@ -154,19 +156,31 @@ export function ApplicationDetailView({
 
             <div className="grid gap-3 sm:grid-cols-3">
               <OverviewPill
-                icon={<NotebookPen size={14} className="text-accent-blue" />}
-                label="Aktivitäten"
-                value={String(activities.length + 1)}
+                icon={<Calendar size={14} className="text-accent-orange" />}
+                label="Frist"
+                value={
+                  application.deadline
+                    ? formatDateShort(application.deadline)
+                    : "Keine Frist"
+                }
               />
               <OverviewPill
-                icon={<Users size={14} className="text-accent-green" />}
-                label="Kontakte"
-                value={String(contacts.length)}
+                icon={<Clock3 size={14} className="text-accent-blue" />}
+                label="Nächstes Gespräch"
+                value={
+                  application.next_interview_at
+                    ? formatDateTime(application.next_interview_at)
+                    : "Noch offen"
+                }
               />
               <OverviewPill
                 icon={<FileText size={14} className="text-accent-orange" />}
-                label="Dokumente"
-                value={String(documents.length)}
+                label="Unterlagen"
+                value={
+                  documents.length > 0
+                    ? `${documents.length} Datei${documents.length === 1 ? "" : "en"}`
+                    : "Noch leer"
+                }
               />
             </div>
           </CardContent>
@@ -205,16 +219,16 @@ export function ApplicationDetailView({
           <Card className="rounded-[28px]">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <NotebookPen size={16} className="text-accent-green" />
+                <FileText size={16} className="text-accent-green" />
                 <h2 className="text-lg font-heading font-medium text-dark">
-                  Eckdaten
+                  Überblick
                 </h2>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
               <DetailRow label="Gespeichert" value={formatDate(application.date_saved)} />
               <DetailRow
-                label="Zuletzt aktualisiert"
+                label="Zuletzt geändert"
                 value={formatDate(application.updated_at)}
               />
               <DetailRow
@@ -241,7 +255,7 @@ export function ApplicationDetailView({
               <div className="flex items-center gap-2">
                 <Calendar size={16} className="text-accent-orange" />
                 <h2 className="text-lg font-heading font-medium text-dark">
-                  Meilensteine
+                  Verlauf der Bewerbung
                 </h2>
               </div>
             </CardHeader>
@@ -256,7 +270,7 @@ export function ApplicationDetailView({
                 ))
               ) : (
                 <p className="text-sm font-body text-muted-foreground">
-                  Sobald sich der Status ändert, erscheinen die Zeitpunkte hier automatisch.
+                  Sobald sich der Stand ändert, erscheinen die wichtigsten Zeitpunkte hier automatisch.
                 </p>
               )}
             </CardContent>

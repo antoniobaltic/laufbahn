@@ -45,6 +45,30 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - Detail surfaces should behave like workspaces, not static records.
 - Mobile must preserve the same quality of hierarchy as desktop, not just stack everything mindlessly.
 
+### Simplicity First
+- The product should feel simple for an average user on first contact, even when the underlying model is powerful.
+- Complexity should be revealed progressively, not dumped into the first viewport or first interaction.
+- The default path through the app should answer three questions immediately:
+  - what needs attention now
+  - what can I do next
+  - where do I go for more detail
+- If a feature is useful mainly for power users, keep it available but visually secondary until the user asks for it.
+- The app should feel joyful and calm, not operationally impressive.
+
+### Information Hierarchy Rules
+- One page, one obvious job.
+- First viewports should favor orientation and the next useful action over dense system summaries.
+- Prefer three meaningful metrics over four to six weak ones.
+- Remove explanatory chrome that only describes the system rather than helping the user act.
+- If a section needs a paragraph to explain why it exists, reconsider the section.
+- Empty cards should not open forms by default unless the task is impossible without immediate input.
+
+### Progressive Disclosure Rules
+- Forms should start with the minimum required fields and move secondary fields into optional sections.
+- Empty states should invite the first useful action with one clear CTA.
+- Contacts, documents, workflow planning, and similar “deeper” tools should stay collapsed or summary-first until the user chooses to edit.
+- Rich detail should open after intent, not before intent.
+
 ### Do Not Regress
 - No flat white pages with unstructured blocks.
 - No default-looking forms or buttons.
@@ -52,6 +76,9 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - No oversized, bouncy, playful animations. Motion should stay subtle and professional.
 - No hidden destructive actions on touch-only layouts.
 - No new UI that ignores existing `surface-*` and motion conventions.
+- No implementation-language leaking into user-facing copy.
+- No “status for status’ sake” badges, helper pills, or metrics that do not change user behavior.
+- No empty-state screens that look like admin tools waiting for configuration.
 
 ## Design System
 
@@ -71,7 +98,7 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 |---|---|---|
 | Gemerkt | `#6a9bcc` | `status-gemerkt` |
 | Beworben | `#d97757` | `status-beworben` |
-| Im Gespraech | `#b8a038` | `status-gespraech` |
+| Im Gespräch | `#b8a038` | `status-gespraech` |
 | Angebot | `#788c5d` | `status-angebot` |
 | Abgelehnt | `#c45f3e` | `status-abgelehnt` |
 | Ghosted | `#b0aea5` | `status-ghosted` |
@@ -155,12 +182,54 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Textareas in detail workflows should default to a usable height (`4-7` rows depending on task).
 - Placeholder text should be concrete and relevant to DACH job searching.
 - Error text should be short, specific, and visually calm.
+- New-entry flows should default to the shortest believable path.
+- Optional detail fields should be grouped under a calm “more details” affordance instead of appearing all at once.
+- When a record has no contacts or documents yet, show a short explanation and one clear add action before rendering a full editor.
+
+## Copy Rules
+
+### Tone
+- All German copy should sound natural, calm, and human. Avoid translated-product-manager German.
+- Prefer clear everyday wording over startup, SaaS, PM, or systems language.
+- Copy should feel confident and warm, not clever, technical, or self-important.
+
+### User-Facing Vocabulary
+- Prefer:
+  - `Übersicht` over `Board`
+  - `Auswertung` over `Analytics`
+  - `Verlauf` over `Timeline`
+  - `Stand` or `Bewerbungsstand` over `Status-Editor` language
+  - `Nächster Schritt`, `Wichtig`, `Offen`, `Frist`, `Gespräch` over jargon like `Trigger`, `Funnel`, or `Workflow`
+- Avoid exposing terms the user does not need:
+  - `Kanban`
+  - `Funnel`
+  - `Workspace`
+  - `Detailraum`
+  - `Live mit Supabase verbunden`
+  - `Trigger`
+  - `Pipeline`, unless the surrounding copy is very clearly human and the term is genuinely useful
+
+### Copy Guardrails
+- Do not mention implementation details, backend vendors, or internal architecture in product copy.
+- Do not label surfaces with category names the user would never say out loud.
+- Buttons should describe what happens next in plain language.
+- Helper text should explain why the field matters to the user, not how the system stores it.
+- Empty states should reassure, orient, and point to the next action in one short paragraph.
+- If German copy sounds like it was translated from English, rewrite it.
 
 ## Current UI Patterns
+
+### Landing
+- The landing page should sell relief and clarity in the first viewport, not enumerate the whole product.
+- Hero copy should explain the benefit in natural German within one headline and one supporting sentence.
+- Remove secondary product details, feature grids, or badges if they dilute the main promise.
+- The default CTA path should feel obvious and low-friction on both desktop and mobile.
+- Marketing sections below the fold should deepen trust and understanding, not repeat the same claim in noisier layouts.
 
 ### Auth
 - Two-panel composition on desktop: brand/value panel left, auth card right.
 - Mobile collapses to a centered premium card with preserved brand cues.
+- Auth copy should promise clarity and relief, not product mechanics.
 
 ### App Shell
 - Frosted sidebar on desktop.
@@ -168,12 +237,22 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Route metadata in the topbar should explain the current surface in one sentence.
 - Notifications should feel like calm prioritization, not noisy alerts: concise copy, urgency chips, direct links back into detail pages.
 - Positive milestones such as `angebot` should feel elevated through restrained celebration, not loud arcade-style effects.
+- Navigation should expose only what is currently useful. Do not show dormant product areas just because routes exist.
+- User-facing shell labels should stay simple:
+  - `/board` route is shown as `Übersicht`
+  - `/analytics` is shown as `Auswertung`
+- The shell should never describe the app in internal product terms.
 
 ### Board
 - Header with kicker, title, helper copy, and clear CTA.
 - Metric cards above the board.
 - Board area wrapped in `surface-panel`.
 - Empty board still shows the structure of the workflow.
+- Treat the board as the calm “home” view, not as a methodology lesson.
+- The user should understand it without seeing the word `Kanban`.
+- Remove low-value badges like sync/vendor-state indicators.
+- Keep the headline focused on “what’s happening with my applications now”.
+- If drag-and-drop causes SSR hydration issues, prefer a client-only mount guard over noisy console/runtime regressions.
 
 ### Application Detail Workspace
 - Hero section with company, role, context, and quick metrics.
@@ -185,6 +264,9 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Documents should expose an at-a-glance readiness check so the workspace feels actionable, not archival.
 - Deadlines and interview planning should feel reminder-ready: dates, context, and prep notes live in structured fields, not only in free text.
 - Any user-visible detail mutation should revalidate board + list + detail and log activity where relevant.
+- Empty detail modules should stay summary-first. Do not auto-open editors for notes, contacts, documents, deadlines, or interviews just because there is no data yet.
+- Contacts and documents should feel optional until the user needs them, not mandatory upfront complexity.
+- Quick metrics in the hero should be immediately useful, not vanity counters.
 
 ### Reminder Rules
 - Reminders are derived from structured application fields, not manually created notification records.
@@ -209,11 +291,20 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Insights should prioritize actionability over novelty: funnel progression, response rate, reminder pressure, and workspace hygiene are more valuable than vanity metrics.
 - Empty analytics states should still explain what data will appear later and link back to the board.
 - Monthly momentum views should compress well to tablet/mobile without becoming illegible.
+- Analytics should read like guidance, not an internal ops dashboard.
+- The first screen of analytics should answer:
+  - how many applications are active
+  - where responses are happening
+  - what needs attention next
+- Prefer plain labels like `Auswertung`, `Rückmeldungen`, `Offene Aufgaben`, and `Fortschritt`.
+- Avoid overloading the first fold with too many metrics, percentages, or framework-like terminology.
+- If a chart-like section requires too much reading effort, simplify the labels before adding more visuals.
 
 ### Celebration Rules
 - `angebot` is the one status transition that deserves explicit celebration.
 - Celebration should be warm and premium: subtle particles, glow, and copy, never loud confetti spam.
 - The same celebration treatment should trigger from both detail status edits and board drag-and-drop.
+- Celebration copy should acknowledge the moment without sounding gimmicky or self-aware.
 
 ### Monetization Direction
 - Monetization should layer onto the existing premium workspace, not feel like a bolted-on paywall.
@@ -414,6 +505,20 @@ Board-specific rule:
 - Keep server-only Supabase credentials in non-public env vars only.
 - Prefer the modern `SUPABASE_SECRET_KEY` naming. Do not reintroduce `SUPABASE_SERVICE_ROLE_KEY` unless there is a concrete compatibility reason.
 
+## Release Validation
+- After meaningful UI, copy, or routing changes, run:
+  - `npm run lint`
+  - `npm run build`
+  - `npm run vercel-build`
+- Validate important surfaces in a real browser, not only by reading code:
+  - landing page
+  - board / Übersicht
+  - application detail
+  - analytics / Auswertung
+- Use Playwright for smoke tests and keep screenshots for at least one desktop and one mobile pass when the UI changes materially.
+- After pushing `main`, confirm the production deployment on `https://laufbahn.vercel.app` shows the new copy and layout, not only that the URL loads.
+- Clean up any disposable test users or seed data created for browser validation once checks are complete.
+
 ### Known Quirks And Constraints
 - `@hello-pangea/dnd` is sensitive to scroll behavior. Do not reintroduce global smooth scrolling or nested droppable scroll containers.
 - Date-only values such as `deadline` must stay on the shared date helper path. Bare `new Date(string)` calls in UI logic are a regression risk.
@@ -424,6 +529,7 @@ Board-specific rule:
 - `middleware.ts` protects some planned routes such as `/unternehmen` and `/einstellungen` even though those surfaces are not built yet.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
 - Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
+- In development, `@hello-pangea/dnd` can produce hydration/setup noise if drag-and-drop SSR markup differs. Keep the board’s DnD layer behind a client-only mount guard if needed.
 
 ## Database Schema (Supabase)
 
@@ -526,3 +632,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - Prefer stacked, high-quality cards to crowded dashboards.
 - If a new feature introduces mutation, decide whether it belongs in the timeline immediately.
 - If a screen feels “fine” but visually bare, it is not finished.
+- If a screen feels “rich” but cognitively heavy, it is also not finished.
+- Before adding UI, ask whether the same capability can be presented in a calmer default state with more detail hidden behind intent.
+- Future monetization surfaces must respect the simplicity-first rules above: clear value, low pressure, no nagging language, no clutter.

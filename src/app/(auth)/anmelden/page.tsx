@@ -46,7 +46,8 @@ function LoginForm() {
         Anmelden
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Öffne dein Board und gehe direkt zurück in den Bewerbungsfluss.
+        Geh direkt zurück zu deinen offenen Bewerbungen, Gesprächen und nächsten
+        Schritten.
       </p>
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">
@@ -77,7 +78,7 @@ function LoginForm() {
         )}
 
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Wird angemeldet..." : "Anmelden"}
+          {loading ? "Meldet an..." : "Anmelden"}
         </Button>
       </form>
 

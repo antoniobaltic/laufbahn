@@ -60,7 +60,7 @@ export function ApplicationContactsCard({
   initialContacts,
 }: ApplicationContactsCardProps) {
   const [contacts, setContacts] = useState(sortContacts(initialContacts));
-  const [isFormOpen, setIsFormOpen] = useState(initialContacts.length === 0);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(initialFormState);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingForm, setEditingForm] = useState(initialFormState);
@@ -219,32 +219,30 @@ export function ApplicationContactsCard({
             }}
           >
             <Plus size={14} />
-            Kontakt
+            Kontakt hinzufügen
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <SummaryTile
-            icon={<Star size={14} className="text-accent-orange" />}
-            label="Primärer Kontakt"
-            value={primaryContact?.full_name || "Noch nicht festgelegt"}
-            hint={
-              primaryContact?.role_title ||
-              "Markiere die wichtigste Person für schnellere Follow-ups."
-            }
-          />
-          <SummaryTile
-            icon={<UserRound size={14} className="text-accent-green" />}
-            label="Kontaktstand"
-            value={`${contacts.length} ${contacts.length === 1 ? "Person" : "Personen"}`}
-            hint={
-              contacts.length > 0
-                ? "Mail, Telefon und Profil-Links bleiben direkt erreichbar."
-                : "Recruiter, Hiring Manager oder Interviewer ergänzen."
-            }
-          />
-        </div>
+        {contacts.length > 0 && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SummaryTile
+              icon={<Star size={14} className="text-accent-orange" />}
+              label="Primärer Kontakt"
+              value={primaryContact?.full_name || "Noch nicht festgelegt"}
+              hint={
+                primaryContact?.role_title ||
+                "Markiere die wichtigste Person für schnellere Follow-ups."
+              }
+            />
+            <SummaryTile
+              icon={<UserRound size={14} className="text-accent-green" />}
+              label="Kontaktstand"
+              value={`${contacts.length} ${contacts.length === 1 ? "Person" : "Personen"}`}
+              hint="Mail, Telefon und Profil-Links bleiben direkt erreichbar."
+            />
+          </div>
+        )}
 
         {contacts.length > 0 ? (
           <div className="space-y-3">
@@ -390,16 +388,43 @@ export function ApplicationContactsCard({
             })}
           </div>
         ) : (
-          <div className="rounded-[22px] border border-dashed border-border bg-dark-50/70 p-5">
+          <div className="rounded-[24px] border border-dashed border-border bg-dark-50/70 p-5">
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Noch keine Kontakte hinterlegt. Sammle Recruiter, Hiring Manager
-              oder Gesprächspartner direkt an der Bewerbung.
+              Noch keine Kontakte hinterlegt. Starte mit der Person, mit der du
+              zuletzt geschrieben oder gesprochen hast.
             </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs font-heading text-muted-foreground">
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Recruiter
+              </span>
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Hiring Manager
+              </span>
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Interviewpartner
+              </span>
+            </div>
+            {!isFormOpen && (
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setIsFormOpen(true)}
+                >
+                  <Plus size={14} />
+                  Ersten Kontakt anlegen
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
         {isFormOpen && (
           <div className="surface-muted rounded-[24px] p-4 sm:p-5">
+            <p className="mb-4 text-sm font-body leading-relaxed text-dark-500">
+              Ein Name reicht für den Start. Mail, Telefon und Notizen kannst du
+              später ergänzen.
+            </p>
             <ContactFormFields
               form={form}
               setForm={setForm}

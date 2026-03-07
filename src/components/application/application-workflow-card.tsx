@@ -63,12 +63,12 @@ export function ApplicationWorkflowCard({
   interviewPrep,
 }: ApplicationWorkflowCardProps) {
   const [referenceNow] = useState(() => new Date());
-  const [isEditingDeadline, setIsEditingDeadline] = useState(!deadline);
+  const [isEditingDeadline, setIsEditingDeadline] = useState(false);
   const [deadlineDraft, setDeadlineDraft] = useState(
     deadline ? formatDateInputValue(deadline) : ""
   );
   const [deadlineNoteDraft, setDeadlineNoteDraft] = useState(deadlineNote || "");
-  const [isEditingInterview, setIsEditingInterview] = useState(!nextInterviewAt);
+  const [isEditingInterview, setIsEditingInterview] = useState(false);
   const [interviewAtDraft, setInterviewAtDraft] = useState(
     nextInterviewAt ? formatDateTimeInputValue(nextInterviewAt) : ""
   );
@@ -153,12 +153,12 @@ export function ApplicationWorkflowCard({
           <div className="flex items-center gap-2">
             <CalendarClock size={16} className="text-status-gespraech" />
             <h2 className="text-lg font-heading font-medium text-dark">
-              Interviews & Fristen
+              Fristen & Gespräche
             </h2>
           </div>
           <p className="text-sm font-body leading-relaxed text-dark-500">
-            Halte Gesprächstermine und Fristen so gepflegt, dass spätere
-            Erinnerungen direkt daraus ableitbar sind.
+            Trage hier alles ein, was dir hilft, den nächsten Schritt nicht zu
+            verpassen.
           </p>
         </div>
       </CardHeader>
@@ -166,7 +166,7 @@ export function ApplicationWorkflowCard({
         <div className="grid gap-3 sm:grid-cols-2">
           <SummaryTile
             icon={<AlarmClockCheck size={14} className="text-accent-orange" />}
-            label="Nächster Trigger"
+            label="Als Nächstes wichtig"
             value={nextTrigger.value}
             hint={nextTrigger.hint}
             badge={
@@ -181,23 +181,23 @@ export function ApplicationWorkflowCard({
             value={
               nextInterviewAt
                 ? interviewPrep?.trim()
-                  ? "Prep angelegt"
-                  : "Prep offen"
-                : "Noch kein Gespräch"
+                  ? "Vorbereitung steht"
+                  : "Vorbereitung fehlt"
+                : "Noch kein Termin"
             }
             hint={
               nextInterviewAt
                 ? interviewPrep?.trim()
-                  ? "Agenda, Fragen und Fallbeispiele liegen schon bereit."
-                  : "Lege Kernfragen, Stories und konkrete To-dos an."
-                : "Sobald ein Gespräch feststeht, wird es hier priorisiert."
+                  ? "Fragen, Beispiele und To-dos sind schon notiert."
+                  : "Lege die wichtigsten Punkte vor dem Gespräch fest."
+                : "Sobald ein Gespräch ansteht, taucht es hier automatisch auf."
             }
             badge={
               nextInterviewAt ? (
                 <Badge
                   variant={interviewPrep?.trim() ? "green" : "orange"}
                 >
-                  {interviewPrep?.trim() ? "Bereit" : "Offen"}
+                  {interviewPrep?.trim() ? "Bereit" : "Fehlt"}
                 </Badge>
               ) : null
             }
@@ -210,11 +210,11 @@ export function ApplicationWorkflowCard({
               <div className="flex items-center gap-2">
                 <AlarmClockCheck size={15} className="text-accent-orange" />
                 <h3 className="text-sm font-heading font-semibold text-dark">
-                  Bewerbungsfrist
+                  Frist
                 </h3>
               </div>
               <p className="mt-1 text-sm font-body leading-relaxed text-dark-500">
-                Halte realistische Fristen und den eigentlichen Abgabefokus fest.
+                Trage ein, bis wann du reagieren oder Unterlagen fertig haben musst.
               </p>
             </div>
             {!isEditingDeadline && (
@@ -290,13 +290,13 @@ export function ApplicationWorkflowCard({
                 </p>
               ) : (
                 <p className="text-sm font-body text-muted-foreground">
-                  Kein zusätzlicher Fristkontext hinterlegt.
+                  Kein zusätzlicher Hinweis zur Frist hinterlegt.
                 </p>
               )}
             </div>
           ) : (
             <EmptyWorkflowState
-              body="Noch keine Frist hinterlegt. Sobald du eine Deadline kennst, wird sie hier priorisiert und im Fokus gehalten."
+              body="Noch keine Frist hinterlegt. Sobald du eine Deadline kennst, erscheint sie hier direkt im Überblick."
               actionLabel="Frist ergänzen"
               onAction={() => setIsEditingDeadline(true)}
             />
@@ -313,7 +313,7 @@ export function ApplicationWorkflowCard({
                 </h3>
               </div>
               <p className="mt-1 text-sm font-body leading-relaxed text-dark-500">
-                Termin, Format und Prep-Notizen bleiben direkt an der Bewerbung.
+                Termin, Format und Vorbereitung bleiben direkt bei der Bewerbung.
               </p>
             </div>
             {!isEditingInterview && (
@@ -409,18 +409,18 @@ export function ApplicationWorkflowCard({
                 </p>
               ) : (
                 <p className="text-sm font-body text-muted-foreground">
-                  Noch keine Prep-Notizen hinterlegt.
+                  Noch keine Vorbereitung notiert.
                 </p>
               )}
               {showInterviewStatusHint && (
                 <div className="rounded-[18px] border border-orange-200/70 bg-orange-50/70 px-3 py-2 text-xs font-heading text-orange-600">
-                  Gespräch geplant, aber Status noch nicht auf „Im Gespraech“ gesetzt.
+                  Gespräch geplant, aber der Stand ist noch nicht auf „Im Gespräch“ gesetzt.
                 </div>
               )}
             </div>
           ) : (
             <EmptyWorkflowState
-              body="Noch kein Gespräch geplant. Sobald ein Termin feststeht, erscheinen hier Zeitpunkt, Format und Prep-Kontext."
+              body="Noch kein Gespräch geplant. Sobald ein Termin feststeht, erscheint er hier mit allen wichtigen Details."
               actionLabel="Gespräch planen"
               onAction={() => setIsEditingInterview(true)}
             />
@@ -429,8 +429,7 @@ export function ApplicationWorkflowCard({
 
         <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
           <Sparkles size={12} className="text-accent-orange" />
-          Diese Daten sind so strukturiert, dass sie sich später direkt für Erinnerungen
-          und Priorisierung eignen.
+          Diese Angaben helfen dir, Erinnerungen und Prioritäten automatisch sauber zu halten.
         </div>
       </CardContent>
     </Card>
@@ -489,7 +488,7 @@ function EmptyWorkflowState({
 
 function getDeadlineState(deadline: string | null, now: Date) {
   if (!deadline) {
-    return { badge: "Offen", variant: "muted" as const };
+    return { badge: "Noch offen", variant: "muted" as const };
   }
 
   const diffDays = getCalendarDayDifference(deadline, now);
@@ -511,7 +510,7 @@ function getDeadlineState(deadline: string | null, now: Date) {
 
 function getInterviewState(nextInterviewAt: string | null, now: Date) {
   if (!nextInterviewAt) {
-    return { badge: "Offen", variant: "muted" as const };
+    return { badge: "Noch offen", variant: "muted" as const };
   }
 
   const diffHours = Math.ceil(
@@ -569,8 +568,8 @@ function getNextTrigger(
 
   if (entries.length === 0) {
     return {
-      value: "Noch kein Trigger",
-      hint: "Lege Frist oder Gespräch an, damit Priorisierung und spätere Erinnerungen daran ansetzen können.",
+      value: "Noch nichts geplant",
+      hint: "Sobald du eine Frist oder ein Gespräch einträgst, erscheint der nächste wichtige Schritt hier automatisch.",
       badge: "Leer",
       variant: "muted" as const,
     };
@@ -579,7 +578,7 @@ function getNextTrigger(
   const next = entries[0]!;
 
   return {
-    value: `${next.type} im Fokus`,
+    value: next.type,
     hint: next.hint,
     badge: next.badge,
     variant: next.variant,

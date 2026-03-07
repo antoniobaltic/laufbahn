@@ -41,8 +41,8 @@ interface TimelineEntry {
 function buildTimeline(application: Application, activities: Activity[]): TimelineEntry[] {
   const createdEntry: TimelineEntry = {
     id: `created-${application.id}`,
-    title: "Eintrag erstellt",
-    description: `${application.company_name} wurde im Status ${getStatusLabel("gemerkt")} angelegt.`,
+    title: "Bewerbung angelegt",
+    description: `${application.company_name} wurde als ${getStatusLabel("gemerkt")} gespeichert.`,
     createdAt: application.created_at,
     status: "gemerkt",
     icon: BriefcaseBusiness,
@@ -77,7 +77,7 @@ function buildTimeline(application: Application, activities: Activity[]): Timeli
         description:
           typeof activity.metadata?.note_excerpt === "string"
             ? activity.metadata.note_excerpt
-            : "Eine Notiz wurde im Detailraum ergänzt.",
+            : "Es wurde eine Notiz ergänzt.",
         createdAt: activity.created_at,
         icon: NotebookPen,
         color: "var(--color-accent-blue)",
@@ -213,7 +213,7 @@ export function ActivityTimeline({
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <Clock3 size={16} className="text-accent-orange" />
-          <h2 className="text-lg font-heading font-medium text-dark">Timeline</h2>
+          <h2 className="text-lg font-heading font-medium text-dark">Verlauf</h2>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

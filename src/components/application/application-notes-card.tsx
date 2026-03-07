@@ -18,7 +18,7 @@ export function ApplicationNotesCard({
   applicationId,
   initialNotes,
 }: ApplicationNotesCardProps) {
-  const [isEditing, setIsEditing] = useState(!initialNotes);
+  const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(initialNotes || "");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -44,12 +44,12 @@ export function ApplicationNotesCard({
     <Card className="rounded-[28px]">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <NotebookPen size={16} className="text-accent-blue" />
-            <h2 className="text-lg font-heading font-medium text-dark">
-              Notizen & Kontext
-            </h2>
-          </div>
+            <div className="flex items-center gap-2">
+              <NotebookPen size={16} className="text-accent-blue" />
+              <h2 className="text-lg font-heading font-medium text-dark">
+                Notizen
+              </h2>
+            </div>
           {!isEditing && (
             <Button
               type="button"
@@ -111,8 +111,8 @@ export function ApplicationNotesCard({
         ) : (
           <div className="rounded-[22px] border border-dashed border-border bg-dark-50/70 p-5">
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Noch keine persönlichen Notizen hinterlegt. Halte Gesprächsschwerpunkte,
-              Aufgaben oder dein Bauchgefühl direkt hier fest.
+              Noch keine Notizen hinterlegt. Halte hier fest, was dir zu dieser
+              Bewerbung wichtig ist.
             </p>
             <div className="mt-4">
               <Button
@@ -124,7 +124,7 @@ export function ApplicationNotesCard({
                 }}
               >
                 <SquarePen size={14} />
-                Erste Notiz hinzufügen
+                Notiz hinzufügen
               </Button>
             </div>
           </div>

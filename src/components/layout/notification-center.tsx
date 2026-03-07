@@ -51,8 +51,8 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                 </p>
                 <h2 className="mt-1 text-base font-heading font-semibold text-dark">
                   {counts.total > 0
-                    ? `${counts.total} offene Hinweise`
-                    : "Alles im Blick"}
+                    ? `${counts.total} offene Aufgaben`
+                    : "Nichts Dringendes"}
                 </h2>
               </div>
               {counts.total > 0 && (
@@ -123,17 +123,16 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                 ))}
                 {reminders.length > visibleReminders.length && (
                   <div className="px-2 py-1 text-center text-xs font-heading text-muted-foreground">
-                    Weitere Hinweise erscheinen, sobald ältere erledigt oder
-                    entschärft sind.
+                    Wir zeigen zuerst die wichtigsten Hinweise.
                   </div>
                 )}
               </div>
             ) : (
               <div className="rounded-[20px] border border-dashed border-border bg-dark-50/72 px-4 py-5">
                 <p className="text-sm font-body leading-relaxed text-dark-500">
-                  Im Moment gibt es keine offenen Erinnerungen. Sobald Fristen enger
-                  werden, Interviews bevorstehen oder ein Follow-up sinnvoll ist,
-                  tauchen die Hinweise hier auf.
+                  Im Moment ist alles ruhig. Sobald eine Frist näher rückt, ein
+                  Gespräch bevorsteht oder ein Follow-up sinnvoll wird, taucht der
+                  Hinweis hier auf.
                 </p>
               </div>
             )}
@@ -157,8 +156,8 @@ function ReminderIcon({ type }: { type: ReminderItem["type"] }) {
 }
 
 function getUrgencyLabel(urgency: ReminderItem["urgency"]) {
-  if (urgency === "high") return "Jetzt";
-  if (urgency === "medium") return "Bald";
+  if (urgency === "high") return "Heute";
+  if (urgency === "medium") return "Demnächst";
   return "Im Blick";
 }
 

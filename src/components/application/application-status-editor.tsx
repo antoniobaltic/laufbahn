@@ -62,17 +62,14 @@ export function ApplicationStatusEditor({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            Nächster Schritt
+            Stand der Bewerbung
           </p>
           <h2 className="mt-2 text-lg font-heading font-semibold text-dark">
-            Status direkt pflegen
+            Schnell anpassen
           </h2>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Änderungen aktualisieren Board, Timeline und Meilensteine automatisch.
+            Änderungen erscheinen automatisch in der Übersicht und im Verlauf.
           </p>
-        </div>
-        <div className="rounded-full bg-orange-50 px-3 py-1.5 text-[11px] font-heading font-medium text-accent-orange">
-          Live
         </div>
       </div>
 
@@ -117,7 +114,7 @@ export function ApplicationStatusEditor({
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
           <Sparkles size={12} className="text-accent-orange" />
-          Statuswechsel werden als Aktivität protokolliert.
+          Jede Änderung landet automatisch im Verlauf.
         </div>
 
         <div className="flex flex-wrap gap-2">

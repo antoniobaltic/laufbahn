@@ -3,7 +3,7 @@
 import type { ReminderItem } from "@/types/reminder";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut, Sparkles } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { NotificationCenter } from "./notification-center";
 import { MobileNav } from "./mobile-nav";
@@ -25,7 +25,6 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
     <>
       <header className="sticky top-0 z-30 border-b border-white/70 bg-background/78 backdrop-blur-xl">
         <div className="mx-auto flex h-[78px] w-full max-w-[1520px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          {/* Mobile menu button */}
           <button
             className="lg:hidden rounded-full p-2 text-dark-500 transition-colors hover:bg-white cursor-pointer"
             onClick={() => setMobileNavOpen(true)}
@@ -34,18 +33,14 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
           </button>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-              <Sparkles size={12} className="text-accent-orange" />
+            <div className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
               <span className="hidden sm:inline">{routeMeta.kicker}</span>
               <span className="sm:hidden">Laufbahn</span>
             </div>
-            <div className="mt-1 flex items-center gap-3">
+            <div className="mt-1">
               <h1 className="truncate font-heading text-base font-semibold text-dark sm:text-lg">
                 {routeMeta.title}
               </h1>
-              <span className="hidden rounded-full border border-border/70 bg-white/70 px-2.5 py-1 text-[11px] font-heading text-muted-foreground md:inline-flex">
-                {routeMeta.badge}
-              </span>
             </div>
             <p className="mt-1 hidden truncate text-xs font-body text-dark-500 md:block">
               {routeMeta.description}
@@ -120,39 +115,35 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
 function getRouteMeta(pathname: string) {
   if (pathname.startsWith("/analytics")) {
     return {
-      kicker: "Funnel Intelligence",
-      title: "Analytics",
-      badge: "Auswertung",
+      kicker: "Auswertung",
+      title: "Bewerbungen verstehen",
       description:
-        "Antwortquote, Funnel-Tempo und Arbeitsqualität in einer ruhigen Sicht.",
+        "Sieh, wie viele Bewerbungen offen sind, wo Antworten kommen und was gerade Aufmerksamkeit braucht.",
     };
   }
 
   if (pathname.startsWith("/bewerbung/")) {
     return {
-      kicker: "Bewerbungsdetail",
-      title: "Bewerbung im Fokus",
-      badge: "Detailansicht",
+      kicker: "Bewerbung",
+      title: "Alle Details an einem Ort",
       description:
-        "Status, Notizen, Kontakte und Dokumente an einem Ort pflegen.",
+        "Bearbeite Stand, Notizen, Kontakte, Unterlagen und Gespräche ohne zwischen Tools zu wechseln.",
     };
   }
 
   if (pathname.startsWith("/bewerbung")) {
     return {
-      kicker: "Workspace",
-      title: "Bewerbungen",
-      badge: "Liste",
+      kicker: "Bewerbungen",
+      title: "Alle Einträge",
       description:
-        "Wechsle von der Übersicht direkt in Kontext, Timeline und Folgeaktionen.",
+        "Hier findest du jede Bewerbung gesammelt und kommst mit einem Klick zu allen Details.",
     };
   }
 
   return {
-    kicker: "Workspace",
-    title: "Board",
-    badge: "Kanban",
+    kicker: "Heute",
+    title: "Übersicht",
     description:
-      "Verschiebe Bewerbungen, erkenne Blocker früh und halte den Funnel aktuell.",
+      "Behalte offene Bewerbungen, Gespräche und Fristen in einem ruhigen Überblick im Blick.",
   };
 }

@@ -17,21 +17,22 @@ export default function AuthLayout({
                   Laufbahn
                 </h1>
                 <p className="text-sm font-body text-dark-500">
-                  Bewerbungen im Griff
+                  Bewerbungen entspannt organisieren
                 </p>
               </div>
             </div>
 
             <div className="mt-16 max-w-lg">
               <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-                Premium Bewerbungsworkspace
+                Klarer Start
               </p>
               <h2 className="mt-4 text-4xl font-heading font-semibold leading-tight text-dark">
-                Klarer Fokus statt verstreuter Tabs, Notizen und PDFs.
+                Alles Wichtige zu jeder Bewerbung an einem Ort.
               </h2>
               <p className="mt-5 text-base font-body leading-relaxed text-dark-500">
-                Ein ruhiger Workspace für den gesamten Prozess: Kanban, Fristen,
-                Gesprächsnotizen, Kontakte und Dokumente.
+                Halte Bewerbungen, Gespräche, Fristen, Kontakte und Unterlagen
+                übersichtlich zusammen, ohne dich durch unnötige Komplexität zu
+                arbeiten.
               </p>
             </div>
           </div>
@@ -39,12 +40,12 @@ export default function AuthLayout({
           <div className="grid gap-3">
             <div className="surface-card rounded-[24px] p-5">
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Was du bekommst
+                Darauf kannst du dich verlassen
               </p>
               <ul className="mt-3 space-y-2 text-sm font-body text-dark-500">
-                <li>Board mit echten Statuswechseln und Timeline</li>
-                <li>warme, konzentrierte Oberfläche auf Desktop und Mobile</li>
-                <li>ein Detailraum pro Bewerbung statt App-Wechsel</li>
+                <li>ein ruhiger Überblick über alle laufenden Bewerbungen</li>
+                <li>Notizen, Kontakte und Unterlagen direkt bei jedem Eintrag</li>
+                <li>eine Oberfläche, die auch auf dem Handy klar bleibt</li>
               </ul>
             </div>
           </div>
@@ -60,7 +61,7 @@ export default function AuthLayout({
                 Laufbahn
               </h1>
               <p className="mt-1 text-sm font-body text-muted-foreground">
-                Bewerbungen im Griff
+                Bewerbungen entspannt organisieren
               </p>
             </div>
             {children}

@@ -111,9 +111,9 @@ export function OfferCelebrationProvider({
                   Gesprächstermine, solange alles frisch ist.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge variant="green">Feierlich</Badge>
-                  <Badge variant="default">Nächste Schritte sichern</Badge>
-                  <Badge variant="muted">Verhandlungsbereit</Badge>
+                  <Badge variant="green">Geschafft</Badge>
+                  <Badge variant="default">Nächste Schritte planen</Badge>
+                  <Badge variant="muted">Alles im Blick behalten</Badge>
                 </div>
               </div>
               <button
@@ -127,7 +127,7 @@ export function OfferCelebrationProvider({
             </div>
             <div className="mt-5 flex items-center gap-2 text-xs font-heading text-green-700">
               <Sparkles size={13} />
-              Premium-Moment statt lauter Konfettiwand.
+              Ein warmer Moment, ohne die Oberfläche zu überladen.
             </div>
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 overflow-hidden">
               {PARTICLES.map((particle, index) => (

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BarChart3,
-  Settings,
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -13,7 +12,7 @@ import { cn } from "@/lib/utils/cn";
 const navItems = [
   {
     href: "/board",
-    label: "Board",
+    label: "Übersicht",
     icon: LayoutDashboard,
   },
   {
@@ -24,15 +23,9 @@ const navItems = [
   },
   {
     href: "/analytics",
-    label: "Analytics",
+    label: "Auswertung",
     icon: BarChart3,
     disabled: false,
-  },
-  {
-    href: "/einstellungen",
-    label: "Einstellungen",
-    icon: Settings,
-    disabled: true,
   },
 ];
 
@@ -52,7 +45,7 @@ export function Sidebar() {
               Laufbahn
             </span>
             <span className="block text-xs font-heading text-muted-foreground">
-              Premium Bewerbungsworkspace
+              Bewerbungen entspannt organisieren
             </span>
           </div>
         </Link>
@@ -63,21 +56,6 @@ export function Sidebar() {
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
-
-          if (item.disabled) {
-            return (
-              <div
-                key={item.href}
-                className="flex cursor-not-allowed items-center gap-3 rounded-2xl px-4 py-3 text-sm font-heading text-muted-foreground opacity-55"
-              >
-                <Icon size={18} />
-                <span>{item.label}</span>
-                <span className="ml-auto rounded-full border border-border bg-light-gray/70 px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]">
-                  Bald
-                </span>
-              </div>
-            );
-          }
 
           return (
             <Link
@@ -113,10 +91,11 @@ export function Sidebar() {
       <div className="border-t border-border/70 px-4 py-5">
         <div className="surface-muted rounded-[22px] px-4 py-4">
           <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            Laufbahn Beta
+            Kurz gesagt
           </p>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Fokus behalten, Fristen sehen, Gespräche sauber dokumentieren.
+            Alles Wichtige zu jeder Bewerbung bleibt an einem Ort: Stand, Frist,
+            Gespräch und Unterlagen.
           </p>
         </div>
       </div>

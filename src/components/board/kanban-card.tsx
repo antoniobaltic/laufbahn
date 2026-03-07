@@ -69,7 +69,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
                   {application.company_name}
                 </span>
                 <span className="block text-[11px] font-heading uppercase tracking-[0.1em] text-muted-foreground">
-                  Bewerbung
+                  Aktualisiert {relativeDate(application.updated_at)}
                 </span>
               </div>
             </Link>
@@ -112,7 +112,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
             <span className="flex items-center gap-1 text-[11px] font-heading text-muted-foreground">
               <Clock size={10} />
-              {relativeDate(application.date_saved)}
+              Hinzugefügt {relativeDate(application.date_saved)}
             </span>
 
             {hasDeadline && (

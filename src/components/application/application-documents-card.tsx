@@ -70,7 +70,7 @@ export function ApplicationDocumentsCard({
   initialDocuments,
 }: ApplicationDocumentsCardProps) {
   const [documents, setDocuments] = useState(initialDocuments);
-  const [isFormOpen, setIsFormOpen] = useState(initialDocuments.length === 0);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(initialFormState);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingForm, setEditingForm] = useState(initialFormState);
@@ -201,50 +201,54 @@ export function ApplicationDocumentsCard({
             }}
           >
             <Plus size={14} />
-            Dokument
+            Dokument hinzufügen
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <SummaryTile
-            icon={<Sparkles size={14} className="text-accent-orange" />}
-            label="Dokumenten-Set"
-            value={`${completedChecklistItems}/3 bereit`}
-            hint={
-              completedChecklistItems === documentChecklist.length
-                ? "Die wichtigsten Unterlagen sind hinterlegt."
-                : "Ergänze die fehlenden Kernunterlagen für schnellere Bewerbungen."
-            }
-          />
-          <SummaryTile
-            icon={<FileText size={14} className="text-accent-blue" />}
-            label="Zuletzt ergänzt"
-            value={latestDocument?.title || "Noch kein Dokument"}
-            hint={
-              latestDocument?.version_label ||
-              "Drive-, Notion-, PDF- oder Figma-Links funktionieren gut."
-            }
-          />
-        </div>
+        {documents.length > 0 && (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SummaryTile
+                icon={<Sparkles size={14} className="text-accent-orange" />}
+                label="Dokumenten-Set"
+                value={`${completedChecklistItems}/3 bereit`}
+                hint={
+                  completedChecklistItems === documentChecklist.length
+                    ? "Die wichtigsten Unterlagen sind hinterlegt."
+                    : "Ergänze die fehlenden Kernunterlagen für schnellere Bewerbungen."
+                }
+              />
+              <SummaryTile
+                icon={<FileText size={14} className="text-accent-blue" />}
+                label="Zuletzt ergänzt"
+                value={latestDocument?.title || "Noch kein Dokument"}
+                hint={
+                  latestDocument?.version_label ||
+                  "Drive-, Notion-, PDF- oder Figma-Links funktionieren gut."
+                }
+              />
+            </div>
 
-        <div className="rounded-[22px] border border-border/80 bg-dark-50/72 p-4">
-          <div className="flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            <Sparkles size={13} className="text-accent-orange" />
-            Basis-Set
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {documentChecklist.map((item) => (
-              <Badge
-                key={item.label}
-                variant={item.complete ? "green" : "muted"}
-                className={!item.complete ? "text-muted-foreground" : undefined}
-              >
-                {item.label}
-              </Badge>
-            ))}
-          </div>
-        </div>
+            <div className="rounded-[22px] border border-border/80 bg-dark-50/72 p-4">
+              <div className="flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                <Sparkles size={13} className="text-accent-orange" />
+                Basis-Set
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {documentChecklist.map((item) => (
+                  <Badge
+                    key={item.label}
+                    variant={item.complete ? "green" : "muted"}
+                    className={!item.complete ? "text-muted-foreground" : undefined}
+                  >
+                    {item.label}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         {documents.length > 0 ? (
           <div className="space-y-3">
@@ -357,16 +361,43 @@ export function ApplicationDocumentsCard({
             })}
           </div>
         ) : (
-          <div className="rounded-[22px] border border-dashed border-border bg-dark-50/70 p-5">
+          <div className="rounded-[24px] border border-dashed border-border bg-dark-50/70 p-5">
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Noch keine Dokumente hinterlegt. Speichere Lebenslauf, Portfolio
-              oder Referenzen direkt an der Bewerbung.
+              Noch keine Unterlagen hinterlegt. Für den Start reicht oft schon ein
+              Link zu Lebenslauf oder Portfolio.
             </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs font-heading text-muted-foreground">
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Lebenslauf
+              </span>
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Anschreiben
+              </span>
+              <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
+                Portfolio
+              </span>
+            </div>
+            {!isFormOpen && (
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setIsFormOpen(true)}
+                >
+                  <Plus size={14} />
+                  Erstes Dokument anlegen
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
         {isFormOpen && (
           <div className="surface-muted rounded-[24px] p-4 sm:p-5">
+            <p className="mb-4 text-sm font-body leading-relaxed text-dark-500">
+              Nimm einfach den Link zu deiner aktuellen Version. Typ und Notizen
+              kannst du später jederzeit anpassen.
+            </p>
             <DocumentFormFields
               form={form}
               setForm={setForm}

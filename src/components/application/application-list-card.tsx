@@ -35,7 +35,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
                 {application.company_name}
               </p>
               <p className="truncate text-xs font-heading uppercase tracking-[0.1em] text-muted-foreground">
-                Aktualisiert {relativeDate(application.updated_at)}
+                Zuletzt geändert {relativeDate(application.updated_at)}
               </p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
 
           <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
             <Clock size={12} />
-            <span>Gespeichert {relativeDate(application.date_saved)}</span>
+            <span>Hinzugefügt {relativeDate(application.date_saved)}</span>
           </div>
         </CardContent>
       </Card>

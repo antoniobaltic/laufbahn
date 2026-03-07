@@ -55,8 +55,8 @@ export default function SignUpPage() {
           Fast geschafft!
         </h2>
         <p className="text-sm text-muted-foreground font-body leading-relaxed">
-          Wir haben dir eine Bestaetigungsmail geschickt. Klicke auf den Link in
-          der E-Mail, um dein Konto zu aktivieren.
+          Wir haben dir eine Bestätigungsmail geschickt. Öffne den Link darin,
+          um dein Konto freizuschalten.
         </p>
       </div>
     );
@@ -71,8 +71,8 @@ export default function SignUpPage() {
         Konto erstellen
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Starte mit einem ruhigen Workspace für Board, Details, Fristen und nächste
-        Schritte.
+        Lege dir in wenigen Minuten einen klaren Ort für deine Bewerbungen,
+        Unterlagen und nächsten Schritte an.
       </p>
 
       <form onSubmit={handleSignUp} className="mt-8 space-y-4">
@@ -114,7 +114,7 @@ export default function SignUpPage() {
         )}
 
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Wird erstellt..." : "Registrieren"}
+          {loading ? "Erstellt Konto..." : "Konto erstellen"}
         </Button>
       </form>
 

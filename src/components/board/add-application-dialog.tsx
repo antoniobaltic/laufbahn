@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Link2, Loader2 } from "lucide-react";
+import { AlertTriangle, ChevronDown, Link2, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -197,15 +197,20 @@ export function AddApplicationDialog({
     <Dialog open={open} onClose={handleClose} className="max-w-4xl">
       <DialogHeader onClose={handleClose}>Neue Bewerbung</DialogHeader>
       <DialogContent>
+        <p className="mb-6 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
+          Starte mit den wichtigsten Angaben. Alles Weitere kannst du direkt
+          jetzt ergänzen oder später in Ruhe nachtragen.
+        </p>
+
         <div className="surface-muted mb-6 rounded-[24px] p-4 sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
             <div className="flex-1">
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-blue-600">
-                Schnellstart
+                Job-Link einfügen
               </p>
               <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-                Füge einen Job-Link ein, damit Rolle, Unternehmen und erste
-                Eckdaten automatisch vorausgefüllt werden.
+                Wenn du einen Link zur Ausschreibung hast, füllen wir Rolle,
+                Unternehmen und erste Angaben so weit wie möglich vor.
               </p>
             </div>
 
@@ -240,7 +245,7 @@ export function AddApplicationDialog({
                   {scraping ? (
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
-                    "Laden"
+                    "Übernehmen"
                   )}
                 </Button>
               </div>
@@ -257,15 +262,16 @@ export function AddApplicationDialog({
         {duplicateCandidate && !duplicate && (
           <div className="mb-5 rounded-[22px] border border-orange-200/80 bg-orange-50/75 p-4">
             <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-accent-orange">
-              Duplikat-Check
+              Hinweis
             </p>
             <p className="mt-2 text-sm font-heading font-medium text-dark">
-              Ähnliche Bewerbung erkannt
+              Ähnliche Bewerbung gefunden
             </p>
             <p className="mt-1 text-sm font-body leading-relaxed text-dark-500">
               Für <strong>{duplicateCandidate.company_name}</strong> und{" "}
               <strong>{duplicateCandidate.role_title}</strong> gibt es bereits
-              einen Eintrag. Beim Speichern fragen wir noch einmal nach.
+              einen Eintrag. Beim Speichern fragen wir sicherheitshalber noch
+              einmal nach.
             </p>
           </div>
         )}
@@ -285,7 +291,8 @@ export function AddApplicationDialog({
               </p>
               <p className="mt-1 text-sm font-body leading-relaxed text-dark-500">
                 Du hast dich bereits bei <strong>{duplicate.company_name}</strong> als{" "}
-                <strong>{duplicate.role_title}</strong> beworben. Trotzdem speichern?
+                <strong>{duplicate.role_title}</strong> beworben. Möchtest du den
+                neuen Eintrag trotzdem speichern?
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button
@@ -323,28 +330,28 @@ export function AddApplicationDialog({
           <section className="surface-card rounded-[24px] p-4 sm:p-5">
             <div className="mb-4">
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Kerninformationen
+                Das brauchst du zum Start
               </p>
               <p className="mt-1 text-sm font-body text-dark-500">
-                Unternehmen, Rolle und Link reichen für einen sauberen Start.
+                Unternehmen und Rolle reichen aus. Alles andere ist optional.
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input
                 id="company_name"
-                label="Unternehmen *"
+                label="Unternehmen"
                 value={fields.company_name}
                 onChange={setField("company_name")}
-                placeholder="z.B. Siemens"
+                placeholder="z. B. Siemens"
                 required
               />
               <Input
                 id="role_title"
-                label="Stelle *"
+                label="Rolle"
                 value={fields.role_title}
                 onChange={setField("role_title")}
-                placeholder="z.B. Product Manager"
+                placeholder="z. B. Product Manager"
                 required
               />
             </div>
@@ -355,7 +362,7 @@ export function AddApplicationDialog({
                 label="Standort"
                 value={fields.location}
                 onChange={setField("location")}
-                placeholder="z.B. Wien, München"
+                placeholder="z. B. Wien oder München"
               />
               <Input
                 id="job_url"
@@ -366,93 +373,93 @@ export function AddApplicationDialog({
                 placeholder="https://..."
               />
             </div>
-          </section>
-
-          <section className="surface-card rounded-[24px] p-4 sm:p-5">
-            <div className="mb-4">
-              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Rahmen
-              </p>
-              <p className="mt-1 text-sm font-body text-dark-500">
-                Arbeitsmodell, Gehaltsspanne und Frist halten den Funnel realistisch.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <Select
-                id="employment_type"
-                label="Art"
-                placeholder="Wählen..."
-                options={EMPLOYMENT_TYPES}
-                value={fields.employment_type}
-                onChange={setField("employment_type")}
-              />
-              <Select
-                id="remote_policy"
-                label="Remote"
-                placeholder="Wählen..."
-                options={REMOTE_OPTIONS}
-                value={fields.remote_policy}
-                onChange={setField("remote_policy")}
-              />
-              <Input
-                id="deadline"
-                label="Bewerbungsfrist"
-                type="date"
-                value={fields.deadline}
-                onChange={setField("deadline")}
-              />
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Input
-                id="salary_min"
-                label="Gehalt von (EUR/Jahr)"
-                type="number"
-                value={fields.salary_min}
-                onChange={setField("salary_min")}
-                placeholder="z.B. 50000"
-              />
-              <Input
-                id="salary_max"
-                label="Gehalt bis (EUR/Jahr)"
-                type="number"
-                value={fields.salary_max}
-                onChange={setField("salary_max")}
-                placeholder="z.B. 70000"
-              />
-            </div>
-          </section>
-
-          <section className="surface-card rounded-[24px] p-4 sm:p-5">
-            <div className="mb-4">
-              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Kontext
-              </p>
-              <p className="mt-1 text-sm font-body text-dark-500">
-                Halte die Rollenbeschreibung und deine ersten Gedanken direkt fest.
-              </p>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              <Textarea
-                id="description"
-                label="Kurzbeschreibung"
-                value={fields.description}
-                onChange={setField("description")}
-                placeholder="Worum geht es in der Rolle? Welche Schwerpunkte springen ins Auge?"
-                rows={5}
-              />
+            <div className="mt-4">
               <Textarea
                 id="notes"
-                label="Notizen"
+                label="Erste Notiz"
                 value={fields.notes}
                 onChange={setField("notes")}
-                placeholder="Persönliche Notizen zu dieser Bewerbung..."
-                rows={5}
+                placeholder="Was ist an der Stelle spannend? Was willst du später noch prüfen?"
+                rows={4}
               />
             </div>
           </section>
+
+          <details className="surface-card rounded-[24px] p-4 sm:p-5">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  Weitere Angaben
+                </p>
+                <p className="mt-1 text-sm font-body text-dark-500">
+                  Füge Arbeitsmodell, Frist, Gehalt oder eine Kurzbeschreibung hinzu.
+                </p>
+              </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white/86 text-dark-500">
+                <ChevronDown size={16} />
+              </span>
+            </summary>
+
+            <div className="mt-5 space-y-6">
+              <section>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <Select
+                    id="employment_type"
+                    label="Anstellungsart"
+                    placeholder="Wählen..."
+                    options={EMPLOYMENT_TYPES}
+                    value={fields.employment_type}
+                    onChange={setField("employment_type")}
+                  />
+                  <Select
+                    id="remote_policy"
+                    label="Arbeitsort"
+                    placeholder="Wählen..."
+                    options={REMOTE_OPTIONS}
+                    value={fields.remote_policy}
+                    onChange={setField("remote_policy")}
+                  />
+                  <Input
+                    id="deadline"
+                    label="Bewerbungsfrist"
+                    type="date"
+                    value={fields.deadline}
+                    onChange={setField("deadline")}
+                  />
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Input
+                    id="salary_min"
+                    label="Gehalt ab (EUR/Jahr)"
+                    type="number"
+                    value={fields.salary_min}
+                    onChange={setField("salary_min")}
+                    placeholder="z. B. 50000"
+                  />
+                  <Input
+                    id="salary_max"
+                    label="Gehalt bis (EUR/Jahr)"
+                    type="number"
+                    value={fields.salary_max}
+                    onChange={setField("salary_max")}
+                    placeholder="z. B. 70000"
+                  />
+                </div>
+              </section>
+
+              <section>
+                <Textarea
+                  id="description"
+                  label="Kurzbeschreibung der Rolle"
+                  value={fields.description}
+                  onChange={setField("description")}
+                  placeholder="Worum geht es in der Rolle? Welche Schwerpunkte springen ins Auge?"
+                  rows={5}
+                />
+              </section>
+            </div>
+          </details>
 
           {error && (
             <p className="text-sm font-heading text-orange-600">{error}</p>
@@ -467,7 +474,7 @@ export function AddApplicationDialog({
           {loading ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              Wird erstellt...
+              Speichert...
             </>
           ) : (
             "Bewerbung speichern"

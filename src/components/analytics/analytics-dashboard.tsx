@@ -5,7 +5,6 @@ import {
   BarChart3,
   BriefcaseBusiness,
   CalendarClock,
-  Clock3,
   FileText,
   MessageSquareMore,
   Sparkles,
@@ -37,14 +36,10 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
   const {
     totalApplications,
     activeApplications,
-    appliedApplications,
     interviewCount,
     offerCount,
-    decisionsCount,
     responseRate,
     offerRate,
-    averageDaysToInterview,
-    averageDaysToOffer,
     activityLast30Days,
     reminderCount,
     upcomingDeadlines,
@@ -61,14 +56,14 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
     return (
       <div className="space-y-6">
         <AnalyticsHero
-          title="Analytics"
-          description="Sobald Bewerbungen im Funnel liegen, zeigt dir diese Ansicht Tempo, Qualität und Engpässe auf einen Blick."
+          title="Auswertung"
+          description="Sobald Bewerbungen angelegt sind, zeigt dir diese Seite, wo du Rückmeldungen bekommst und was gerade Aufmerksamkeit braucht."
         />
         <div className="surface-panel rounded-[32px] px-4">
           <EmptyState
             icon={<BarChart3 size={40} />}
-            title="Noch keine Daten im Funnel"
-            description="Lege zuerst ein paar Bewerbungen an. Dann bekommst du hier eine ruhige Analyse von Antworten, Tempo, Fristen und Angebotsquote."
+            title="Noch keine Auswertung verfügbar"
+            description="Lege zuerst ein paar Bewerbungen an. Dann zeigt dir diese Seite, wo du Rückmeldungen bekommst und was gerade Aufmerksamkeit braucht."
             action={
               <Link
                 href="/board"
@@ -77,7 +72,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
                   "hover:bg-orange-500"
                 )}
               >
-                Zum Board
+                Zur Übersicht
                 <ArrowRight size={16} />
               </Link>
             }
@@ -90,46 +85,31 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
   return (
     <div className="space-y-6">
       <AnalyticsHero
-        title="Analytics"
-        description="Verfolge Funnel, Antwortquote und Arbeitsqualität in einer Ansicht, die ruhig bleibt und trotzdem sofort Prioritäten offenlegt."
+        title="Auswertung"
+        description="Sieh auf einen Blick, wie viele Bewerbungen aktiv sind, wo Rückmeldungen kommen und was als Nächstes wichtig ist."
       />
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-3">
         <MetricCard
           icon={<BriefcaseBusiness size={15} className="text-accent-orange" />}
-          label="Aktive Pipeline"
+          label="Aktive Bewerbungen"
           value={String(activeApplications)}
-          helper={`${totalApplications} gesamt · ${interviewCount} Gespräche im Verlauf`}
+          helper={`${totalApplications} insgesamt`}
           tone="orange"
         />
         <MetricCard
           icon={<TrendingUp size={15} className="text-accent-blue" />}
-          label="Antwortquote"
+          label="Rückmeldungen"
           value={`${responseRate}%`}
-          helper={`${appliedApplications} verschickt · ${offerCount} Angebote bisher`}
+          helper={`${interviewCount} Gespräche · ${offerCount} Angebote`}
           tone="blue"
         />
         <MetricCard
-          icon={<Clock3 size={15} className="text-accent-green" />}
-          label="Tempo zum Gespräch"
-          value={
-            averageDaysToInterview !== null
-              ? `${averageDaysToInterview} Tage`
-              : "Noch offen"
-          }
-          helper={
-            averageDaysToOffer !== null
-              ? `${averageDaysToOffer} Tage bis Angebot im Schnitt`
-              : "Noch kein Angebot mit voller Laufzeit"
-          }
-          tone="green"
-        />
-        <MetricCard
           icon={<CalendarClock size={15} className="text-dark-500" />}
-          label="Druck der Woche"
+          label="Wichtig jetzt"
           value={String(reminderCount)}
-          helper={`${upcomingDeadlines} Fristen · ${upcomingInterviews} Gespräche · ${pendingFollowUps} Follow-ups`}
-          tone="neutral"
+          helper={`${upcomingDeadlines} Fristen · ${upcomingInterviews} Gespräche · ${pendingFollowUps} Nachfassaktionen`}
+          tone="green"
         />
       </div>
 
@@ -138,17 +118,17 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Funnel
+                Überblick
               </p>
               <h2 className="mt-2 text-xl font-heading font-semibold text-dark">
-                Von gemerkt bis Angebot
+                Fortschritt im Prozess
               </h2>
               <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
-                Die Stufen zeigen, wie viel vom aktuellen Input tatsächlich in Gespräche
-                und Angebote übergeht.
+                Hier siehst du, wie weit deine Bewerbungen im Schnitt kommen und
+                an welcher Stelle Bewegung entsteht.
               </p>
             </div>
-            <Badge variant="default">{offerRate}% Angebotsquote</Badge>
+            <Badge variant="default">{offerRate}% mit Angebot</Badge>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -170,31 +150,31 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
           <div className="flex items-center gap-2">
             <Sparkles size={15} className="text-accent-orange" />
             <h2 className="text-xl font-heading font-semibold text-dark">
-              Fokus für die nächsten Tage
+              Was jetzt wichtig ist
             </h2>
           </div>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Diese Kennzahlen verbinden Reminder-Druck, Bewegung im Funnel und
-            Entscheidungen.
+            Diese Hinweise sollen dir Arbeit abnehmen, nicht neue Komplexität
+            schaffen.
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
             <SignalTile
               label="Fristen"
               value={String(upcomingDeadlines)}
-              helper="Bewerbungen mit enger Frist oder kurzem Vorlauf."
+              helper="Bewerbungen mit enger Frist."
               tone="orange"
             />
             <SignalTile
               label="Gespräche"
               value={String(upcomingInterviews)}
-              helper="Geplante Gespräche, die unmittelbar Vorbereitung brauchen."
+              helper="Termine, die Vorbereitung brauchen."
               tone="blue"
             />
             <SignalTile
-              label="Aktivität"
-              value={String(activityLast30Days)}
-              helper={`${decisionsCount} Entscheidungen im System`}
+              label="Nachfassen"
+              value={String(pendingFollowUps)}
+              helper={`${activityLast30Days} Änderungen in den letzten 30 Tagen`}
               tone="green"
             />
           </div>
@@ -202,14 +182,14 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
           <div className="mt-6 rounded-[24px] border border-border/80 bg-dark-50/72 p-4">
             <div className="flex items-center gap-2 text-sm font-heading text-dark">
               <Target size={14} className="text-accent-green" />
-              Prioritätslesung
+              Kurz gelesen
             </div>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
               {pendingFollowUps > 0
-                ? `${pendingFollowUps} Bewerbungen warten auf ein Follow-up. Das ist der schnellste Hebel, bevor neuer Input dazukommt.`
+                ? `${pendingFollowUps} Bewerbungen warten auf ein Nachfassen. Das ist gerade der schnellste Hebel.`
                 : upcomingInterviews > 0
-                  ? "Die nächste Spannung liegt in Gesprächen. Gute Vorbereitung ist aktuell wertvoller als neuer Input."
-                  : "Die Pipeline wirkt kontrolliert. Nutze den ruhigen Moment für bessere Unterlagen oder mehr Zielunternehmen."}
+                  ? "Als Nächstes zählen gute Vorbereitung und klare Gesprächsnotizen mehr als neue Bewerbungen."
+                  : "Im Moment wirkt alles ruhig. Nutze die Zeit für bessere Unterlagen oder neue passende Stellen."}
             </p>
           </div>
         </div>
@@ -220,7 +200,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                Momentum
+                Rückblick
               </p>
               <h2 className="mt-2 text-xl font-heading font-semibold text-dark">
                 Die letzten sechs Monate
@@ -246,9 +226,12 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             <div className="flex items-center gap-2">
               <FileText size={15} className="text-accent-orange" />
               <h2 className="text-xl font-heading font-semibold text-dark">
-                Arbeitsqualität
+                Arbeitsstand
               </h2>
             </div>
+            <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+              Diese Karten zeigen, wie vollständig deine Bewerbungen gepflegt sind.
+            </p>
             <div className="mt-5 grid gap-3">
               {workspaceCoverage.map((metric) => (
                 <CoverageRow key={metric.id} metric={metric} />
@@ -260,7 +243,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             <div className="flex items-center gap-2">
               <MessageSquareMore size={15} className="text-accent-blue" />
               <h2 className="text-xl font-heading font-semibold text-dark">
-                Letzte Bewegung
+                Zuletzt passiert
               </h2>
             </div>
             {recentMovement.length > 0 ? (
@@ -272,7 +255,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             ) : (
               <p className="mt-4 text-sm font-body leading-relaxed text-dark-500">
                 Noch keine Aktivitäten protokolliert. Sobald Status, Notizen oder
-                Dokumente gepflegt werden, erscheint die Bewegung hier.
+                Dokumente gepflegt werden, erscheinen die letzten Änderungen hier.
               </p>
             )}
           </div>
@@ -293,9 +276,9 @@ function AnalyticsHero({
     <div className="surface-panel section-shell rounded-[34px] p-5 sm:p-6 lg:p-7">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-3xl">
-          <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-            Funnel Intelligence
-          </p>
+            <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
+            Auswertung
+            </p>
           <h1 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.15rem]">
             {title}
           </h1>
@@ -310,7 +293,7 @@ function AnalyticsHero({
             "hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
           )}
         >
-          Zum Board
+          Zur Übersicht
           <ArrowRight size={16} />
         </Link>
       </div>
@@ -395,12 +378,12 @@ function FunnelRow({
           <div>
             <p className="text-sm font-heading font-semibold text-dark">{step.label}</p>
             <p className="text-xs font-body text-dark-500">
-              {step.count} Bewerbungen · {step.share}% des gesamten Inputs
+              {step.count} Bewerbung{step.count === 1 ? "" : "en"}
             </p>
           </div>
         </div>
         {step.rateFromPrevious !== null && (
-          <Badge variant="muted">{step.rateFromPrevious}% von vorher</Badge>
+          <Badge variant="muted">{step.rateFromPrevious}% weitergekommen</Badge>
         )}
       </div>
       <div className="mt-4 h-2.5 rounded-full bg-dark-50">
@@ -535,7 +518,7 @@ function CoverageRow({ metric }: { metric: AnalyticsCoverageMetric }) {
         </div>
         <div className="text-right">
           <p className="text-xl font-heading font-semibold text-dark">{metric.share}%</p>
-          <p className="text-xs font-heading text-muted-foreground">{metric.count} gepflegt</p>
+          <p className="text-xs font-heading text-muted-foreground">{metric.count} Einträge</p>
         </div>
       </div>
     </div>
@@ -585,5 +568,5 @@ function StatusChip({ type }: { type: ActivityType }) {
     return <Badge variant="muted">Dokument</Badge>;
   }
 
-  return <Badge variant="default">Detail</Badge>;
+  return <Badge variant="default">Notiz</Badge>;
 }

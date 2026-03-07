@@ -24,7 +24,7 @@ export const COLUMN_CONFIG: Record<
     bgLight: "var(--color-orange-50)",
   },
   im_gespraech: {
-    title: "Im Gespraech",
+    title: "Im Gespräch",
     color: "var(--color-status-gespraech)",
     bgLight: "#faf6e8",
   },
