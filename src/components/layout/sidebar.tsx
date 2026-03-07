@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   BarChart3,
   Briefcase,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -20,6 +21,11 @@ const navItems = [
     label: "Bewerbungen",
     icon: Briefcase,
     disabled: false,
+  },
+  {
+    href: "/dokumente",
+    label: "Dokumente",
+    icon: FileText,
   },
   {
     href: "/analytics",

@@ -36,12 +36,18 @@ import type {
   ApplicationContact,
   ApplicationDocument,
 } from "@/types/application-detail";
+import type {
+  ApplicationSourceDocument,
+  DocumentPickerOption,
+} from "@/types/document";
 
 interface ApplicationDetailViewProps {
   application: Application;
   activities: Activity[];
   contacts: ApplicationContact[];
   documents: ApplicationDocument[];
+  linkedDocuments: ApplicationSourceDocument[];
+  documentPickerOptions: DocumentPickerOption[];
 }
 
 export function ApplicationDetailView({
@@ -49,6 +55,8 @@ export function ApplicationDetailView({
   activities,
   contacts,
   documents,
+  linkedDocuments,
+  documentPickerOptions,
 }: ApplicationDetailViewProps) {
   const domain = extractDomain(
     application.company_website_url || application.job_url || ""
@@ -56,6 +64,7 @@ export function ApplicationDetailView({
   const salaryDisplay =
     formatSalaryRange(application.salary_min, application.salary_max) ||
     application.salary_note;
+  const documentCount = documents.length + linkedDocuments.length;
 
   const milestoneRows = [
     { label: "Gemerkt", value: application.date_saved },
@@ -184,8 +193,8 @@ export function ApplicationDetailView({
                 icon={<FileText size={14} className="text-accent-orange" />}
                 label="Unterlagen"
                 value={
-                  documents.length > 0
-                    ? `${documents.length} Datei${documents.length === 1 ? "" : "en"}`
+                  documentCount > 0
+                    ? `${documentCount} Eintrag${documentCount === 1 ? "" : "e"}`
                     : "Noch leer"
                 }
               />
@@ -297,6 +306,8 @@ export function ApplicationDetailView({
           <ApplicationDocumentsCard
             applicationId={application.id}
             initialDocuments={documents}
+            initialLinkedDocuments={linkedDocuments}
+            documentPickerOptions={documentPickerOptions}
           />
         </div>
       </div>

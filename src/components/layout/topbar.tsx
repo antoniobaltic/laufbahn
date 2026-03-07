@@ -182,6 +182,26 @@ function getRouteMeta(pathname: string) {
     };
   }
 
+  if (pathname.startsWith("/dokumente/")) {
+    return {
+      kicker: "Dokumente",
+      title: "Versionen und Varianten pflegen",
+      description:
+        "Bearbeite Fassungen, stelle frühere Versionen wieder her und sieh, wo das Dokument bereits verwendet wird.",
+      showInTopbar: true,
+    };
+  }
+
+  if (pathname.startsWith("/dokumente")) {
+    return {
+      kicker: "Dokumente",
+      title: "Lebensläufe und Anschreiben",
+      description:
+        "Halte ruhige Basisdokumente bereit, leite Varianten daraus ab und verknüpfe feste Versionen mit Bewerbungen.",
+      showInTopbar: false,
+    };
+  }
+
   if (pathname.startsWith("/bewerbung/")) {
     return {
       kicker: "Bewerbung",

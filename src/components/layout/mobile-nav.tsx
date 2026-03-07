@@ -7,12 +7,14 @@ import {
   LayoutDashboard,
   BarChart3,
   Briefcase,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const navItems = [
   { href: "/board", label: "Übersicht", icon: LayoutDashboard },
   { href: "/bewerbung", label: "Bewerbungen", icon: Briefcase },
+  { href: "/dokumente", label: "Dokumente", icon: FileText },
   { href: "/analytics", label: "Auswertung", icon: BarChart3 },
 ];
 

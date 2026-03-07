@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
   const protectedPaths = [
     "/board",
     "/bewerbung",
+    "/dokumente",
     "/unternehmen",
     "/analytics",
     "/einstellungen",

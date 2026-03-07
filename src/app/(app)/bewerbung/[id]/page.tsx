@@ -1,5 +1,9 @@
 import { notFound } from "next/navigation";
 import { getApplicationWorkspace } from "@/actions/applications";
+import {
+  getApplicationSourceDocuments,
+  getDocumentPickerOptions,
+} from "@/actions/documents";
 import { ApplicationDetailView } from "@/components/application/application-detail-view";
 
 interface ApplicationDetailPageProps {
@@ -10,7 +14,11 @@ export default async function ApplicationDetailPage({
   params,
 }: ApplicationDetailPageProps) {
   const { id } = await params;
-  const workspace = await getApplicationWorkspace(id);
+  const [workspace, linkedDocuments, documentPickerOptions] = await Promise.all([
+    getApplicationWorkspace(id),
+    getApplicationSourceDocuments(id),
+    getDocumentPickerOptions(),
+  ]);
 
   if (!workspace?.application) {
     notFound();
@@ -22,6 +30,8 @@ export default async function ApplicationDetailPage({
       activities={workspace.activities}
       contacts={workspace.contacts}
       documents={workspace.documents}
+      linkedDocuments={linkedDocuments}
+      documentPickerOptions={documentPickerOptions}
     />
   );
 }

@@ -415,8 +415,13 @@ export async function getNextStepPrompts(limit?: number) {
 export async function getAnalyticsSnapshot(): Promise<AnalyticsSnapshot> {
   const { supabase, user } = await getAuthenticatedClient();
 
-  const [applicationsResult, activitiesResult, contactsResult, documentsResult] =
-    await Promise.all([
+  const [
+    applicationsResult,
+    activitiesResult,
+    contactsResult,
+    documentsResult,
+    sourceDocumentsResult,
+  ] = await Promise.all([
       supabase
         .from("applications")
         .select(
@@ -453,6 +458,10 @@ export async function getAnalyticsSnapshot(): Promise<AnalyticsSnapshot> {
         .from("application_documents")
         .select("application_id")
         .eq("user_id", user.id),
+      supabase
+        .from("application_source_documents")
+        .select("application_id")
+        .eq("user_id", user.id),
     ]);
 
   if (applicationsResult.error) {
@@ -472,15 +481,23 @@ export async function getAnalyticsSnapshot(): Promise<AnalyticsSnapshot> {
     console.error("Error fetching analytics documents:", documentsResult.error);
   }
 
+  if (sourceDocumentsResult.error) {
+    console.error(
+      "Error fetching analytics source documents:",
+      sourceDocumentsResult.error
+    );
+  }
+
   return buildAnalyticsSnapshot({
     applications: (applicationsResult.data ?? []) as unknown as Application[],
     activities: (activitiesResult.data ?? []) as unknown as Activity[],
     contactApplicationIds: (contactsResult.data ?? []).map(
       (row) => row.application_id
     ),
-    documentApplicationIds: (documentsResult.data ?? []).map(
-      (row) => row.application_id
-    ),
+    documentApplicationIds: [
+      ...(documentsResult.data ?? []).map((row) => row.application_id),
+      ...(sourceDocumentsResult.data ?? []).map((row) => row.application_id),
+    ],
   });
 }
 

@@ -304,6 +304,46 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Quick metrics in the hero should be immediately useful, not vanity counters.
 - If requirements, benefits, or full posting text were imported, present them in a calm dedicated card such as `Aus der Ausschreibung`.
 
+### Documents
+- `/dokumente` is a first-class app surface for `Lebenslauf` and `Anschreiben`.
+- User-facing language should stay plain:
+  - `Dokument`
+  - `Variante`
+  - `Version`
+  - `Verwendet in`
+- Do not expose Git terms such as `branch`, `commit`, or `merge` in the UI.
+- The default view should feel like a calm document library, not a developer tool.
+- The default overview is flat and simple. Tree/hierarchy belongs behind an explicit `Erweiterte Ansicht`.
+- The canonical stored source is Markdown.
+- The default editing experience should feel like a writing workspace with live preview.
+- Raw Markdown is an advanced mode, not the default.
+- Version history should be easy to understand:
+  - newest version first
+  - clear `Aktuell` badge
+  - restore creates a new current version instead of mutating old history
+- Variant creation should start from an existing basis document and feel like `from this basis, make a tailored copy`.
+- Overview cards must show practical signals:
+  - latest version
+  - tags
+  - how often the document is already used
+  - whether it has child variants
+- The app should make it obvious that linking a document to a job freezes that exact version for that application.
+- Preserve simplicity:
+  - only `Lebenslauf` and `Anschreiben` in this global document system for now
+  - keep portfolios, certificates, and work samples in the lighter per-application link section until a broader document model is intentionally designed
+
+### Document Import Rules
+- Supported imports are currently `PDF` and `DOCX`.
+- The app converts uploads into Markdown immediately and stores only Markdown plus metadata.
+- Do not persist original `PDF` or `DOCX` files in Supabase Storage or elsewhere on the server.
+- Import must always remain review-first:
+  - convert
+  - show warnings when appropriate
+  - let the user edit before saving
+- DOCX import should prefer semantic conversion (`mammoth`-style HTML -> Markdown), not layout cloning.
+- PDF import is text-first and inherently lossy. The copy and UX should be honest about that.
+- Because import quality varies by source file, the user should always be able to correct the result in the editor before it becomes a saved version.
+
 ### Reminder Rules
 - Reminders are derived from structured application fields, not manually created notification records.
 - The topbar bell is the global entry point for reminders.
@@ -392,6 +432,7 @@ src/
 │   ├── page.tsx
 │   ├── globals.css
 │   ├── api/
+│   │   ├── documents/import/route.ts
 │   │   └── scraper/route.ts
 │   ├── (auth)/
 │   │   ├── layout.tsx
@@ -407,6 +448,13 @@ src/
 │       ├── board/
 │       │   ├── page.tsx
 │       │   └── loading.tsx
+│       ├── dokumente/
+│       │   ├── page.tsx
+│       │   ├── loading.tsx
+│       │   └── [id]/
+│       │       ├── page.tsx
+│       │       ├── loading.tsx
+│       │       └── not-found.tsx
 │       ├── einstellungen/
 │       │   └── page.tsx
 │       └── bewerbung/
@@ -439,6 +487,12 @@ src/
 │   │   └── company-logo.tsx
 │   ├── celebration/
 │   │   └── offer-celebration-provider.tsx
+│   ├── documents/
+│   │   ├── document-create-dialog.tsx
+│   │   ├── document-editor.tsx
+│   │   ├── documents-dashboard.tsx
+│   │   ├── document-workspace.tsx
+│   │   └── markdown-preview.tsx
 │   ├── layout/
 │   │   ├── notification-center.tsx
 │   │   ├── mobile-nav.tsx
@@ -461,10 +515,13 @@ src/
 │       └── toast.tsx
 ├── actions/
 │   ├── applications.ts
+│   ├── documents.ts
 │   └── profile.ts
 ├── hooks/
 │   └── use-kanban.ts
 ├── lib/
+│   ├── documents/
+│   │   └── import.ts
 │   ├── scraper/
 │   │   └── index.ts
 │   ├── supabase/
@@ -477,6 +534,7 @@ src/
 │       ├── cn.ts
 │       ├── constants.ts
 │       ├── dates.ts
+│       ├── documents.ts
 │       ├── next-steps.ts
 │       ├── profile.ts
 │       ├── reminders.ts
@@ -491,6 +549,7 @@ src/
     ├── application.ts
     ├── kanban.ts
     ├── next-step.ts
+    ├── document.ts
     ├── profile.ts
     └── reminder.ts
 ```
@@ -581,6 +640,28 @@ Board-specific rule:
 Read-path rule:
 - If the detail page needs the application plus related activity, contacts, and documents together, prefer the combined workspace loader over separate auth/client setup per query.
 
+### Document Actions
+Global document-library reads and mutations live in [documents.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/actions/documents.ts).
+
+Current responsibilities:
+- `getDocumentsOverview()`
+- `getDocumentWorkspace()`
+- `getDocumentPickerOptions()`
+- `getApplicationSourceDocuments()`
+- `createSourceDocument()`
+- `saveSourceDocumentVersion()`
+- `restoreSourceDocumentVersion()`
+- `linkSourceDocumentToApplication()`
+- `unlinkSourceDocumentFromApplication()`
+
+Document-action rules:
+- every document write must validate auth ownership
+- document metadata (`title`, `tags`) and immutable versions are separate concerns
+- creating or restoring a version must update the document’s `current_version_id`
+- linking a document to an application must snapshot the exact version content into the application link row
+- document/application linking should revalidate both `/dokumente` and the affected application detail route
+- if a document link affects application-level context, it should create timeline activity in the application flow
+
 ### Timeline Rules
 - `status_change` still comes from the database trigger.
 - `note_added`, `deadline_set`, `interview_scheduled`, `contact_added`, `contact_updated`, `document_uploaded`, and `document_updated` are created in server actions.
@@ -601,9 +682,31 @@ Read-path rule:
 
 ### Analytics Pattern
 - `buildAnalyticsSnapshot()` in [analytics.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/lib/utils/analytics.ts) is the single source of truth for analytics aggregation.
-- Analytics currently depend on `applications`, `activities`, `application_contacts`, and `application_documents`; no separate analytics table exists.
+- Analytics currently depend on `applications`, `activities`, `application_contacts`, `application_documents`, and `application_source_documents`; no separate analytics table exists.
 - Keep analytics derivation server-side so the page arrives rendered and the UI layer only concerns itself with presentation.
 - Keep analytics lightweight and explainable; no chart library has been introduced yet.
+
+### Document Library Pattern
+- The logical document and its immutable versions are stored separately:
+  - `source_documents` = the user-facing document entry / basis / variant node
+  - `source_document_versions` = immutable Markdown snapshots
+  - `application_source_documents` = exact version snapshots used in a specific application
+- `source_documents.parent_document_id` expresses variant hierarchy.
+- `source_documents.current_version_id` points to the current active version.
+- `source_document_versions.source_version_id` records lineage for restores and variants.
+- Application links must snapshot:
+  - document title
+  - version number / label
+  - markdown content
+- Application detail should show two document concepts side by side:
+  - fixed CV / cover-letter snapshots from `Dokumente`
+  - lighter additional links in `application_documents`
+- The import route at `/api/documents/import` is authenticated and Node-runtime only.
+- The import pipeline is intentionally lightweight and local to the request:
+  - accept file
+  - convert to Markdown
+  - return result to the UI
+  - do not persist original upload
 
 ### Scraper Pattern
 - The job scraper lives behind [route.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/api/scraper/route.ts) and requires an authenticated user session.
@@ -657,6 +760,8 @@ Read-path rule:
   - landing page
   - board / Übersicht
   - Bewerbungen list
+  - Dokumente overview
+  - document workspace
   - application detail
   - analytics / Auswertung
 - Use Playwright for smoke tests and keep screenshots for at least one desktop and one mobile pass when the UI changes materially.
@@ -671,6 +776,8 @@ Read-path rule:
 - When an undo toast is active, prefer delaying the reconciliation refresh rather than erasing the undo affordance immediately.
 - The reminder count in the shell is server-derived, so board mutations must refresh the shell after persistence.
 - Documents are currently metadata records with URLs. There is no Supabase Storage upload pipeline yet.
+- The new global document library stores Markdown only. Original uploaded files are intentionally not retained.
+- PDF and DOCX import quality depends on the source file structure; the review/edit step is mandatory product behavior, not optional polish.
 - Contacts and documents are first-class detail entities, but they are still relational records inside the same core app flow, not separate modules.
 - `/einstellungen` is now implemented. Keep it behind the authenticated app shell.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
@@ -695,6 +802,7 @@ Read-path rule:
 - `00007_add_company_branding_to_applications.sql`
 - `00008_add_profile_preferences.sql`
 - `00009_add_profile_insert_policy.sql`
+- `00010_create_source_documents.sql`
 
 ### Key Tables
 - `profiles`
@@ -702,6 +810,9 @@ Read-path rule:
 - `activities`
 - `application_contacts`
 - `application_documents`
+- `source_documents`
+- `source_document_versions`
+- `application_source_documents`
 
 ### Table Roles
 - `profiles` extends `auth.users`.
@@ -711,6 +822,9 @@ Read-path rule:
 - `activities` stores timeline events.
 - `application_contacts` stores people tied to a specific application.
 - `application_documents` stores linked document references per application.
+- `source_documents` stores the logical CV / cover-letter entries, including basis vs variant relationships.
+- `source_document_versions` stores immutable Markdown versions for those entries.
+- `application_source_documents` stores the exact document-version snapshot used in an application.
 
 ### Data Model Conventions
 - `applications.status` is the workflow source of truth for board columns and most high-level product states.
@@ -719,6 +833,9 @@ Read-path rule:
 - `deadline` is a date-only value.
 - `next_interview_at` is a date-time value and should be treated differently from `deadline`.
 - `application_documents` currently represents links and metadata, not binary file uploads.
+- `source_documents` is the canonical document library source for `Lebenslauf` and `Anschreiben`.
+- `source_document_versions` is append-only in spirit: restoring history creates a new current version instead of rewriting old rows.
+- `application_source_documents` freezes the exact document version used for a job application, even if the source document evolves later.
 
 ### RLS Pattern
 All app tables use `user_id = auth.uid()` ownership policies.
