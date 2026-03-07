@@ -812,8 +812,11 @@ Document-action rules:
 - PDF and DOCX import quality depends on the source file structure; the review/edit step is mandatory product behavior, not optional polish.
 - Markdown preview must style tables, code blocks, and long imported content cleanly. Imported documents should never feel like raw developer output.
 - Contacts and documents are first-class detail entities, but they are still relational records inside the same core app flow, not separate modules.
+- The marketing hero is prepared for a future running-track image via `--marketing-track-image`, but the final artwork asset still needs to be supplied separately.
 - `/einstellungen` is now implemented. Keep it behind the authenticated app shell.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
+- `00011_harden_database_security.sql` contains the database-side advisor hardening, but clearing the hosted Supabase advisor items still requires applying it on the remote project with valid management access.
+- Leaked-password protection is a Supabase Auth project setting, not a repo-level code change. It still requires enabling in the hosted dashboard/API context with the right permissions.
 - Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
 - In development, `@hello-pangea/dnd` can produce hydration/setup noise if drag-and-drop SSR markup differs. Keep the board’s DnD layer behind a client-only mount guard if needed.
 
