@@ -249,9 +249,20 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 ### Landing
 - The landing page should sell relief and clarity in the first viewport, not enumerate the whole product.
 - Hero copy should explain the benefit in natural German within one headline and one supporting sentence.
+- Keep the hero visually anchored by one strong art direction, not a pile of equal-weight cards.
 - Remove secondary product details, feature grids, or badges if they dilute the main promise.
 - The default CTA path should feel obvious and low-friction on both desktop and mobile.
 - Marketing sections below the fold should deepen trust and understanding, not repeat the same claim in noisier layouts.
+- The landing page should support a future large running-track hero image without structural rewrites; use the dedicated CSS variable/background layer rather than hard-coding image assumptions into markup.
+- Public marketing pages should render fully and stably. Avoid `content-visibility` tricks on landing/pricing sections if they create blank captures, unstable full-page rendering, or delayed painting.
+- Proof should stay honest. Prefer product truths, workflow clarity, and prepared pricing over invented testimonials or vanity numbers.
+
+### Pricing
+- `/preise` is a public marketing page, not an app dashboard.
+- Pricing should feel calm and legible: two clear plans, one comparison area, one explanation of what Premium adds.
+- If billing is not live yet, say so plainly. Do not fake urgency, countdowns, or purchase CTAs that do nothing useful.
+- On mobile, pricing comparisons should remain readable without horizontal scrolling as the primary experience.
+- Premium messaging should sound prepared and trustworthy, never like a hard sell bolted onto the product later.
 
 ### Auth
 - Two-panel composition on desktop: brand/value panel left, auth card right.
@@ -430,6 +441,7 @@ src/
 ├── app/
 │   ├── layout.tsx
 │   ├── page.tsx
+│   ├── preise/page.tsx
 │   ├── globals.css
 │   ├── api/
 │   │   ├── documents/import/route.ts
@@ -465,6 +477,12 @@ src/
 │               ├── loading.tsx
 │               └── not-found.tsx
 ├── components/
+│   ├── marketing/
+│   │   ├── faq-list.tsx
+│   │   ├── marketing-footer.tsx
+│   │   ├── marketing-header.tsx
+│   │   ├── pricing-cards.tsx
+│   │   └── track-showcase.tsx
 │   ├── analytics/
 │   │   └── analytics-dashboard.tsx
 │   ├── application/
