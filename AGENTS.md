@@ -19,6 +19,16 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - The repo is linked to Vercel and production deploys from `main`.
 - Supabase remains the only backend; no separate worker or custom server is in front of Vercel.
 
+## Architecture Summary
+- This is a server-first Next.js App Router application with thin client interactivity on top.
+- Authentication, primary reads, and all meaningful mutations are handled through Supabase SSR and Next server actions.
+- The board, detail workspace, reminder center, and analytics page all consume the same `applications` table as the canonical source of truth.
+- Timeline history is split across:
+  - database trigger-driven `status_change` events
+  - server action-created narrative events for notes, contacts, documents, deadlines, and interviews
+- Reminders and analytics are not stored as separate records. They are derived at read time from the current application and activity data.
+- The app currently has no separate background worker, queue, cron pipeline, or notification delivery service.
+
 ## Product Feel
 
 ### Core Aesthetic
@@ -205,6 +215,11 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Celebration should be warm and premium: subtle particles, glow, and copy, never loud confetti spam.
 - The same celebration treatment should trigger from both detail status edits and board drag-and-drop.
 
+### Monetization Direction
+- Monetization should layer onto the existing premium workspace, not feel like a bolted-on paywall.
+- Pricing and upgrade moments should appear as polished product surfaces with calm rationale and clear plan differences.
+- Free-tier limits should be understandable inside the flow where they matter, not only on a billing page.
+
 ## Project Structure
 
 ```text
@@ -314,6 +329,13 @@ src/
 4. Server components always call `supabase.auth.getUser()`.
 5. Signup still uses email confirmation via Supabase auth callback.
 
+### Client / Server Boundary
+- Server components own data loading for app routes wherever possible.
+- Client components are used for drag-and-drop, dialogs, inline editing, notifications, and celebratory UI.
+- `src/actions/applications.ts` is the main mutation boundary and should stay the central place for application-domain writes.
+- Shared derivation logic belongs in `src/lib/utils`, not duplicated inside components.
+- If a new feature needs privileged backend behavior beyond the authenticated user session, it should use `SUPABASE_SECRET_KEY` server-side only.
+
 ### Vercel Deployment Pattern
 - Vercel is the canonical hosting target for this app.
 - `main` is the production deployment branch.
@@ -368,17 +390,40 @@ Board-specific rule:
 - Reminder urgency is intentionally coarse: `high`, `medium`, `low`.
 - The notification center currently displays a capped visible list but counts all derived reminders.
 - Reminder queries should only select fields that the derivation logic actually needs.
+- There is currently no persisted notification table and no email/push delivery path.
 
 ### Analytics Pattern
 - `buildAnalyticsSnapshot()` in [analytics.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/lib/utils/analytics.ts) is the single source of truth for analytics aggregation.
 - Analytics currently depend on `applications`, `activities`, `application_contacts`, and `application_documents`; no separate analytics table exists.
 - Keep analytics derivation server-side so the page arrives rendered and the UI layer only concerns itself with presentation.
+- Keep analytics lightweight and explainable; no chart library has been introduced yet.
+
+### Scraper Pattern
+- The job scraper lives behind [route.ts](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/api/scraper/route.ts) and requires an authenticated user session.
+- The scraper is best-effort and intentionally lightweight:
+  - tries JSON-LD first
+  - then Open Graph/meta tags
+  - then a generic HTML fallback
+- It uses `fetch` plus `cheerio`, not a headless browser.
+- Expect some job sites to fail because of anti-bot measures, JS-only rendering, or unusual markup.
+- Scraped data is assistive input for the add dialog, not a guaranteed normalized ingestion pipeline.
 
 ### Deployment Guardrails
 - If Vercel prod breaks while local dev still works, check middleware and build-runtime differences first.
 - Treat `laufbahn.vercel.app` as the production smoke-test URL after every deployment-sensitive change.
 - Keep server-only Supabase credentials in non-public env vars only.
 - Prefer the modern `SUPABASE_SECRET_KEY` naming. Do not reintroduce `SUPABASE_SERVICE_ROLE_KEY` unless there is a concrete compatibility reason.
+
+### Known Quirks And Constraints
+- `@hello-pangea/dnd` is sensitive to scroll behavior. Do not reintroduce global smooth scrolling or nested droppable scroll containers.
+- Date-only values such as `deadline` must stay on the shared date helper path. Bare `new Date(string)` calls in UI logic are a regression risk.
+- Board state is optimistic in the client, then reconciled via server write plus `router.refresh()`.
+- The reminder count in the shell is server-derived, so board mutations must refresh the shell after persistence.
+- Documents are currently metadata records with URLs. There is no Supabase Storage upload pipeline yet.
+- Contacts and documents are first-class detail entities, but they are still relational records inside the same core app flow, not separate modules.
+- `middleware.ts` protects some planned routes such as `/unternehmen` and `/einstellungen` even though those surfaces are not built yet.
+- The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
+- Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
 
 ## Database Schema (Supabase)
 
@@ -411,6 +456,14 @@ Board-specific rule:
 - `application_contacts` stores people tied to a specific application.
 - `application_documents` stores linked document references per application.
 
+### Data Model Conventions
+- `applications.status` is the workflow source of truth for board columns and most high-level product states.
+- `position_in_column` controls board ordering inside each status.
+- Milestone dates such as `date_applied`, `date_interview`, and `date_offer` are part workflow history, part analytics input.
+- `deadline` is a date-only value.
+- `next_interview_at` is a date-time value and should be treated differently from `deadline`.
+- `application_documents` currently represents links and metadata, not binary file uploads.
+
 ### RLS Pattern
 All app tables use `user_id = auth.uid()` ownership policies.
 
@@ -439,6 +492,17 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - `npm run build`
 - `npm run lint`
 - `npm run vercel-build`
+
+## Testing Reality
+- There is currently no dedicated unit or integration test suite in the repo.
+- The practical verification stack right now is:
+  - `npm run lint`
+  - `npm run build`
+  - `npm run vercel-build` for deployment-sensitive checks
+  - Playwright/manual browser verification for product flows and responsive UI
+  - Supabase MCP checks when validating persisted data or activity logging
+- When changing UI/UX, prefer Playwright plus screenshots on desktop and mobile over assuming layout quality.
+- When changing server actions or status transitions, verify both UI behavior and the resulting Supabase rows/activities.
 
 ## Phase Status
 - **Phase 1 ✅ COMPLETE** — foundation, auth, board, landing
