@@ -15,11 +15,11 @@ import { CompanyLogo } from "@/components/company/company-logo";
 import { formatSalaryRange } from "@/lib/utils/applications";
 import { getCalendarDayDifference } from "@/lib/utils/dates";
 import { extractDomain } from "@/lib/utils/url";
-import type { Application } from "@/types/application";
+import type { ApplicationOverview } from "@/types/application";
 import { relativeDate, formatDateShort } from "@/lib/utils/dates";
 
 interface KanbanCardProps {
-  application: Application;
+  application: ApplicationOverview;
   index: number;
   onDelete?: (id: string) => void;
 }
@@ -57,6 +57,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           <div className="mb-2 flex items-start justify-between gap-2">
             <Link
               href={`/bewerbung/${application.id}`}
+              prefetch={false}
               className="flex min-w-0 items-center gap-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-ring/12"
             >
               <CompanyLogo
@@ -91,6 +92,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           <div className="rounded-[18px] border border-border/60 bg-dark-50/72 px-3 py-2.5">
             <Link
               href={`/bewerbung/${application.id}`}
+              prefetch={false}
               className="block rounded-sm text-sm font-heading font-medium text-dark line-clamp-2 transition-colors duration-150 hover:text-accent-orange focus:outline-none focus:ring-4 focus:ring-ring/12"
             >
               {application.role_title}

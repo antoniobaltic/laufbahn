@@ -23,7 +23,7 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-white/70 bg-background/78 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/70 bg-background/78 backdrop-blur-md md:backdrop-blur-xl">
         <div className="mx-auto flex h-[78px] w-full max-w-[1520px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <button
             className="lg:hidden rounded-full p-2 text-dark-500 transition-colors hover:bg-white cursor-pointer"
@@ -72,7 +72,7 @@ export function Topbar({ userEmail, reminders, onSignOut }: TopbarProps) {
                     className="fixed inset-0 z-40"
                     onClick={() => setUserMenuOpen(false)}
                   />
-                  <div className="absolute right-0 z-50 mt-2 w-64 rounded-[22px] border border-border/80 bg-[#fcfbf8]/98 py-2 shadow-dialog backdrop-blur-xl">
+                  <div className="absolute right-0 z-50 mt-2 w-64 rounded-[22px] border border-border/80 bg-[#fcfbf8]/98 py-2 shadow-dialog backdrop-blur-lg md:backdrop-blur-xl">
                     {userEmail && (
                       <div className="border-b border-border/70 px-4 py-3">
                         <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">

@@ -34,6 +34,32 @@ export interface Application {
   updated_at: string;
 }
 
+export type ApplicationOverview = Pick<
+  Application,
+  | "id"
+  | "user_id"
+  | "company_name"
+  | "role_title"
+  | "location"
+  | "job_url"
+  | "salary_min"
+  | "salary_max"
+  | "salary_note"
+  | "status"
+  | "position_in_column"
+  | "date_saved"
+  | "date_applied"
+  | "date_interview"
+  | "date_offer"
+  | "date_rejected"
+  | "deadline"
+  | "next_interview_at"
+  | "employment_type"
+  | "remote_policy"
+  | "created_at"
+  | "updated_at"
+>;
+
 export interface CreateApplicationInput {
   company_name: string;
   role_title: string;

@@ -13,10 +13,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils/cn";
 import { COLUMN_CONFIG } from "@/lib/utils/constants";
 import { useKanban } from "@/hooks/use-kanban";
-import type { Application } from "@/types/application";
+import type { Application, ApplicationOverview } from "@/types/application";
 
 interface KanbanBoardProps {
-  initialApplications: Application[];
+  initialApplications: ApplicationOverview[];
 }
 
 export function KanbanBoard({ initialApplications }: KanbanBoardProps) {

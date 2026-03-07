@@ -6,8 +6,7 @@ export default function AnalyticsLoading() {
   return (
     <div className="space-y-6">
       <div className="skeleton-sheen h-44 rounded-[34px]" aria-hidden="true" />
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <LoadingCard />
+      <div className="grid gap-3 sm:grid-cols-3">
         <LoadingCard />
         <LoadingCard />
         <LoadingCard />

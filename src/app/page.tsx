@@ -56,7 +56,7 @@ const steps = [
 export default function HomePage() {
   return (
     <div className="app-frame min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-white/70 bg-background/82 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/70 bg-background/82 backdrop-blur-md md:backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-orange shadow-card">
@@ -194,7 +194,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="border-y border-border/80 bg-white/72">
+        <section className="defer-render border-y border-border/80 bg-white/72">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
             <div className="max-w-2xl">
               <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
@@ -235,7 +235,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
+        <section className="defer-render mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
           <div className="surface-panel section-shell rounded-[34px] p-5 sm:p-6 lg:p-7">
             <div className="max-w-2xl">
               <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">

@@ -1,10 +1,5 @@
 import { notFound } from "next/navigation";
-import {
-  getApplicationActivities,
-  getApplicationById,
-  getApplicationContacts,
-  getApplicationDocuments,
-} from "@/actions/applications";
+import { getApplicationWorkspace } from "@/actions/applications";
 import { ApplicationDetailView } from "@/components/application/application-detail-view";
 
 interface ApplicationDetailPageProps {
@@ -15,24 +10,18 @@ export default async function ApplicationDetailPage({
   params,
 }: ApplicationDetailPageProps) {
   const { id } = await params;
-  const application = await getApplicationById(id);
+  const workspace = await getApplicationWorkspace(id);
 
-  if (!application) {
+  if (!workspace?.application) {
     notFound();
   }
 
-  const [activities, contacts, documents] = await Promise.all([
-    getApplicationActivities(id),
-    getApplicationContacts(id),
-    getApplicationDocuments(id),
-  ]);
-
   return (
     <ApplicationDetailView
-      application={application}
-      activities={activities}
-      contacts={contacts}
-      documents={documents}
+      application={workspace.application}
+      activities={workspace.activities}
+      contacts={workspace.contacts}
+      documents={workspace.documents}
     />
   );
 }

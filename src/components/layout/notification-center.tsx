@@ -43,7 +43,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-50 mt-2 w-[min(28rem,calc(100vw-1.5rem))] rounded-[24px] border border-border/80 bg-[#fcfbf8]/98 p-3 shadow-dialog backdrop-blur-xl">
+          <div className="absolute right-0 z-50 mt-2 w-[min(28rem,calc(100vw-1.5rem))] rounded-[24px] border border-border/80 bg-[#fcfbf8]/98 p-3 shadow-dialog backdrop-blur-lg md:backdrop-blur-xl">
             <div className="flex items-start justify-between gap-3 px-2 pb-3 pt-1">
               <div>
                 <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
@@ -72,6 +72,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                   <Link
                     key={reminder.id}
                     href={reminder.href}
+                    prefetch={false}
                     onClick={() => setOpen(false)}
                     className="group block rounded-[20px] border border-border/80 bg-white/86 p-4 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-dark-200 hover:shadow-card-hover"
                   >

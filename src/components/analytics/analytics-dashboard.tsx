@@ -195,7 +195,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)]">
+      <div className="defer-render grid gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)]">
         <div className="surface-card rounded-[30px] p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -529,6 +529,7 @@ function RecentMovementRow({ item }: { item: AnalyticsRecentMovementItem }) {
   return (
     <Link
       href={`/bewerbung/${item.applicationId}`}
+      prefetch={false}
       className="group block rounded-[22px] border border-border/80 bg-white/84 p-4 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-dark-200 hover:shadow-card-hover"
     >
       <div className="flex items-start justify-between gap-3">

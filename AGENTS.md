@@ -44,6 +44,7 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - Empty states should still feel finished and helpful.
 - Detail surfaces should behave like workspaces, not static records.
 - Mobile must preserve the same quality of hierarchy as desktop, not just stack everything mindlessly.
+- Responsive speed is part of the premium feel. The app should react quickly, avoid obvious layout shifts, and feel composed on slower devices.
 
 ### Simplicity First
 - The product should feel simple for an average user on first contact, even when the underlying model is powerful.
@@ -79,6 +80,8 @@ Laufbahn is a SaaS job application tracker for the German/Austrian (DACH) market
 - No implementation-language leaking into user-facing copy.
 - No “status for status’ sake” badges, helper pills, or metrics that do not change user behavior.
 - No empty-state screens that look like admin tools waiting for configuration.
+- No blanket auto-prefetching of dense dynamic detail links that creates invisible route churn.
+- No excessive blur, layered transparency, or shadow weight on mobile that makes the UI feel sluggish.
 
 ## Design System
 
@@ -162,6 +165,7 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Grid layouts should collapse intentionally: no awkward half-empty columns on tablet.
 - Detail pages move from split layout to a clean single-column stack below `xl`.
 - Board keeps intentional horizontal scroll; this is one of the few acceptable horizontal-overflow areas.
+- Route-level loading states should roughly match the eventual layout density so the app feels stable while data resolves.
 
 ### Board Rules
 - Column width is responsive: `w-[min(84vw,320px)]` on small screens, `300-320px` on larger screens.
@@ -175,6 +179,25 @@ Defined in [globals.css](/Users/antoniobaltic/Desktop/apps/laufbahn/src/app/glob
 - Buttons should stay finger-friendly and rounded.
 - Form sections stay single-column by default on small screens.
 - Critical navigation actions such as “Zur Übersicht” and “Zum Board” should remain near the top.
+- Treat mobile blur, transparency, and shadow as a limited budget. Prefer lighter glass treatments on small screens.
+
+### Responsive Validation Rules
+- Meaningful UI changes should be checked at minimum on:
+  - phone-width around `390px`
+  - tablet-width around `834px`
+  - desktop-width around `1280px` and up
+- Validate at least these surfaces when layout or navigation changes:
+  - landing page
+  - Übersicht / board
+  - Bewerbungen list
+  - application detail
+  - Auswertung / analytics
+- Look for more than breakage:
+  - first-view clarity
+  - scroll comfort
+  - tap-target size
+  - sticky-header behavior
+  - whether any section feels visually heavier on mobile than it needs to
 
 ## Forms & Data Entry
 - Break long forms into named sections with short helper copy.
@@ -341,6 +364,7 @@ src/
 │           ├── loading.tsx
 │           └── [id]/
 │               ├── page.tsx
+│               ├── loading.tsx
 │               └── not-found.tsx
 ├── components/
 │   ├── analytics/
@@ -428,6 +452,19 @@ src/
 - Shared derivation logic belongs in `src/lib/utils`, not duplicated inside components.
 - If a new feature needs privileged backend behavior beyond the authenticated user session, it should use `SUPABASE_SECRET_KEY` server-side only.
 
+### Performance & Perceived Speed
+- Premium here means not only visual polish but also low-friction rendering, stable layout, and fast-feeling route transitions.
+- Overview routes should fetch overview-shaped data only. Do not `select("*")` for board/list surfaces when the UI renders a much smaller field set.
+- Dense repeated links to dynamic detail routes should usually use `prefetch={false}` to avoid unnecessary RSC/network churn.
+- Detail workspaces should prefer a shared server-side fetch path that authenticates once and loads related entities in parallel.
+- Major app surfaces should have `loading.tsx` coverage when the route can take a noticeable moment to render.
+- Skeleton states should mirror the final layout closely enough to reduce perceived jumpiness and CLS.
+- Use deferred rendering patterns only for below-the-fold or clearly secondary sections. Do not apply them to primary interactive surfaces such as the board itself.
+- Keep visual effects performant:
+  - lighter backdrop blur on mobile
+  - restrained shadow stacking
+  - no decorative motion that delays interaction or first paint
+
 ### Vercel Deployment Pattern
 - Vercel is the canonical hosting target for this app.
 - `main` is the production deployment branch.
@@ -444,6 +481,7 @@ Current responsibilities:
 - `getAnalyticsSnapshot()`
 - `getNotificationReminders()`
 - `getApplicationById()`
+- `getApplicationWorkspace()`
 - `getApplicationActivities()`
 - `getApplicationContacts()`
 - `getApplicationDocuments()`
@@ -471,6 +509,9 @@ Every meaningful detail mutation should:
 Board-specific rule:
 - Because the shell reminders are server-derived, board mutations should trigger a refresh after persistence so topbar reminder state stays aligned.
 - Board moves into `angebot` should also trigger the shared celebration treatment after a successful server write.
+
+Read-path rule:
+- If the detail page needs the application plus related activity, contacts, and documents together, prefer the combined workspace loader over separate auth/client setup per query.
 
 ### Timeline Rules
 - `status_change` still comes from the database trigger.
@@ -514,9 +555,11 @@ Board-specific rule:
 - Validate important surfaces in a real browser, not only by reading code:
   - landing page
   - board / Übersicht
+  - Bewerbungen list
   - application detail
   - analytics / Auswertung
 - Use Playwright for smoke tests and keep screenshots for at least one desktop and one mobile pass when the UI changes materially.
+- After performance-sensitive changes, inspect browser console and network behavior on dense routes such as the board to catch avoidable prefetch/request floods.
 - After pushing `main`, confirm the production deployment on `https://laufbahn.vercel.app` shows the new copy and layout, not only that the URL loads.
 - Clean up any disposable test users or seed data created for browser validation once checks are complete.
 

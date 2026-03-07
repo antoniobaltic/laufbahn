@@ -14,13 +14,17 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createApplication } from "@/actions/applications";
 import type { ScrapedJob } from "@/lib/scraper";
-import type { Application, CreateApplicationInput } from "@/types/application";
+import type {
+  Application,
+  ApplicationOverview,
+  CreateApplicationInput,
+} from "@/types/application";
 
 interface AddApplicationDialogProps {
   open: boolean;
   onClose: () => void;
   onCreated: (application: Application) => void;
-  existingApplications?: Application[];
+  existingApplications?: ApplicationOverview[];
 }
 
 const EMPLOYMENT_TYPES = [
@@ -52,7 +56,7 @@ export function AddApplicationDialog({
   const [error, setError] = useState("");
   const [scraperUrl, setScraperUrl] = useState("");
   const [scrapeError, setScrapeError] = useState("");
-  const [duplicate, setDuplicate] = useState<Application | null>(null);
+  const [duplicate, setDuplicate] = useState<ApplicationOverview | null>(null);
   const [fields, setFields] = useState({
     company_name: "",
     role_title: "",

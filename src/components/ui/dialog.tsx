@@ -38,7 +38,7 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
     <dialog
       ref={dialogRef}
       className={cn(
-        "backdrop:bg-dark/38 backdrop:backdrop-blur-md",
+        "backdrop:bg-dark/38 backdrop:backdrop-blur-[2px] sm:backdrop:backdrop-blur-md",
         "mx-auto my-auto w-[min(calc(100%-1.25rem),56rem)] max-h-[calc(100vh-1.25rem)] overflow-hidden rounded-[28px] border border-white/70 bg-[#fcfbf8] p-0 shadow-dialog",
         "fade-in-up",
         className
@@ -107,7 +107,7 @@ function DialogFooter({
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-3 border-t border-border/70 bg-white/68 px-5 pb-5 pt-4 backdrop-blur-sm sm:px-7 sm:pb-7",
+        "flex items-center justify-end gap-3 border-t border-border/70 bg-white/68 px-5 pb-5 pt-4 backdrop-blur-[2px] sm:px-7 sm:pb-7 sm:backdrop-blur-sm",
         className
       )}
     >

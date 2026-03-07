@@ -30,7 +30,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     <div className="fixed inset-0 z-50 lg:hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 fade-in bg-dark/42 backdrop-blur-sm"
+        className="fixed inset-0 fade-in bg-dark/42 backdrop-blur-[2px] sm:backdrop-blur-sm"
         onClick={onClose}
       />
 

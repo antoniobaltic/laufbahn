@@ -16,6 +16,7 @@ import type { Activity, ActivityMetadata, ActivityType } from "@/types/activity"
 import type { AnalyticsSnapshot } from "@/types/analytics";
 import type {
   Application,
+  ApplicationOverview,
   CreateApplicationInput,
 } from "@/types/application";
 import type {
@@ -188,7 +189,7 @@ function documentMatchesInput(
   );
 }
 
-export async function getApplications() {
+export async function getApplications(): Promise<ApplicationOverview[]> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -198,7 +199,32 @@ export async function getApplications() {
 
   const { data, error } = await supabase
     .from("applications")
-    .select("*")
+    .select(
+      [
+        "id",
+        "user_id",
+        "company_name",
+        "role_title",
+        "location",
+        "job_url",
+        "salary_min",
+        "salary_max",
+        "salary_note",
+        "status",
+        "position_in_column",
+        "date_saved",
+        "date_applied",
+        "date_interview",
+        "date_offer",
+        "date_rejected",
+        "deadline",
+        "next_interview_at",
+        "employment_type",
+        "remote_policy",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
     .eq("user_id", user.id)
     .order("position_in_column", { ascending: true });
 
@@ -207,7 +233,7 @@ export async function getApplications() {
     return [];
   }
 
-  return (data ?? []) as Application[];
+  return (data ?? []) as unknown as ApplicationOverview[];
 }
 
 export async function getNotificationReminders(limit?: number) {
@@ -412,6 +438,67 @@ export async function getApplicationDocuments(applicationId: string) {
   }
 
   return (data ?? []) as ApplicationDocument[];
+}
+
+export async function getApplicationWorkspace(id: string) {
+  const { supabase, user } = await getAuthenticatedClient();
+
+  const [
+    applicationResult,
+    activitiesResult,
+    contactsResult,
+    documentsResult,
+  ] = await Promise.all([
+    supabase
+      .from("applications")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("activities")
+      .select("*")
+      .eq("application_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("application_contacts")
+      .select("*")
+      .eq("application_id", id)
+      .eq("user_id", user.id)
+      .order("is_primary", { ascending: false })
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("application_documents")
+      .select("*")
+      .eq("application_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  if (applicationResult.error) {
+    console.error("Error fetching application workspace application:", applicationResult.error);
+    return null;
+  }
+
+  if (activitiesResult.error) {
+    console.error("Error fetching application workspace activities:", activitiesResult.error);
+  }
+
+  if (contactsResult.error) {
+    console.error("Error fetching application workspace contacts:", contactsResult.error);
+  }
+
+  if (documentsResult.error) {
+    console.error("Error fetching application workspace documents:", documentsResult.error);
+  }
+
+  return {
+    application: (applicationResult.data ?? null) as Application | null,
+    activities: (activitiesResult.data ?? []) as Activity[],
+    contacts: (contactsResult.data ?? []) as ApplicationContact[],
+    documents: (documentsResult.data ?? []) as ApplicationDocument[],
+  };
 }
 
 export async function createApplication(input: CreateApplicationInput) {

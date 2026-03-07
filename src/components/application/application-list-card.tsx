@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatSalaryRange } from "@/lib/utils/applications";
 import { relativeDate } from "@/lib/utils/dates";
 import { extractDomain } from "@/lib/utils/url";
-import type { Application } from "@/types/application";
+import type { ApplicationOverview } from "@/types/application";
 
 interface ApplicationListCardProps {
-  application: Application;
+  application: ApplicationOverview;
 }
 
 export function ApplicationListCard({ application }: ApplicationListCardProps) {
@@ -21,7 +21,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
   );
 
   return (
-    <Link href={`/bewerbung/${application.id}`} className="group block">
+    <Link href={`/bewerbung/${application.id}`} prefetch={false} className="group block">
       <Card className="interactive-lift h-full rounded-[28px]">
         <CardHeader className="flex flex-row items-start justify-between gap-3 pb-3">
           <div className="flex min-w-0 items-center gap-3">

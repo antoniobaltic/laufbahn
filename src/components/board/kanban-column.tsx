@@ -4,13 +4,13 @@ import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils/cn";
 import { ColumnHeader } from "./column-header";
 import { KanbanCard } from "./kanban-card";
-import type { Application } from "@/types/application";
+import type { ApplicationOverview } from "@/types/application";
 import type { ApplicationStatus } from "@/lib/utils/constants";
 import { COLUMN_CONFIG } from "@/lib/utils/constants";
 
 interface KanbanColumnProps {
   status: ApplicationStatus;
-  applications: Application[];
+  applications: ApplicationOverview[];
   onDeleteApplication?: (id: string) => void;
 }
 

@@ -4,12 +4,12 @@ import { useState, useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { DropResult } from "@hello-pangea/dnd";
 import { useOfferCelebration } from "@/components/celebration/offer-celebration-provider";
-import type { Application } from "@/types/application";
+import type { ApplicationOverview } from "@/types/application";
 import type { ApplicationStatus } from "@/lib/utils/constants";
 import { COLUMN_ORDER } from "@/lib/utils/constants";
 import { reorderApplications } from "@/actions/applications";
 
-export function useKanban(initialApplications: Application[]) {
+export function useKanban(initialApplications: ApplicationOverview[]) {
   const [applications, setApplications] = useState(initialApplications);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -120,7 +120,7 @@ export function useKanban(initialApplications: Application[]) {
     [applications, celebrateOffer, getColumnApplications, router]
   );
 
-  const addApplication = useCallback((app: Application) => {
+  const addApplication = useCallback((app: ApplicationOverview) => {
     setApplications((prev) => [...prev, app]);
   }, []);
 

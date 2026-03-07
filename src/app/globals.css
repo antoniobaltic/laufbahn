@@ -238,7 +238,8 @@
   .surface-panel {
     border: 1px solid rgba(232, 230, 220, 0.92);
     background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(18px);
+    backdrop-filter: saturate(1.05) blur(16px);
+    -webkit-backdrop-filter: saturate(1.05) blur(16px);
     box-shadow: 0 18px 48px rgba(20, 20, 19, 0.06);
   }
 
@@ -334,6 +335,34 @@
     border-radius: 9999px;
     opacity: 0;
     animation: confetti-drift 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .defer-render {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 720px;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .surface-panel {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-frame::before {
+    opacity: 0.24;
+    background-size: 40px 40px;
+  }
+
+  .surface-panel {
+    backdrop-filter: saturate(1.02) blur(10px);
+    -webkit-backdrop-filter: saturate(1.02) blur(10px);
+    box-shadow: 0 12px 28px rgba(20, 20, 19, 0.05);
+  }
+
+  .surface-card {
+    box-shadow: 0 1px 2px rgba(20, 20, 19, 0.05), 0 1px 1px rgba(20, 20, 19, 0.03);
   }
 }
 
