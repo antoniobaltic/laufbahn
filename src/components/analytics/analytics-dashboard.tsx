@@ -15,6 +15,7 @@ import {
 import { StatusPill } from "@/components/application/status-pill";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHero } from "@/components/ui/page-hero";
 import { cn } from "@/lib/utils/cn";
 import { COLUMN_CONFIG } from "@/lib/utils/constants";
 import { formatDateShort, relativeDate } from "@/lib/utils/dates";
@@ -87,6 +88,9 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
       <AnalyticsHero
         title="Auswertung"
         description="Sieh auf einen Blick, wie viele Bewerbungen aktiv sind, wo Rückmeldungen kommen und was als Nächstes wichtig ist."
+        activeApplications={activeApplications}
+        reminderCount={reminderCount}
+        responseRate={responseRate}
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -268,24 +272,22 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
 function AnalyticsHero({
   title,
   description,
+  activeApplications,
+  reminderCount,
+  responseRate,
 }: {
   title: string;
   description: string;
+  activeApplications?: number;
+  reminderCount?: number;
+  responseRate?: number;
 }) {
   return (
-    <div className="surface-panel section-shell rounded-[34px] p-5 sm:p-6 lg:p-7">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-3xl">
-            <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-            Auswertung
-            </p>
-          <h1 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.15rem]">
-            {title}
-          </h1>
-          <p className="mt-3 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-            {description}
-          </p>
-        </div>
+    <PageHero
+      kicker="Auswertung"
+      title={title}
+      description={description}
+      actions={
         <Link
           href="/board"
           className={cn(
@@ -296,8 +298,51 @@ function AnalyticsHero({
           Zur Übersicht
           <ArrowRight size={16} />
         </Link>
-      </div>
-    </div>
+      }
+      aside={
+        activeApplications !== undefined &&
+        reminderCount !== undefined &&
+        responseRate !== undefined ? (
+          <>
+            <div className="metric-cloud rounded-[24px] px-4 py-4">
+              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                Aktiv
+              </p>
+              <p className="mt-3 text-2xl font-heading font-semibold text-dark">
+                {activeApplications}
+              </p>
+              <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                Bewerbungen laufen gerade noch aktiv.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+              <div className="metric-cloud rounded-[24px] px-4 py-4">
+                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  Rückmeldungen
+                </p>
+                <p className="mt-3 text-2xl font-heading font-semibold text-dark">
+                  {responseRate}%
+                </p>
+                <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                  Gespräche oder Angebote im Verhältnis zu allen Bewerbungen.
+                </p>
+              </div>
+              <div className="metric-cloud rounded-[24px] px-4 py-4">
+                <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  Wichtig jetzt
+                </p>
+                <p className="mt-3 text-2xl font-heading font-semibold text-dark">
+                  {reminderCount}
+                </p>
+                <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                  Hinweise brauchen aktuell Aufmerksamkeit.
+                </p>
+              </div>
+            </div>
+          </>
+        ) : undefined
+      }
+    />
   );
 }
 
@@ -324,7 +369,7 @@ function MetricCard({
           : "bg-dark-50/85";
 
   return (
-    <div className="surface-card interactive-lift rounded-[26px] p-5">
+    <div className="metric-cloud rounded-[26px] p-5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
           {label}

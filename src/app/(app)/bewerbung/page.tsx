@@ -3,6 +3,7 @@ import { ArrowRight, Files } from "lucide-react";
 import { getApplications } from "@/actions/applications";
 import { ApplicationListCard } from "@/components/application/application-list-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHero } from "@/components/ui/page-hero";
 import { cn } from "@/lib/utils/cn";
 import { toTimestamp } from "@/lib/utils/dates";
 
@@ -14,42 +15,34 @@ export default async function ApplicationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-2xl">
-          <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-            Bewerbungen
-          </p>
-          <h1 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.1rem]">
-            Alle Einträge
-          </h1>
-          <p className="mt-2 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-            Hier findest du jede Bewerbung gesammelt. Öffne einen Eintrag, sobald
-            du Notizen, Gespräche oder Unterlagen bearbeiten möchtest.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="rounded-full border border-border/80 bg-white/76 px-3 py-2 text-xs font-heading text-muted-foreground shadow-card">
-            {applications.length} Bewerbung
-            {applications.length === 1 ? "" : "en"}
-          </div>
-          <Link
-            href="/board"
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/78 px-4 py-2.5 text-sm font-heading font-medium text-dark transition-all duration-200",
-              "hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
-            )}
-          >
-            Zur Übersicht
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
+      <PageHero
+        kicker="Bewerbungen"
+        title="Alle Einträge bleiben greifbar, ohne dass die Seite laut wirkt."
+        description="Diese Ansicht ist zum Scannen gebaut: zuletzt veränderte Bewerbungen zuerst, mit klaren Karten und direktem Sprung in die Detailansicht."
+        actions={
+          <>
+            <Link
+              href="/board"
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/78 px-4 py-2.5 text-sm font-heading font-medium text-dark transition-all duration-200",
+                "hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
+              )}
+            >
+              Zur Übersicht
+              <ArrowRight size={16} />
+            </Link>
+            <div className="rounded-full border border-border/80 bg-white/76 px-3 py-2 text-xs font-heading text-muted-foreground shadow-card">
+              {applications.length} Bewerbung
+              {applications.length === 1 ? "" : "en"}
+            </div>
+          </>
+        }
+      />
 
       {sortedApplications.length > 0 ? (
-        <div className="surface-panel rounded-[32px] p-4 sm:p-5">
+        <div className="surface-panel rounded-[34px] p-4 sm:p-5">
           <div className="mb-4 text-sm font-body text-dark-500">
-            Sortiert nach letzter Änderung, damit die wichtigsten Dinge oben bleiben.
+            Sortiert nach letzter Änderung, damit alles mit Bewegung direkt oben bleibt.
           </div>
           <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
             {sortedApplications.map((application) => (
@@ -61,7 +54,7 @@ export default async function ApplicationsPage() {
           </div>
         </div>
       ) : (
-        <div className="surface-panel rounded-[32px] px-4">
+        <div className="surface-panel rounded-[34px] px-4">
           <EmptyState
             icon={<Files size={40} />}
             title="Noch keine Bewerbungen"

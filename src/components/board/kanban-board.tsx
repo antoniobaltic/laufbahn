@@ -1,9 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { Briefcase, MoveRight, Plus } from "lucide-react";
+import {
+  Briefcase,
+  CalendarClock,
+  Layers3,
+  MoveRight,
+  Plus,
+  Sparkles,
+} from "lucide-react";
 import {
   deleteApplication,
   restoreApplicationSnapshots,
@@ -15,6 +23,7 @@ import { NextStepPromptsCard } from "@/components/next-step/next-step-prompts-ca
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHero } from "@/components/ui/page-hero";
 import { getStatusLabel } from "@/lib/utils/applications";
 import { cn } from "@/lib/utils/cn";
 import { COLUMN_CONFIG } from "@/lib/utils/constants";
@@ -211,93 +220,153 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
   const decisionCount = applications.filter((application) =>
     ["angebot", "abgelehnt"].includes(application.status)
   ).length;
+  const pendingCount = applications.filter(
+    (application) => application.status === "beworben"
+  ).length;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl">
-          <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-            Übersicht
-          </p>
-          <h1 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.15rem]">
-            Deine Bewerbungen auf einen Blick
-          </h1>
-          <p className="mt-2 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-            Behalte offene Bewerbungen, Gespräche und Entscheidungen in einer
-            Ansicht im Blick. Mehr Details öffnest du erst dann, wenn du sie
-            wirklich brauchst.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="rounded-full border border-border/80 bg-white/70 px-3 py-2 text-xs font-heading text-muted-foreground shadow-card">
-            {applications.length} Bewerbung
-            {applications.length === 1 ? "" : "en"}
-            {isPending ? " werden aktualisiert" : " insgesamt"}
-          </div>
-          <Button onClick={() => setDialogOpen(true)} size="lg">
-            <Plus size={16} />
-            Bewerbung hinzufügen
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-3">
-        <BoardStatCard
-          label="Offen"
-          value={activeCount}
-          helper="Noch im laufenden Prozess"
-          tone="orange"
-        />
-        <BoardStatCard
-          label="Gespräche"
-          value={interviewCount}
-          helper="Mit Termin oder Gesprächsstatus"
-          tone="blue"
-        />
-        <BoardStatCard
-          label="Entscheidungen"
-          value={decisionCount}
-          helper="Angebote und Absagen"
-          tone="green"
-        />
-      </div>
+      <PageHero
+        kicker="Übersicht"
+        title="Heute soll sofort klar sein, was Aufmerksamkeit braucht."
+        description="Die Übersicht zeigt Bewegung statt Verwaltung: offene Bewerbungen, Gespräche, Entscheidungen und den sinnvollsten nächsten Schritt."
+        actions={
+          <>
+            <Button onClick={() => setDialogOpen(true)} size="lg">
+              <Plus size={16} />
+              Bewerbung hinzufügen
+            </Button>
+            <Link
+              href="/dokumente"
+              className={cn(
+                "inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(228,210,191,0.82)] bg-white/88 px-5 py-3 text-sm font-heading font-medium text-dark shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_10px_24px_rgba(20,20,19,0.05)] transition-all duration-200",
+                "hover:-translate-y-0.5 hover:bg-white"
+              )}
+            >
+              Dokumente öffnen
+              <Layers3 size={16} />
+            </Link>
+            <div className="rounded-full border border-border/80 bg-white/72 px-3 py-2 text-xs font-heading text-muted-foreground">
+              {applications.length} Bewerbung
+              {applications.length === 1 ? "" : "en"}
+              {isPending ? " werden aktualisiert" : " insgesamt"}
+            </div>
+          </>
+        }
+        aside={
+          <>
+            <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+              <BoardStatCard
+                label="Offen"
+                value={activeCount}
+                helper="Noch im laufenden Prozess"
+                tone="orange"
+              />
+              <BoardStatCard
+                label="Gespräche"
+                value={interviewCount}
+                helper="Mit Termin oder Gesprächsstatus"
+                tone="blue"
+              />
+              <BoardStatCard
+                label="Entschieden"
+                value={decisionCount}
+                helper="Angebote und Absagen"
+                tone="green"
+              />
+            </div>
+            {prompts[0] ? (
+              <Link
+                href={prompts[0].href}
+                className="surface-card interactive-lift rounded-[28px] p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-orange-50 text-accent-orange">
+                    <Sparkles size={18} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                      Heute sinnvoll
+                    </p>
+                    <p className="mt-2 text-base font-heading font-semibold text-dark">
+                      {prompts[0].title}
+                    </p>
+                    <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                      {prompts[0].body}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="surface-card rounded-[28px] p-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-blue-50 text-accent-blue">
+                    <CalendarClock size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                      Arbeitsmodus
+                    </p>
+                    <p className="mt-2 text-base font-heading font-semibold text-dark">
+                      {pendingCount > 0
+                        ? `${pendingCount} Bewerbungen koennen bald Nachfassen brauchen.`
+                        : "Im Moment ist alles ruhig sortiert."}
+                    </p>
+                    <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                      {pendingCount > 0
+                        ? "Oeffne die Bewerbungen im Bereich Beworben, sobald du kurze Follow-ups oder frische Unterlagen vorbereiten willst."
+                        : "Nutze die Zeit fuer bessere Unterlagen oder neue passende Stellen."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        }
+      />
 
       <NextStepPromptsCard prompts={prompts} />
 
       {hasApplications ? (
         isClient ? (
-        <DragDropContext onDragEnd={handleBoardDragEnd}>
-          <div className="surface-panel rounded-[32px] p-3 sm:p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-1 sm:px-2">
-              <div className="text-sm font-body leading-relaxed text-dark-500">
-                Ziehe eine Bewerbung in den nächsten Schritt, sobald sich etwas
-                verändert.
+          <DragDropContext onDragEnd={handleBoardDragEnd}>
+            <div className="surface-panel rounded-[36px] p-3 sm:p-4 lg:p-5">
+              <div className="mb-4 flex flex-col gap-3 rounded-[28px] border border-white/60 bg-white/66 px-4 py-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                    Bewerbungsstand
+                  </p>
+                  <p className="mt-2 text-lg font-heading font-semibold text-dark">
+                    Ziehe einen Eintrag nur dann weiter, wenn sich fuer dich wirklich etwas veraendert hat.
+                  </p>
+                  <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
+                    So bleibt die Übersicht ehrlich und jede Spalte behält Bedeutung.
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/82 px-4 py-2 text-xs font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                  <MoveRight size={12} />
+                  Von gemerkt bis abgeschlossen
+                </div>
               </div>
-              <div className="hidden items-center gap-2 text-xs font-heading text-muted-foreground sm:flex">
-                <MoveRight size={12} />
-                Von gemerkt bis abgeschlossen
-              </div>
-            </div>
 
-            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
-              {columns.map((status) => (
-                <KanbanColumn
-                  key={status}
-                  status={status}
-                  applications={getColumnApplications(status)}
-                  onDeleteApplication={handleDelete}
-                />
-              ))}
+              <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
+                {columns.map((status) => (
+                  <KanbanColumn
+                    key={status}
+                    status={status}
+                    applications={getColumnApplications(status)}
+                    onDeleteApplication={handleDelete}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        </DragDropContext>
+          </DragDropContext>
         ) : (
           <BoardLoadingPanel />
         )
       ) : (
-        <div className="surface-panel rounded-[32px] p-4 sm:p-5">
-          <div className="surface-card rounded-[28px] border border-dashed border-border/80 bg-white/86 p-2">
+        <div className="surface-panel rounded-[36px] p-4 sm:p-5">
+          <div className="surface-card rounded-[30px] border border-dashed border-border/80 bg-white/86 p-2">
             <EmptyState
               icon={<Briefcase size={34} />}
               title="Noch keine Bewerbungen"
@@ -321,10 +390,10 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
                   className="flex w-[min(84vw,320px)] shrink-0 snap-start flex-col sm:w-[300px] xl:w-[320px]"
                 >
                   <div
-                    className="h-1.5 rounded-t-[24px]"
+                    className="h-1.5 rounded-t-[26px]"
                     style={{ backgroundColor: config.color }}
                   />
-                  <div className="surface-card flex min-h-[220px] flex-1 flex-col rounded-b-[24px] border border-t-0 border-border/80 bg-white/78">
+                  <div className="surface-card flex min-h-[220px] flex-1 flex-col rounded-b-[26px] border border-t-0 border-border/80 bg-white/78">
                     <KanbanColumnPlaceholder title={config.title} />
                   </div>
                 </div>
@@ -357,19 +426,22 @@ function BoardStatCard({
 }) {
   const toneClass =
     tone === "orange"
-      ? "text-accent-orange"
+      ? "bg-orange-50/90 text-accent-orange"
       : tone === "blue"
-        ? "text-accent-blue"
-        : "text-accent-green";
+        ? "bg-blue-50/90 text-accent-blue"
+        : "bg-green-50/90 text-accent-green";
 
   return (
-    <div className="surface-card interactive-lift rounded-[24px] px-5 py-4">
-      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+    <div className="metric-cloud rounded-[24px] px-4 py-4 sm:px-5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
         {label}
-      </p>
-      <p className={cn("mt-3 text-3xl font-heading font-semibold", toneClass)}>
-        {value}
-      </p>
+        </p>
+        <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-heading", toneClass)}>
+          {tone === "orange" ? "Aktiv" : tone === "blue" ? "Termin" : "Status"}
+        </span>
+      </div>
+      <p className="mt-3 text-3xl font-heading font-semibold text-dark">{value}</p>
       <p className="mt-2 text-sm font-body text-dark-500">{helper}</p>
     </div>
   );
@@ -395,7 +467,7 @@ function KanbanColumnPlaceholder({ title }: { title: string }) {
 
 function BoardLoadingPanel() {
   return (
-    <div className="surface-panel rounded-[32px] p-3 sm:p-4">
+    <div className="surface-panel rounded-[36px] p-3 sm:p-4">
       <div className="mb-3 px-1 text-sm font-body text-dark-500 sm:px-2">
         Die Übersicht wird vorbereitet.
       </div>

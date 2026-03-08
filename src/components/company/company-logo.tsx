@@ -12,6 +12,21 @@ interface CompanyLogoProps {
   className?: string;
 }
 
+function isPlaceholderDomain(domain?: string | null) {
+  if (!domain) {
+    return false;
+  }
+
+  return (
+    domain === "localhost" ||
+    domain.endsWith(".localhost") ||
+    domain === "example.com" ||
+    domain.endsWith(".example.com") ||
+    domain.endsWith(".example.org") ||
+    domain.endsWith(".example.net")
+  );
+}
+
 // Generate a consistent background color from company name
 function nameToColor(name: string): string {
   const colors = [
@@ -37,8 +52,10 @@ export function CompanyLogo({
 
   const initial = companyName.charAt(0).toUpperCase();
   const colorClass = nameToColor(companyName);
+  const fallbackToMonogram =
+    isPlaceholderDomain(domain) || (!logoUrl && (!domain || faviconError));
 
-  if (!logoUrl && (!domain || faviconError)) {
+  if (fallbackToMonogram) {
     return (
       <div
         className={cn(
@@ -58,11 +75,12 @@ export function CompanyLogo({
     );
   }
 
-  const src = !logoError && logoUrl
-    ? logoUrl
-    : domain
-      ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
-      : null;
+  const src =
+    !logoError && logoUrl
+      ? logoUrl
+      : domain
+        ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+        : null;
 
   if (!src) {
     return (

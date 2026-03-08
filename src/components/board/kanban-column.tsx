@@ -23,14 +23,12 @@ export function KanbanColumn({
 
   return (
     <div className="flex w-[min(84vw,320px)] shrink-0 snap-start flex-col sm:w-[300px] xl:w-[320px]">
-      {/* Color accent bar */}
       <div
-        className="h-1.5 rounded-t-[24px]"
+        className="h-1.5 rounded-t-[26px]"
         style={{ backgroundColor: config.color }}
       />
 
-      {/* Column container */}
-      <div className="surface-card flex h-full flex-col rounded-b-[24px] border border-t-0 border-border/80 bg-white/78">
+      <div className="surface-card flex h-full flex-col rounded-b-[26px] border border-t-0 border-border/80 bg-white/78">
         <ColumnHeader
           title={config.title}
           count={applications.length}
@@ -43,9 +41,9 @@ export function KanbanColumn({
               ref={provided.innerRef}
               {...provided.droppableProps}
               className={cn(
-                "flex-1 px-3 pb-3 pt-3 min-h-[180px] transition-[background-color,box-shadow] duration-200",
+                "min-h-[180px] flex-1 px-3 pb-3 pt-3 transition-[background-color,box-shadow] duration-200",
                 snapshot.isDraggingOver &&
-                  "rounded-b-[24px] bg-light-gray/55 shadow-[inset_0_0_0_1px_rgba(217,119,87,0.08)]"
+                  "rounded-b-[26px] bg-light-gray/55 shadow-[inset_0_0_0_1px_rgba(217,119,87,0.08)]"
               )}
             >
               {applications.map((app, index) => (

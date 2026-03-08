@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ArrowRight,
   LayoutDashboard,
   BarChart3,
   Briefcase,
@@ -39,26 +40,35 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="surface-panel sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-white/70 bg-white/68 lg:flex">
-      {/* Logo */}
-      <div className="border-b border-border/70 px-6 py-6">
-        <Link href="/board" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-orange shadow-card">
-            <span className="text-white font-heading font-bold text-sm">L</span>
-          </div>
-          <div>
-            <span className="block font-heading text-lg font-semibold tracking-tight text-dark">
-              Laufbahn
-            </span>
-            <span className="block text-xs font-heading text-muted-foreground">
-              Bewerbungen entspannt organisieren
-            </span>
-          </div>
-        </Link>
-      </div>
+    <aside className="sticky top-0 hidden h-screen w-80 shrink-0 px-4 py-4 lg:flex">
+      <div className="surface-panel flex h-full w-full flex-col rounded-[34px] p-4">
+        <div className="surface-stage rounded-[28px] px-5 py-5">
+          <Link href="/board" className="flex items-start gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-[20px] bg-accent-orange shadow-[0_14px_28px_rgba(217,119,87,0.24)]">
+              <span className="text-sm font-heading font-bold text-white">L</span>
+            </div>
+            <div className="min-w-0">
+              <span className="block font-heading text-xl font-semibold tracking-tight text-dark">
+                Laufbahn
+              </span>
+              <span className="mt-1 block text-sm font-body leading-relaxed text-dark-500">
+                Der ruhige Ort fuer Bewerbungen, Gespräche und feste Dokumentfassungen.
+              </span>
+            </div>
+          </Link>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-4 py-5">
+          <div className="mt-5 flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+            <span className="eyebrow-badge">DACH Fokus</span>
+          </div>
+        </div>
+
+        <div className="mt-4 px-2">
+          <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
+            Navigation
+          </p>
+        </div>
+
+        <nav className="mt-3 flex-1 space-y-2 px-1">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -68,43 +78,64 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "interactive-lift flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-heading transition-colors duration-200",
+                "interactive-lift flex items-center gap-3 rounded-[24px] px-4 py-3.5 text-sm font-heading transition-colors duration-200",
                 isActive
                   ? "surface-card text-dark font-medium"
-                  : "text-dark-500 hover:bg-white/70 hover:text-dark"
+                  : "text-dark-500 hover:bg-white/74 hover:text-dark"
               )}
             >
               <div
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-xl transition-colors duration-200",
-                  isActive ? "bg-orange-50 text-accent-orange" : "bg-dark-50 text-dark-500"
+                  "flex h-10 w-10 items-center justify-center rounded-[18px] transition-colors duration-200",
+                  isActive
+                    ? "bg-orange-50/90 text-accent-orange"
+                    : "bg-dark-50/70 text-dark-500"
                 )}
               >
-                <Icon size={18} />
+                  <Icon size={18} />
               </div>
-              <span>{item.label}</span>
+              <div className="min-w-0 flex-1">
+                <span className="block">{item.label}</span>
+                <span className="block text-xs font-body text-muted-foreground">
+                  {getNavHint(item.href)}
+                </span>
+              </div>
               {isActive && (
-                <span className="ml-auto rounded-full bg-orange-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.08em] text-accent-orange">
-                  Aktiv
+                <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-dark text-light">
+                  <ArrowRight size={14} />
                 </span>
               )}
             </Link>
           );
         })}
-      </nav>
+        </nav>
 
-      {/* Footer */}
-      <div className="border-t border-border/70 px-4 py-5">
-        <div className="surface-muted rounded-[22px] px-4 py-4">
+        <div className="surface-rail rounded-[28px] px-4 py-4">
           <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            Kurz gesagt
+            Produktprinzip
           </p>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Jede Bewerbung bleibt komplett an einem Ort: Stand, Fristen,
-            Gespräche und die passende Version deiner Unterlagen.
+            Erst klar sehen, was heute wichtig ist. Mehr Tiefe oeffnet sich erst
+            dann, wenn du sie wirklich brauchst.
           </p>
         </div>
       </div>
     </aside>
   );
+}
+
+function getNavHint(href: string) {
+  if (href === "/board") {
+    return "Heute im Blick";
+  }
+
+  if (href === "/bewerbung") {
+    return "Alle Eintraege";
+  }
+
+  if (href === "/dokumente") {
+    return "Versionen & Varianten";
+  }
+
+  return "Fortschritt lesen";
 }

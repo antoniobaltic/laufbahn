@@ -8,18 +8,18 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-light-gray/85 text-dark-600 border border-border/80",
-  orange: "bg-orange-50 text-orange-600 border border-orange-200/70",
-  blue: "bg-blue-50 text-blue-600 border border-blue-200/70",
-  green: "bg-green-50 text-green-600 border border-green-200/70",
-  muted: "bg-dark-50 text-muted-foreground border border-border/70",
+  default: "bg-light-gray/82 text-dark-600 border border-border/80",
+  orange: "bg-orange-50/88 text-orange-600 border border-orange-200/70",
+  blue: "bg-blue-50/88 text-blue-600 border border-blue-200/70",
+  green: "bg-green-50/88 text-green-600 border border-green-200/70",
+  muted: "bg-dark-50/76 text-muted-foreground border border-border/70",
 };
 
 function Badge({ className, variant = "default", ...props }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-heading font-medium tracking-[0.01em]",
+        "inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-heading font-medium tracking-[0.04em]",
         variantStyles[variant],
         className
       )}

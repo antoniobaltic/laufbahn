@@ -103,17 +103,17 @@ export function ApplicationStatusEditor({
   };
 
   return (
-    <div className="surface-card rounded-[28px] p-5 sm:p-6">
+    <div className="surface-rail rounded-[30px] p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
             Stand der Bewerbung
           </p>
-          <h2 className="mt-2 text-lg font-heading font-semibold text-dark">
-            Schnell anpassen
+          <h2 className="mt-2 text-xl font-heading font-semibold text-dark">
+            Erst den Stand festlegen
           </h2>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Änderungen erscheinen automatisch in der Übersicht und im Verlauf.
+            Alles Weitere ordnet sich danach. Änderungen erscheinen automatisch in der Übersicht und im Verlauf.
           </p>
         </div>
       </div>
@@ -129,7 +129,7 @@ export function ApplicationStatusEditor({
               type="button"
               onClick={() => setSelectedStatus(status)}
               className={cn(
-                "rounded-[18px] border px-3 py-3 text-left transition-[transform,box-shadow,border-color,background-color] duration-200",
+                "rounded-[20px] border px-3 py-3 text-left transition-[transform,box-shadow,border-color,background-color] duration-200",
                 "hover:-translate-y-0.5 hover:shadow-card-hover",
                 isSelected
                   ? "shadow-card"
@@ -159,7 +159,7 @@ export function ApplicationStatusEditor({
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
           <Sparkles size={12} className="text-accent-orange" />
-          Jede Änderung landet automatisch im Verlauf.
+          Jeder Stand bleibt später im Verlauf nachvollziehbar.
         </div>
 
         <div className="flex flex-wrap gap-2">

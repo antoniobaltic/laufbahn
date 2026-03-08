@@ -147,18 +147,17 @@ export function ApplicationWorkflowCard({
   };
 
   return (
-    <Card className="rounded-[28px]">
+    <Card className="surface-rail rounded-[30px]">
       <CardHeader className="pb-3">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <CalendarClock size={16} className="text-status-gespraech" />
-            <h2 className="text-lg font-heading font-medium text-dark">
-              Fristen & Gespräche
+            <h2 className="text-xl font-heading font-medium text-dark">
+              Nächster Schritt
             </h2>
           </div>
           <p className="text-sm font-body leading-relaxed text-dark-500">
-            Trage hier alles ein, was dir hilft, den nächsten Schritt nicht zu
-            verpassen.
+            Fristen, Gespräche und Vorbereitung liegen bewusst kompakt zusammen.
           </p>
         </div>
       </CardHeader>

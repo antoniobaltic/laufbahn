@@ -7,6 +7,7 @@ import {
   MapPin,
   Calendar,
   Clock,
+  ArrowUpRight,
   Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -48,14 +49,13 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={cn(
-            "interactive-lift group mb-3 rounded-[22px] border border-white/70 bg-white/94 p-3.5 shadow-card backdrop-blur-sm",
+            "interactive-lift group mb-3 rounded-[24px] border border-[rgba(228,210,191,0.72)] bg-white/94 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.76),0_10px_24px_rgba(20,20,19,0.05)] backdrop-blur-sm",
             "transition-[transform,box-shadow,border-color,opacity] duration-200",
             snapshot.isDragging &&
               "rotate-[1.4deg] border-accent-orange/20 shadow-[0_20px_40px_rgba(20,20,19,0.12)] opacity-95"
           )}
         >
-          {/* Company + delete */}
-          <div className="mb-2 flex items-start justify-between gap-2">
+          <div className="mb-3 flex items-start justify-between gap-2">
             <Link
               href={`/bewerbung/${application.id}`}
               prefetch={false}
@@ -68,7 +68,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
                 size={28}
               />
               <div className="min-w-0">
-                <span className="block truncate text-sm font-heading font-medium text-dark transition-colors duration-150 hover:text-accent-orange">
+                <span className="block truncate text-sm font-heading font-semibold text-dark transition-colors duration-150 hover:text-accent-orange">
                   {application.company_name}
                 </span>
                 <span className="block text-[11px] font-heading uppercase tracking-[0.1em] text-muted-foreground">
@@ -91,15 +91,21 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
             )}
           </div>
 
-          <div className="rounded-[18px] border border-border/60 bg-dark-50/72 px-3 py-2.5">
-            <Link
-              href={`/bewerbung/${application.id}`}
-              prefetch={false}
-              className="block rounded-sm text-sm font-heading font-medium text-dark line-clamp-2 transition-colors duration-150 hover:text-accent-orange focus:outline-none focus:ring-4 focus:ring-ring/12"
-            >
-              {application.role_title}
-            </Link>
-            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <div className="rounded-[20px] border border-border/60 bg-dark-50/72 px-3.5 py-3">
+            <div className="flex items-start justify-between gap-3">
+              <Link
+                href={`/bewerbung/${application.id}`}
+                prefetch={false}
+                className="block rounded-sm text-base font-heading font-semibold text-dark line-clamp-2 transition-colors duration-150 hover:text-accent-orange focus:outline-none focus:ring-4 focus:ring-ring/12"
+              >
+                {application.role_title}
+              </Link>
+              <ArrowUpRight
+                size={16}
+                className="mt-0.5 shrink-0 text-muted-foreground transition-colors duration-150 group-hover:text-accent-orange"
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
               {application.location && (
                 <Badge variant="muted">
                   <MapPin size={10} className="mr-1" />
@@ -110,11 +116,14 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
               {application.employment_type && (
                 <Badge variant="blue">{application.employment_type}</Badge>
               )}
+              {application.next_interview_at && (
+                <Badge variant="orange">Gespräch geplant</Badge>
+              )}
             </div>
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
-            <span className="flex items-center gap-1 text-[11px] font-heading text-muted-foreground">
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
+            <span className="flex items-center gap-1 text-[11px] font-heading uppercase tracking-[0.08em] text-muted-foreground">
               <Clock size={10} />
               Hinzugefügt {relativeDate(application.date_saved)}
             </span>
@@ -122,7 +131,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
             {hasDeadline && (
               <span
                 className={cn(
-                  "text-[11px] font-heading flex items-center gap-1 rounded-full px-2 py-1",
+                  "flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-heading",
                   isDeadlinePast
                     ? "bg-orange-50 text-orange-600"
                     : isDeadlineSoon

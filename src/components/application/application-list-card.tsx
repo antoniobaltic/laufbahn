@@ -23,7 +23,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
 
   return (
     <Link href={`/bewerbung/${application.id}`} prefetch={false} className="group block">
-      <Card className="interactive-lift h-full rounded-[28px]">
+      <Card className="interactive-lift h-full rounded-[30px]">
         <CardHeader className="flex flex-row items-start justify-between gap-3 pb-3">
           <div className="flex min-w-0 items-center gap-3">
             <CompanyLogo
@@ -33,7 +33,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
               size={40}
             />
             <div className="min-w-0">
-              <p className="truncate text-sm font-heading font-medium text-dark">
+              <p className="truncate text-sm font-heading font-semibold text-dark">
                 {application.company_name}
               </p>
               <p className="truncate text-xs font-heading uppercase tracking-[0.1em] text-muted-foreground">
@@ -47,8 +47,8 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
           />
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="rounded-[22px] border border-border/70 bg-dark-50/75 p-4">
-            <h2 className="text-base font-heading font-semibold text-dark">
+          <div className="rounded-[24px] border border-border/70 bg-dark-50/75 p-4">
+            <h2 className="text-lg font-heading font-semibold text-dark">
               {application.role_title}
             </h2>
             <div className="mt-3 flex flex-wrap items-center gap-2">

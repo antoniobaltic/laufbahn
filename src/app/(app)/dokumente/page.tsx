@@ -1,24 +1,50 @@
+import Link from "next/link";
 import { getDocumentsOverview } from "@/actions/documents";
 import { DocumentsDashboard } from "@/components/documents/documents-dashboard";
+import { PageHero } from "@/components/ui/page-hero";
+import { cn } from "@/lib/utils/cn";
 
 export default async function DocumentsPage() {
   const items = await getDocumentsOverview();
 
   return (
     <div className="space-y-6">
-      <div className="max-w-2xl">
-        <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
-          Dokumente
-        </p>
-        <h1 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.1rem]">
-          Lebensläufe und Anschreiben in Ruhe pflegen
-        </h1>
-        <p className="mt-2 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-          Halte deine Fassungen an einem Ort, leite Varianten aus einer soliden
-          Basis ab und sieh jederzeit, welche feste Version schon in einer
-          Bewerbung steckt.
-        </p>
-      </div>
+      <PageHero
+        kicker="Dokumente"
+        title="Lebensläufe und Anschreiben sollen sich wie gute Werkzeuge anfühlen, nicht wie Versionschaos."
+        description="Die Oberfläche bleibt ruhig. Darunter bleiben Basisdokumente, Varianten und feste Fassungen pro Bewerbung weiterhin sauber nachvollziehbar."
+        actions={
+          <Link
+            href="/board"
+            className={cn(
+              "inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(228,210,191,0.82)] bg-white/88 px-5 py-3 text-sm font-heading font-medium text-dark shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_10px_24px_rgba(20,20,19,0.05)] transition-all duration-200",
+              "hover:-translate-y-0.5 hover:bg-white"
+            )}
+          >
+            Zur Übersicht
+          </Link>
+        }
+        aside={
+          <>
+            <div className="metric-cloud rounded-[24px] px-4 py-4">
+              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                Was hier wichtig ist
+              </p>
+              <p className="mt-3 text-lg font-heading font-semibold text-dark">
+                Jede Bewerbung kann auf genau eine feste Fassung zeigen.
+              </p>
+            </div>
+            <div className="metric-cloud rounded-[24px] px-4 py-4">
+              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                Arbeitsweise
+              </p>
+              <p className="mt-3 text-lg font-heading font-semibold text-dark">
+                Eine solide Basis vorne, Varianten nur dann, wenn du sie brauchst.
+              </p>
+            </div>
+          </>
+        }
+      />
 
       <DocumentsDashboard items={items} />
     </div>

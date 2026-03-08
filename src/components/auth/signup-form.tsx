@@ -47,7 +47,7 @@ export function SignUpForm() {
 
   if (success) {
     return (
-      <div className="surface-card rounded-[30px] p-6 text-center sm:p-8">
+      <div className="surface-stage rounded-[32px] p-6 text-center sm:p-8">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-50">
           <span className="text-2xl">✓</span>
         </div>
@@ -63,16 +63,15 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="surface-card rounded-[30px] p-6 sm:p-8">
+    <div className="surface-stage rounded-[32px] p-6 sm:p-8">
       <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
         Neues Konto
       </p>
-      <h2 className="mt-3 text-2xl font-heading font-semibold text-dark">
+      <h2 className="mt-3 text-3xl font-heading font-semibold text-dark">
         Konto erstellen
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Lege dir in wenigen Minuten einen klaren Ort für deine Bewerbungen,
-        Unterlagen und nächsten Schritte an.
+        Lege dir in wenigen Minuten einen klaren Ort für Bewerbungen, Unterlagen und nächste Schritte an.
       </p>
 
       <form onSubmit={handleSignUp} className="mt-8 space-y-4">

@@ -47,7 +47,7 @@ export function AppShell({
               reminders={reminders}
               onSignOut={handleSignOut}
             />
-            <main className="flex-1 px-4 pb-8 pt-4 sm:px-6 lg:px-8 lg:pb-10 lg:pt-6">
+            <main className="flex-1 px-4 pb-8 pt-3 sm:px-6 lg:px-8 lg:pb-12 lg:pt-3">
               <div className="mx-auto w-full max-w-[1520px] fade-in-up">
                 {children}
               </div>

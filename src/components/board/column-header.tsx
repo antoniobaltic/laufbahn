@@ -12,6 +12,9 @@ export function ColumnHeader({ title, count, color }: ColumnHeaderProps) {
         style={{ backgroundColor: color }}
       />
       <div className="min-w-0">
+        <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+          Stand
+        </p>
         <h3 className="truncate text-sm font-heading font-semibold text-dark">
           {title}
         </h3>

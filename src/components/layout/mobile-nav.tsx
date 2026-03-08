@@ -30,17 +30,15 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 fade-in bg-dark/42 backdrop-blur-[2px] sm:backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Panel */}
-      <div className="surface-panel fade-in-up fixed inset-y-3 left-3 w-[min(22rem,calc(100vw-1.5rem))] rounded-[28px] border border-white/75 bg-[#fcfbf8]/96 shadow-dialog">
-        <div className="flex items-center justify-between border-b border-border/70 px-5 py-5">
+      <div className="surface-panel fade-in-up fixed inset-y-3 left-3 w-[min(23rem,calc(100vw-1.5rem))] rounded-[32px] border border-white/75 bg-[#fcfbf8]/96 p-3 shadow-dialog">
+        <div className="surface-stage rounded-[26px] px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-orange shadow-card">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[18px] bg-accent-orange shadow-card">
               <span className="text-white font-heading font-bold text-sm">
                 L
               </span>
@@ -50,10 +48,16 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 Laufbahn
               </span>
               <span className="block text-xs font-heading text-muted-foreground">
-                Bewerbungen entspannt organisieren
+                Klar sehen, dann tiefer gehen
               </span>
             </div>
           </div>
+        </div>
+
+        <div className="flex items-center justify-between px-2 pb-2 pt-4">
+          <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+            Navigation
+          </p>
           <button
             onClick={onClose}
             className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-white hover:text-dark cursor-pointer"
@@ -62,7 +66,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           </button>
         </div>
 
-        <nav className="space-y-2 px-4 py-5">
+        <nav className="space-y-2 px-1 py-2">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -73,7 +77,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "interactive-lift flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-heading transition-colors duration-200",
+                  "interactive-lift flex items-center gap-3 rounded-[24px] px-4 py-3.5 text-sm font-heading transition-colors duration-200",
                   isActive
                     ? "surface-card text-dark font-medium"
                     : "text-dark-500 hover:bg-white hover:text-dark"
@@ -81,30 +85,44 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               >
                 <div
                   className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-xl",
-                    isActive ? "bg-orange-50 text-accent-orange" : "bg-dark-50 text-dark-500"
+                    "flex h-10 w-10 items-center justify-center rounded-[18px]",
+                    isActive
+                      ? "bg-orange-50 text-accent-orange"
+                      : "bg-dark-50 text-dark-500"
                   )}
                 >
                   <Icon size={18} />
                 </div>
-                <span>{item.label}</span>
+                <div className="min-w-0">
+                  <span className="block">{item.label}</span>
+                  <span className="block text-xs font-body text-muted-foreground">
+                    {getNavHint(item.href)}
+                  </span>
+                </div>
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-4 pb-5">
-          <div className="surface-muted rounded-[22px] px-4 py-4">
+        <div className="px-1 pb-1 pt-3">
+          <div className="surface-rail rounded-[24px] px-4 py-4">
             <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
               Tipp
             </p>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Öffne eine Bewerbung, sobald du mehr Kontext brauchst. Gespräche,
-              Kontakte und feste Dokumentversionen liegen dort direkt bereit.
+              Auf der Detailseite kannst du jetzt gezielt zwischen Verlauf,
+              Kontakten und Unterlagen wechseln, statt alles gleichzeitig zu lesen.
             </p>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function getNavHint(href: string) {
+  if (href === "/board") return "Heute im Blick";
+  if (href === "/bewerbung") return "Alle Eintraege";
+  if (href === "/dokumente") return "Versionen & Varianten";
+  return "Fortschritt lesen";
 }

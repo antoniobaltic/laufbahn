@@ -39,7 +39,7 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
       ref={dialogRef}
       className={cn(
         "backdrop:bg-dark/38 backdrop:backdrop-blur-[2px] sm:backdrop:backdrop-blur-md",
-        "mx-auto my-auto w-[min(calc(100%-1.25rem),56rem)] max-h-[calc(100vh-1.25rem)] overflow-hidden rounded-[28px] border border-white/70 bg-[#fcfbf8] p-0 shadow-dialog",
+        "mx-auto my-auto w-[min(calc(100%-1.25rem),58rem)] max-h-[calc(100vh-1.25rem)] overflow-hidden rounded-[32px] border border-[rgba(228,210,191,0.7)] bg-[#fcfbf8] p-0 shadow-dialog",
         "fade-in-up",
         className
       )}

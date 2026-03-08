@@ -114,63 +114,78 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
           <OverviewCard
             label="Mit Bewerbungen verknüpft"
             value={`${totals.usedInApplications}`}
-            hint="So oft sind feste Versionen bereits mit Bewerbungen verknüpft."
+            hint="So oft zeigen Bewerbungen bereits auf eine feste Fassung."
           />
         </div>
 
-        <div className="surface-panel rounded-[32px] p-4 sm:p-5">
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="min-w-[15rem] flex-1">
+        <div className="surface-panel rounded-[34px] p-4 sm:p-5">
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
+            <div>
+              <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
+                Bibliothek
+              </p>
+              <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
+                Suche nach Titeln, Tags oder Inhalt. Wechsle zwischen einer ruhigen Bibliothek und der Variantenansicht, wenn du Abstammung sehen willst.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="segmented-control">
+                <button
+                  type="button"
+                  data-active={!advancedView}
+                  onClick={() => setAdvancedView(false)}
+                  className="segmented-pill"
+                >
+                  Bibliothek
+                </button>
+                <button
+                  type="button"
+                  data-active={advancedView}
+                  onClick={() => setAdvancedView(true)}
+                  className="segmented-pill"
+                >
+                  Varianten
+                </button>
+              </div>
+              <Button type="button" onClick={() => setDialogOpen(true)}>
+                <FilePenLine size={15} />
+                Dokument anlegen
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="min-w-[15rem] flex-1">
                 <Input
                   id="documents-search"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Titel, Tag oder Inhalt durchsuchen"
                 />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { value: "alle", label: "Alle" },
-                  { value: "lebenslauf", label: "Lebensläufe" },
-                  { value: "anschreiben", label: "Anschreiben" },
-                ].map((filter) => (
-                  <button
-                    key={filter.value}
-                    type="button"
-                    onClick={() =>
-                      setTypeFilter(filter.value as "alle" | "lebenslauf" | "anschreiben")
-                    }
-                    className={cn(
-                      "rounded-full px-4 py-2 text-sm font-heading transition-colors",
-                      typeFilter === filter.value
-                        ? "bg-dark text-light"
-                        : "border border-border/80 bg-white/88 text-dark-500"
-                    )}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
             </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setAdvancedView((value) => !value)}
-                className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-heading transition-colors",
-                  advancedView
-                    ? "border-dark-200 bg-dark text-light"
-                    : "border-border/80 bg-white/88 text-dark-500"
-                )}
-              >
-                {advancedView ? "Kartenansicht" : "Basis & Varianten"}
-              </button>
-              <Button type="button" onClick={() => setDialogOpen(true)}>
-                <FilePenLine size={15} />
-                Dokument anlegen
-              </Button>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { value: "alle", label: "Alle" },
+                { value: "lebenslauf", label: "Lebensläufe" },
+                { value: "anschreiben", label: "Anschreiben" },
+              ].map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() =>
+                    setTypeFilter(filter.value as "alle" | "lebenslauf" | "anschreiben")
+                  }
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-heading transition-colors",
+                    typeFilter === filter.value
+                      ? "bg-dark text-light"
+                      : "border border-border/80 bg-white/88 text-dark-500"
+                  )}
+                >
+                  {filter.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -267,7 +282,7 @@ function OverviewCard({
   hint: string;
 }) {
   return (
-    <Card className="rounded-[28px]">
+    <Card className="metric-cloud rounded-[28px]">
       <CardHeader className="pb-3">
         <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
           {label}
@@ -372,7 +387,7 @@ function DocumentCard({
   return (
     <div
       className={cn(
-        "rounded-[28px] border border-border/80 bg-white/86 p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover",
+        "rounded-[30px] border border-border/80 bg-white/86 p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover",
         compact && "border-0 bg-transparent p-0 shadow-none hover:translate-y-0"
       )}
     >

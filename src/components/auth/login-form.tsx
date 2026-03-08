@@ -38,16 +38,15 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="surface-card rounded-[30px] p-6 sm:p-8">
+    <div className="surface-stage rounded-[32px] p-6 sm:p-8">
       <p className="text-[11px] font-heading uppercase tracking-[0.14em] text-muted-foreground">
         Willkommen zurück
       </p>
-      <h2 className="mt-3 text-2xl font-heading font-semibold text-dark">
+      <h2 className="mt-3 text-3xl font-heading font-semibold text-dark">
         Anmelden
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Geh direkt zurück zu deinen offenen Bewerbungen, Gesprächen und nächsten
-        Schritten.
+        Geh direkt zurück zu offenen Bewerbungen, Gesprächen und den nächsten sinnvollen Schritten.
       </p>
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">

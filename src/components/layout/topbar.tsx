@@ -4,7 +4,7 @@ import type { ReminderItem } from "@/types/reminder";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut, Settings2 } from "lucide-react";
+import { CalendarDays, Menu, LogOut, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import {
   getAvatarColorOption,
@@ -38,14 +38,19 @@ export function Topbar({
   const initials = getUserInitials(userName, userEmail);
   const avatarStyle = getAvatarColorOption(avatarColor);
   const displayName = getDisplayName(userName, userEmail);
+  const todayLabel = new Intl.DateTimeFormat("de-AT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-white/70 bg-background/78 backdrop-blur-md md:backdrop-blur-xl">
+      <header className="sticky top-0 z-30 px-4 pt-4 sm:px-6 lg:px-8">
         <div
           className={cn(
-            "mx-auto flex w-full max-w-[1520px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8",
-            showRouteMeta ? "h-[78px]" : "h-16 sm:h-[68px]"
+            "surface-panel mx-auto flex w-full max-w-[1520px] items-center justify-between gap-4 rounded-[26px] px-4 sm:px-5",
+            showRouteMeta ? "min-h-[88px] py-3" : "min-h-[74px] py-3"
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -72,7 +77,15 @@ export function Topbar({
                 </p>
               </div>
             ) : (
-              <div className="flex-1" />
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div className="eyebrow-badge hidden sm:inline-flex">
+                  <CalendarDays size={12} />
+                  {todayLabel}
+                </div>
+                <p className="hidden text-sm font-body text-dark-500 xl:block">
+                  Ruhig arbeiten, Details erst bei Bedarf.
+                </p>
+              </div>
             )}
           </div>
 
@@ -82,7 +95,7 @@ export function Topbar({
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="surface-panel flex items-center gap-2 rounded-full p-1.5 pr-3 transition-colors hover:bg-white/90 cursor-pointer"
+                className="surface-rail flex items-center gap-2 rounded-full p-1.5 pr-3 transition-colors hover:bg-white/90 cursor-pointer"
               >
                 <div
                   className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-heading font-semibold"
@@ -107,7 +120,7 @@ export function Topbar({
                     className="fixed inset-0 z-40"
                     onClick={() => setUserMenuOpen(false)}
                   />
-                  <div className="absolute right-0 z-50 mt-2 w-64 rounded-[22px] border border-border/80 bg-[#fcfbf8]/98 py-2 shadow-dialog backdrop-blur-lg md:backdrop-blur-xl">
+                  <div className="absolute right-0 z-50 mt-2 w-72 rounded-[26px] border border-[rgba(228,210,191,0.74)] bg-[#fcfbf8]/98 py-2 shadow-dialog backdrop-blur-lg md:backdrop-blur-xl">
                     {userEmail && (
                       <div className="border-b border-border/70 px-4 py-3">
                         <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
@@ -205,9 +218,9 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith("/bewerbung/")) {
     return {
       kicker: "Bewerbung",
-      title: "Alle Details an einem Ort",
+      title: "Eintrag mit klarem Fokus",
       description:
-        "Bearbeite Stand, Notizen, Kontakte, Unterlagen und Gespräche ohne zwischen Tools zu wechseln.",
+        "Stand, Verlauf, Kontakte und Unterlagen bleiben in einer ruhigeren, besser sortierten Ansicht zusammen.",
       showInTopbar: true,
     };
   }
