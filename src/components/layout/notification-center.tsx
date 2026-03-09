@@ -10,6 +10,7 @@ import {
   Send,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { getReminderCounts } from "@/lib/utils/reminders";
 import { cn } from "@/lib/utils/cn";
 import { formatDateShort, formatDateTime, relativeDate } from "@/lib/utils/dates";
@@ -23,6 +24,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
   const [open, setOpen] = useState(false);
   const counts = useMemo(() => getReminderCounts(reminders), [reminders]);
   const visibleReminders = reminders.slice(0, 8);
+  const referenceNow = useReferenceNow();
 
   return (
     <div className="relative">
@@ -111,7 +113,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                           <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-heading uppercase tracking-[0.08em] text-muted-foreground">
                             <span>{getDueLabel(reminder)}</span>
                             <span>•</span>
-                            <span>{relativeDate(reminder.dueAt)}</span>
+                            <span>{relativeDate(reminder.dueAt, referenceNow)}</span>
                           </div>
                         </div>
                       </div>

@@ -1,3 +1,5 @@
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
 import * as cheerio from "cheerio";
 import type { AnyNode } from "domhandler";
 
@@ -24,6 +26,9 @@ const SOCIAL_DOMAINS = [
   "youtube.com",
   "tiktok.com",
 ];
+
+const REDIRECT_STATUS_CODES = new Set([301, 302, 303, 307, 308]);
+const MAX_REDIRECTS = 5;
 
 const REQUIREMENT_HEADINGS = [
   "anforder",
@@ -119,21 +124,7 @@ type DescriptionSection = {
 };
 
 export async function scrapeJobPosting(url: string): Promise<ScrapedJob> {
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-      "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
-    },
-    redirect: "follow",
-    signal: AbortSignal.timeout(10000),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch URL: ${response.status}`);
-  }
-
-  const finalUrl = response.url || url;
+  const { response, finalUrl } = await fetchScrapeTarget(url);
   const html = await response.text();
   const $ = cheerio.load(html);
   const domain = getHostname(finalUrl);
@@ -162,6 +153,131 @@ export async function scrapeJobPosting(url: string): Promise<ScrapedJob> {
   }
 
   return normalizeScrapedJob(result);
+}
+
+async function fetchScrapeTarget(url: string) {
+  let currentUrl = url;
+
+  for (let redirectCount = 0; redirectCount <= MAX_REDIRECTS; redirectCount += 1) {
+    await assertSafeExternalUrl(currentUrl);
+
+    const response = await fetch(currentUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+      },
+      redirect: "manual",
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (REDIRECT_STATUS_CODES.has(response.status)) {
+      const location = response.headers.get("location");
+
+      if (!location) {
+        throw new Error("Weiterleitung ohne Ziel.");
+      }
+
+      currentUrl = new URL(location, currentUrl).toString();
+      continue;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch URL: ${response.status}`);
+    }
+
+    return {
+      response,
+      finalUrl: response.url || currentUrl,
+    };
+  }
+
+  throw new Error("Zu viele Weiterleitungen.");
+}
+
+async function assertSafeExternalUrl(value: string) {
+  const parsed = new URL(value);
+
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    throw new Error("Nur http- und https-Links sind erlaubt.");
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+
+  if (isBlockedHostname(hostname)) {
+    throw new Error("Lokale oder interne Adressen sind nicht erlaubt.");
+  }
+
+  const addresses = await lookup(hostname, {
+    all: true,
+    verbatim: true,
+  });
+
+  if (addresses.length === 0) {
+    throw new Error("Die Zieladresse konnte nicht aufgelöst werden.");
+  }
+
+  if (addresses.some((entry) => isPrivateIpAddress(entry.address))) {
+    throw new Error("Lokale oder interne Adressen sind nicht erlaubt.");
+  }
+}
+
+function isBlockedHostname(hostname: string) {
+  return (
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".internal")
+  );
+}
+
+function isPrivateIpAddress(address: string) {
+  const family = isIP(address);
+
+  if (family === 4) {
+    return isPrivateIpv4Address(address);
+  }
+
+  if (family === 6) {
+    return isPrivateIpv6Address(address);
+  }
+
+  return false;
+}
+
+function isPrivateIpv4Address(address: string) {
+  const [a = 0, b = 0] = address.split(".").map((part) => Number(part));
+
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168)
+  );
+}
+
+function isPrivateIpv6Address(address: string) {
+  const normalized = address.toLowerCase();
+
+  if (normalized === "::" || normalized === "::1") {
+    return true;
+  }
+
+  if (normalized.startsWith("::ffff:")) {
+    return isPrivateIpv4Address(normalized.slice(7));
+  }
+
+  return (
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd") ||
+    normalized.startsWith("fe8") ||
+    normalized.startsWith("fe9") ||
+    normalized.startsWith("fea") ||
+    normalized.startsWith("feb")
+  );
 }
 
 export function parseJobInput({

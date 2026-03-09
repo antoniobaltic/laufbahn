@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { parseJobInput, scrapeJobPosting } from "@/lib/scraper";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   // Auth check
   const supabase = await createClient();

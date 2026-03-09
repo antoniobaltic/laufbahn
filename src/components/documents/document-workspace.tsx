@@ -18,6 +18,7 @@ import {
 } from "@/actions/documents";
 import { DocumentCreateDialog } from "@/components/documents/document-create-dialog";
 import { DocumentEditor } from "@/components/documents/document-editor";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -40,6 +41,7 @@ interface DocumentWorkspaceProps {
 export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const referenceNow = useReferenceNow();
   const initialTagInput = formatDocumentTagInput(workspace.document.tags);
   const initialMarkdown = workspace.currentVersion?.markdown_content || "";
   const initialRawMode = workspace.currentVersion?.editor_mode === "markdown";
@@ -321,7 +323,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
             <CardContent className="space-y-3">
               <SummaryRow
                 label="Zuletzt geändert"
-                value={relativeDate(workspace.document.updated_at)}
+                value={relativeDate(workspace.document.updated_at, referenceNow)}
               />
               <SummaryRow
                 label="Entstanden aus"

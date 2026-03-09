@@ -1,6 +1,6 @@
 import {
   differenceInCalendarDays,
-  formatDistanceToNow,
+  formatDistance,
   isValid,
   parseISO,
 } from "date-fns";
@@ -150,12 +150,12 @@ export function getCalendarDayDifference(
   return differenceInCalendarDays(parseStoredDate(date), now);
 }
 
-export function relativeDate(date: string | Date): string {
+export function relativeDate(date: string | Date, now = new Date()): string {
   if (isDateOnlyValue(date)) {
-    return relativeDayFormatter.format(getCalendarDayDifference(date), "day");
+    return relativeDayFormatter.format(getCalendarDayDifference(date, now), "day");
   }
 
-  return formatDistanceToNow(parseStoredDate(date), {
+  return formatDistance(parseStoredDate(date), now, {
     addSuffix: true,
     locale: de,
   });

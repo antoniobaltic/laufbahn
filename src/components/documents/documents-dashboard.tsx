@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight, FilePenLine, GitBranchPlus, Layers3 } from "lucide-react";
 import { DocumentCreateDialog } from "@/components/documents/document-create-dialog";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -23,6 +24,7 @@ interface DocumentsDashboardProps {
 }
 
 export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
+  const referenceNow = useReferenceNow();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<"alle" | "lebenslauf" | "anschreiben">(
     "alle"
@@ -230,6 +232,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
                         <DocumentCard
                           key={item.document.id}
                           item={item}
+                          referenceNow={referenceNow}
                           onCreateVariant={(documentId) => {
                             setVariantSeedId(documentId);
                             setDialogOpen(true);
@@ -341,6 +344,7 @@ function DocumentTreeNode({
   childrenByParent: Map<string, SourceDocumentOverviewItem[]>;
   onCreateVariant: (documentId: string) => void;
 }) {
+  const referenceNow = useReferenceNow();
   const children = childrenByParent.get(item.document.id) ?? [];
 
   return (
@@ -350,7 +354,12 @@ function DocumentTreeNode({
         depth > 0 && "ml-4 sm:ml-8"
       )}
     >
-      <DocumentCard item={item} onCreateVariant={onCreateVariant} compact />
+      <DocumentCard
+        item={item}
+        referenceNow={referenceNow}
+        onCreateVariant={onCreateVariant}
+        compact
+      />
       {children.length > 0 && (
         <div className="space-y-3 border-l border-border/80 pl-3 sm:pl-5">
           {children.map((child) => (
@@ -370,10 +379,12 @@ function DocumentTreeNode({
 
 function DocumentCard({
   item,
+  referenceNow,
   onCreateVariant,
   compact = false,
 }: {
   item: SourceDocumentOverviewItem;
+  referenceNow: Date;
   onCreateVariant: (documentId: string) => void;
   compact?: boolean;
 }) {
@@ -458,7 +469,9 @@ function DocumentCard({
               {item.childCount} Variante{item.childCount === 1 ? "" : "n"}
             </Badge>
           )}
-          <Badge variant="muted">Aktualisiert {relativeDate(item.document.updated_at)}</Badge>
+          <Badge variant="muted">
+            Aktualisiert {relativeDate(item.document.updated_at, referenceNow)}
+          </Badge>
         </div>
 
         {item.document.tags.length > 0 && (

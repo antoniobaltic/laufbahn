@@ -9,6 +9,7 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const referenceNow = new Date().toISOString();
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,6 +26,7 @@ export default async function AppLayout({
 
   return (
     <AppShell
+      referenceNow={referenceNow}
       userEmail={user.email}
       userName={profile?.full_name || undefined}
       avatarColor={profile?.avatar_color}

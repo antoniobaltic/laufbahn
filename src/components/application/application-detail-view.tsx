@@ -23,6 +23,7 @@ import { ApplicationStatusEditor } from "@/components/application/application-st
 import { ApplicationWorkflowCard } from "@/components/application/application-workflow-card";
 import { StatusPill } from "@/components/application/status-pill";
 import { CompanyLogo } from "@/components/company/company-logo";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
@@ -70,6 +71,7 @@ export function ApplicationDetailView({
   documentPickerOptions,
 }: ApplicationDetailViewProps) {
   const [activeView, setActiveView] = useState<DetailViewId>("ueberblick");
+  const referenceNow = useReferenceNow();
   const domain = extractDomain(
     application.company_website_url || application.job_url || ""
   );
@@ -138,7 +140,7 @@ export function ApplicationDetailView({
         activities.length + 1 === 1 ? "" : "e"
       }`,
       hint: latestActivity
-        ? `${latestActivity.title} · ${relativeDate(latestActivity.created_at)}`
+        ? `${latestActivity.title} · ${relativeDate(latestActivity.created_at, referenceNow)}`
         : "Jede Veränderung bleibt hier nachvollziehbar.",
     },
     {
@@ -251,7 +253,7 @@ export function ApplicationDetailView({
               <div className="flex flex-col items-start gap-3 text-sm font-heading text-muted-foreground lg:items-end">
                 <div className="eyebrow-badge">
                   <Clock3 size={12} />
-                  Zuletzt geändert {relativeDate(application.updated_at)}
+                  Zuletzt geändert {relativeDate(application.updated_at, referenceNow)}
                 </div>
                 {application.job_url && (
                   <Link
@@ -296,7 +298,7 @@ export function ApplicationDetailView({
                 }
                 hint={
                   application.deadline
-                    ? relativeDate(application.deadline)
+                    ? relativeDate(application.deadline, referenceNow)
                     : "Nur eintragen, wenn wirklich relevant."
                 }
               />
@@ -364,7 +366,7 @@ export function ApplicationDetailView({
                   </p>
                   <p className="mt-2 text-sm font-body leading-relaxed text-white/72">
                     {latestActivity
-                      ? `${relativeDate(latestActivity.created_at)}`
+                      ? `${relativeDate(latestActivity.created_at, referenceNow)}`
                       : "Sobald etwas passiert, taucht es hier auf."}
                   </p>
                 </div>

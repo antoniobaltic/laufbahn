@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarDays, Menu, LogOut, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import {
   getAvatarColorOption,
   getDisplayName,
@@ -38,11 +39,12 @@ export function Topbar({
   const initials = getUserInitials(userName, userEmail);
   const avatarStyle = getAvatarColorOption(avatarColor);
   const displayName = getDisplayName(userName, userEmail);
+  const referenceNow = useReferenceNow();
   const todayLabel = new Intl.DateTimeFormat("de-AT", {
     weekday: "long",
     day: "numeric",
     month: "long",
-  }).format(new Date());
+  }).format(referenceNow);
 
   return (
     <>

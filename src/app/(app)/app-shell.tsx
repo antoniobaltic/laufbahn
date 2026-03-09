@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OfferCelebrationProvider } from "@/components/celebration/offer-celebration-provider";
+import { ReferenceNowProvider } from "@/components/providers/reference-now-provider";
 import { createClient } from "@/lib/supabase/client";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
@@ -11,6 +12,7 @@ import type { ReminderItem } from "@/types/reminder";
 import type { AvatarColor } from "@/types/profile";
 
 interface AppShellProps {
+  referenceNow: string;
   userEmail?: string;
   userName?: string;
   avatarColor?: AvatarColor;
@@ -19,6 +21,7 @@ interface AppShellProps {
 }
 
 export function AppShell({
+  referenceNow,
   userEmail,
   userName,
   avatarColor,
@@ -36,25 +39,27 @@ export function AppShell({
 
   return (
     <ToastProvider>
-      <OfferCelebrationProvider>
-        <div className="app-frame flex min-h-screen bg-background">
-          <Sidebar />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <Topbar
-              userEmail={userEmail}
-              userName={userName}
-              avatarColor={avatarColor}
-              reminders={reminders}
-              onSignOut={handleSignOut}
-            />
-            <main className="flex-1 px-4 pb-8 pt-3 sm:px-6 lg:px-8 lg:pb-12 lg:pt-3">
-              <div className="mx-auto w-full max-w-[1520px] fade-in-up">
-                {children}
-              </div>
-            </main>
+      <ReferenceNowProvider value={referenceNow}>
+        <OfferCelebrationProvider>
+          <div className="app-frame flex min-h-screen bg-background">
+            <Sidebar />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <Topbar
+                userEmail={userEmail}
+                userName={userName}
+                avatarColor={avatarColor}
+                reminders={reminders}
+                onSignOut={handleSignOut}
+              />
+              <main className="flex-1 px-4 pb-8 pt-3 sm:px-6 lg:px-8 lg:pb-12 lg:pt-3">
+                <div className="mx-auto w-full max-w-[1520px] fade-in-up">
+                  {children}
+                </div>
+              </main>
+            </div>
           </div>
-        </div>
-      </OfferCelebrationProvider>
+        </OfferCelebrationProvider>
+      </ReferenceNowProvider>
     </ToastProvider>
   );
 }

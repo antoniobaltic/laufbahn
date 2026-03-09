@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import {
   MapPin,
@@ -13,6 +12,7 @@ import {
 import { cn } from "@/lib/utils/cn";
 import { Badge } from "@/components/ui/badge";
 import { CompanyLogo } from "@/components/company/company-logo";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { formatSalaryRange } from "@/lib/utils/applications";
 import { getCalendarDayDifference } from "@/lib/utils/dates";
 import { extractDomain } from "@/lib/utils/url";
@@ -26,7 +26,7 @@ interface KanbanCardProps {
 }
 
 export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
-  const [referenceNow] = useState(() => new Date());
+  const referenceNow = useReferenceNow();
   const hasDeadline = application.deadline !== null;
   const deadlineDiffDays = hasDeadline
     ? getCalendarDayDifference(application.deadline!, referenceNow)
@@ -72,7 +72,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
                   {application.company_name}
                 </span>
                 <span className="block text-[11px] font-heading uppercase tracking-[0.1em] text-muted-foreground">
-                  Aktualisiert {relativeDate(application.updated_at)}
+                  Aktualisiert {relativeDate(application.updated_at, referenceNow)}
                 </span>
               </div>
             </Link>
@@ -125,7 +125,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
             <span className="flex items-center gap-1 text-[11px] font-heading uppercase tracking-[0.08em] text-muted-foreground">
               <Clock size={10} />
-              Gemerkt {relativeDate(application.date_saved)}
+              Gemerkt {relativeDate(application.date_saved, referenceNow)}
             </span>
 
             {hasDeadline && (

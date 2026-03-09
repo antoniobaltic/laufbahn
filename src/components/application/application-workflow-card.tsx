@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useReferenceNow } from "@/components/providers/reference-now-provider";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
@@ -62,7 +63,7 @@ export function ApplicationWorkflowCard({
   interviewLocation,
   interviewPrep,
 }: ApplicationWorkflowCardProps) {
-  const [referenceNow] = useState(() => new Date());
+  const referenceNow = useReferenceNow();
   const [isEditingDeadline, setIsEditingDeadline] = useState(false);
   const [deadlineDraft, setDeadlineDraft] = useState(
     deadline ? formatDateInputValue(deadline) : ""
@@ -281,7 +282,7 @@ export function ApplicationWorkflowCard({
                   {deadlineState.badge}
                 </Badge>
                 <Badge variant="muted">{formatDateShort(deadline)}</Badge>
-                <Badge variant="default">{relativeDate(deadline)}</Badge>
+                <Badge variant="default">{relativeDate(deadline, referenceNow)}</Badge>
               </div>
               {deadlineNote ? (
                 <p className="text-sm font-body leading-relaxed text-dark-500">
@@ -546,7 +547,7 @@ function getNextTrigger(
           type: "Frist",
           date: toTimestamp(deadline),
           value: "Frist",
-          hint: `${formatDateShort(deadline)} · ${relativeDate(deadline)}`,
+          hint: `${formatDateShort(deadline)} · ${relativeDate(deadline, now)}`,
           badge: deadlineState!.badge,
           variant: deadlineState!.variant,
         }
@@ -556,7 +557,7 @@ function getNextTrigger(
           type: "Interview",
           date: toTimestamp(nextInterviewAt),
           value: "Interview",
-          hint: `${formatDateTime(nextInterviewAt)} · ${relativeDate(nextInterviewAt)}`,
+          hint: `${formatDateTime(nextInterviewAt)} · ${relativeDate(nextInterviewAt, now)}`,
           badge: interviewState!.badge,
           variant: interviewState!.variant,
         }
