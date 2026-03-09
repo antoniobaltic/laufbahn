@@ -56,7 +56,7 @@ export function SignUpForm() {
         </h2>
         <p className="text-sm font-body leading-relaxed text-muted-foreground">
           Wir haben dir eine Bestätigungsmail geschickt. Öffne den Link darin,
-          um dein Konto freizuschalten.
+          dann kann es losgehen.
         </p>
       </div>
     );
@@ -71,7 +71,7 @@ export function SignUpForm() {
         Konto erstellen
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Lege dir in wenigen Minuten einen klaren Ort für Bewerbungen, Unterlagen und nächste Schritte an.
+        Richte dir in wenigen Minuten einen klaren Ort für Bewerbungen, Unterlagen und nächste Schritte ein.
       </p>
 
       <form onSubmit={handleSignUp} className="mt-8 space-y-4">
@@ -113,12 +113,12 @@ export function SignUpForm() {
         )}
 
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Erstellt Konto..." : "Konto erstellen"}
+          {loading ? "Einen Moment..." : "Konto erstellen"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm font-body text-muted-foreground">
-        Bereits ein Konto?{" "}
+        Schon dabei?{" "}
         <Link
           href="/anmelden"
           className="font-heading font-medium text-accent-orange hover:underline"

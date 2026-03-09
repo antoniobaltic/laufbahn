@@ -157,7 +157,7 @@ export function ApplicationWorkflowCard({
             </h2>
           </div>
           <p className="text-sm font-body leading-relaxed text-dark-500">
-            Fristen, Gespräche und Vorbereitung liegen bewusst kompakt zusammen.
+            Fristen, Gespräche und Vorbereitung liegen hier bewusst nah beieinander.
           </p>
         </div>
       </CardHeader>
@@ -266,7 +266,7 @@ export function ApplicationWorkflowCard({
                   {isPending ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      Speichert...
+                      Wird gespeichert...
                     </>
                   ) : (
                     "Frist speichern"
@@ -289,13 +289,13 @@ export function ApplicationWorkflowCard({
                 </p>
               ) : (
                 <p className="text-sm font-body text-muted-foreground">
-                  Kein zusätzlicher Hinweis zur Frist hinterlegt.
+                  Zur Frist gibt es noch keinen zusätzlichen Hinweis.
                 </p>
               )}
             </div>
           ) : (
             <EmptyWorkflowState
-              body="Noch keine Frist hinterlegt. Sobald du eine Deadline kennst, erscheint sie hier direkt im Überblick."
+              body="Noch keine Frist hinterlegt. Sobald du eine kennst, erscheint sie hier direkt im Blickfeld."
               actionLabel="Frist ergänzen"
               onAction={() => setIsEditingDeadline(true)}
             />
@@ -350,7 +350,7 @@ export function ApplicationWorkflowCard({
                 placeholder="z.B. Google Meet, Musterstraße 1, Office Berlin"
               />
               <Textarea
-                label="Prep-Notizen"
+                label="Vorbereitung"
                 value={interviewPrepDraft}
                 onChange={(e) => setInterviewPrepDraft(e.target.value)}
                 rows={5}
@@ -382,7 +382,7 @@ export function ApplicationWorkflowCard({
                   {isPending ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      Speichert...
+                      Wird gespeichert...
                     </>
                   ) : (
                     "Gespräch speichern"
@@ -408,12 +408,12 @@ export function ApplicationWorkflowCard({
                 </p>
               ) : (
                 <p className="text-sm font-body text-muted-foreground">
-                  Noch keine Vorbereitung notiert.
+                  Zur Vorbereitung gibt es noch keine Notiz.
                 </p>
               )}
               {showInterviewStatusHint && (
                 <div className="rounded-[18px] border border-orange-200/70 bg-orange-50/70 px-3 py-2 text-xs font-heading text-orange-600">
-                  Gespräch geplant, aber der Stand ist noch nicht auf „Im Gespräch“ gesetzt.
+                  Das Gespräch ist geplant, aber der Stand steht noch nicht auf „Im Gespräch“.
                 </div>
               )}
             </div>
@@ -428,7 +428,7 @@ export function ApplicationWorkflowCard({
 
         <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
           <Sparkles size={12} className="text-accent-orange" />
-          Diese Angaben helfen dir, Erinnerungen und Prioritäten automatisch sauber zu halten.
+          Diese Angaben halten Erinnerungen und Prioritäten automatisch sauber.
         </div>
       </CardContent>
     </Card>

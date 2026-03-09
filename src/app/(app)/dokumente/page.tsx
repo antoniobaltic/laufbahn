@@ -11,8 +11,8 @@ export default async function DocumentsPage() {
     <div className="space-y-6">
       <PageHero
         kicker="Dokumente"
-        title="Lebensläufe und Anschreiben sollen sich wie gute Werkzeuge anfühlen, nicht wie Versionschaos."
-        description="Die Oberfläche bleibt ruhig. Darunter bleiben Basisdokumente, Varianten und feste Fassungen pro Bewerbung weiterhin sauber nachvollziehbar."
+        title="Lebensläufe und Anschreiben sollen sich leicht pflegen lassen, nicht nach Dateichaos anfühlen."
+        description="Die Oberfläche bleibt ruhig. Darunter bleiben Grundlagen, Varianten und feste Fassungen pro Bewerbung weiterhin sauber nachvollziehbar."
         actions={
           <Link
             href="/board"
@@ -39,7 +39,7 @@ export default async function DocumentsPage() {
                 Arbeitsweise
               </p>
               <p className="mt-3 text-lg font-heading font-semibold text-dark">
-                Eine solide Basis vorne, Varianten nur dann, wenn du sie brauchst.
+                Eine gute Grundlage vorne, Varianten erst dann, wenn du sie brauchst.
               </p>
             </div>
           </>

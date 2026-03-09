@@ -71,7 +71,7 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
 
       if (result.importedContact) {
         toast({
-          message: "Kontakt aus der Ausschreibung übernommen",
+          message: "Kontakt aus der Stelle übernommen",
           variant: "success",
           duration: 5200,
           action: {
@@ -85,7 +85,7 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
                 router.refresh();
                 toast("Kontakt wieder entfernt", "success");
               } catch {
-                toast("Kontakt konnte nicht rückgängig gemacht werden", "error");
+                toast("Das Rückgängigmachen hat nicht geklappt", "error");
               }
             },
           },
@@ -305,17 +305,17 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
                   </div>
                   <div>
                     <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                      Arbeitsmodus
+                      Im Moment
                     </p>
                     <p className="mt-2 text-base font-heading font-semibold text-dark">
                       {pendingCount > 0
-                        ? `${pendingCount} Bewerbungen koennen bald Nachfassen brauchen.`
+                        ? `${pendingCount} Bewerbungen könnten bald ein Nachfassen brauchen.`
                         : "Im Moment ist alles ruhig sortiert."}
                     </p>
                     <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
                       {pendingCount > 0
-                        ? "Oeffne die Bewerbungen im Bereich Beworben, sobald du kurze Follow-ups oder frische Unterlagen vorbereiten willst."
-                        : "Nutze die Zeit fuer bessere Unterlagen oder neue passende Stellen."}
+                        ? "Öffne die Bewerbungen im Bereich Beworben, wenn du kurze Nachfragen oder frische Unterlagen vorbereiten willst."
+                        : "Nutze die ruhige Phase für bessere Unterlagen oder neue passende Stellen."}
                     </p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
                     Bewerbungsstand
                   </p>
                   <p className="mt-2 text-lg font-heading font-semibold text-dark">
-                    Ziehe einen Eintrag nur dann weiter, wenn sich fuer dich wirklich etwas veraendert hat.
+                    Ziehe einen Eintrag nur dann weiter, wenn sich für dich wirklich etwas verändert hat.
                   </p>
                   <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
                     So bleibt die Übersicht ehrlich und jede Spalte behält Bedeutung.
@@ -345,7 +345,7 @@ export function KanbanBoard({ initialApplications, prompts }: KanbanBoardProps) 
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/82 px-4 py-2 text-xs font-heading uppercase tracking-[0.12em] text-muted-foreground">
                   <MoveRight size={12} />
-                  Von gemerkt bis abgeschlossen
+                  Von gemerkt bis entschieden
                 </div>
               </div>
 

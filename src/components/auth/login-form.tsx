@@ -46,7 +46,7 @@ function LoginFormContent() {
         Anmelden
       </h2>
       <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-        Geh direkt zurück zu offenen Bewerbungen, Gesprächen und den nächsten sinnvollen Schritten.
+        Geh direkt zurück zu offenen Bewerbungen, Gesprächen und allem, was als Nächstes ansteht.
       </p>
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">
@@ -77,17 +77,17 @@ function LoginFormContent() {
         )}
 
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Meldet an..." : "Anmelden"}
+          {loading ? "Einen Moment..." : "Anmelden"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm font-body text-muted-foreground">
-        Noch kein Konto?{" "}
+        Noch neu hier?{" "}
         <Link
           href="/registrieren"
           className="font-heading font-medium text-accent-orange hover:underline"
         >
-          Registrieren
+          Konto erstellen
         </Link>
       </p>
     </div>

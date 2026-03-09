@@ -68,7 +68,7 @@ export function ApplicationListCard({ application }: ApplicationListCardProps) {
 
           <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
             <Clock size={12} />
-            <span>Hinzugefügt {relativeDate(application.date_saved)}</span>
+            <span>Gemerkt {relativeDate(application.date_saved)}</span>
           </div>
         </CardContent>
       </Card>

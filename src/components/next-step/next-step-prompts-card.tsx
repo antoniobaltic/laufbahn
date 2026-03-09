@@ -28,7 +28,7 @@ export function NextStepPromptsCard({ prompts }: NextStepPromptsCardProps) {
             Als Nächstes sinnvoll
           </p>
           <h2 className="text-xl font-heading font-semibold text-dark">
-            Ein klarer nächster Schritt statt zehn gleich lauter Signale
+            Ein klarer nächster Schritt statt zehn gleich lauter Hinweise
           </h2>
         </div>
       </CardHeader>

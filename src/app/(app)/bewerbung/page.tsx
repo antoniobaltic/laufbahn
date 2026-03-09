@@ -17,8 +17,8 @@ export default async function ApplicationsPage() {
     <div className="space-y-6">
       <PageHero
         kicker="Bewerbungen"
-        title="Alle Einträge bleiben greifbar, ohne dass die Seite laut wirkt."
-        description="Diese Ansicht ist zum Scannen gebaut: zuletzt veränderte Bewerbungen zuerst, mit klaren Karten und direktem Sprung in die Detailansicht."
+        title="Alle Bewerbungen bleiben greifbar, ohne dich zu erschlagen."
+        description="Diese Ansicht ist zum schnellen Scannen gebaut: zuletzt veränderte Bewerbungen zuerst, mit klaren Karten und direktem Sprung in die Details."
         actions={
           <>
             <Link
@@ -58,7 +58,7 @@ export default async function ApplicationsPage() {
           <EmptyState
             icon={<Files size={40} />}
             title="Noch keine Bewerbungen"
-            description="Lege zuerst in der Übersicht deine erste Bewerbung an. Danach findest du hier alle Einträge gesammelt."
+            description="Lege zuerst in der Übersicht deine erste Bewerbung an. Danach findest du hier alle Einträge gesammelt an einem Ort."
             action={
               <Link
                 href="/board"

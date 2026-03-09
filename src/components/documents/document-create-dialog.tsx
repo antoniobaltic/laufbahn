@@ -399,8 +399,8 @@ export function DocumentCreateDialog({
                       <span className="block text-sm font-heading text-dark">
                         PDF oder DOCX wählen
                       </span>
-                      <span className="block text-sm font-body leading-relaxed text-dark-500">
-                        Laufbahn speichert nur Markdown, nicht die Originaldatei.
+                    <span className="block text-sm font-body leading-relaxed text-dark-500">
+                        Die Datei wird in bearbeitbaren Text umgewandelt. Das Original bleibt nicht gespeichert.
                       </span>
                     </span>
                   </label>
@@ -436,10 +436,10 @@ export function DocumentCreateDialog({
                     {isImporting ? (
                       <>
                         <Loader2 size={14} className="animate-spin" />
-                        Wird umgewandelt...
+                        Wird übernommen...
                       </>
                     ) : (
-                      "In Markdown umwandeln"
+                      "Datei übernehmen"
                     )}
                   </Button>
 
@@ -477,7 +477,7 @@ export function DocumentCreateDialog({
           {isPending ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              Speichert...
+              Wird gespeichert...
             </>
           ) : variantFrom ? (
             "Variante anlegen"

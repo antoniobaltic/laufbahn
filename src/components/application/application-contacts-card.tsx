@@ -247,8 +247,7 @@ export function ApplicationContactsCard({
               </h2>
             </div>
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Halte Ansprechpartner, Mailwege und Kontext in derselben Bewerbung
-              zusammen.
+              Halte Ansprechpartner, Kontaktwege und Kontext in derselben Bewerbung zusammen.
             </p>
           </div>
           <Button
@@ -275,7 +274,7 @@ export function ApplicationContactsCard({
               value={primaryContact?.full_name || "Noch nicht festgelegt"}
               hint={
                 primaryContact?.role_title ||
-                "Markiere die wichtigste Person für schnellere Follow-ups."
+                "Markiere die wichtigste Person, damit du sie später schnell wiederfindest."
               }
             />
             <SummaryTile
@@ -415,11 +414,11 @@ export function ApplicationContactsCard({
                           >
                             {isPending ? (
                               <>
-                                <Loader2 size={14} className="animate-spin" />
-                                Speichert...
-                              </>
-                            ) : (
-                              "Kontakt aktualisieren"
+                <Loader2 size={14} className="animate-spin" />
+                Wird gespeichert...
+              </>
+            ) : (
+              "Kontakt aktualisieren"
                             )}
                           </Button>
                         </div>
@@ -438,13 +437,13 @@ export function ApplicationContactsCard({
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-heading text-muted-foreground">
               <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
-                Recruiter
+                Personalteam
               </span>
               <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
-                Hiring Manager
+                Fachbereich
               </span>
               <span className="rounded-full border border-border/80 bg-white/82 px-3 py-1.5">
-                Interviewpartner
+                Gesprächspartner:in
               </span>
             </div>
             {!isFormOpen && (
@@ -495,7 +494,7 @@ export function ApplicationContactsCard({
                 {isPending ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    Speichert...
+                    Wird gespeichert...
                   </>
                 ) : (
                   "Kontakt speichern"

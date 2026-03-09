@@ -19,7 +19,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Preise | Laufbahn",
   description:
-    "Die Preise von Laufbahn sind klar vorbereitet: ein kostenloser Einstieg und eine ruhige, ehrliche Premium-Stufe ohne Add-ons.",
+    "Starte kostenlos mit Laufbahn. Premium folgt später mit mehr Raum für längere Bewerbungsphasen, tiefere Unterlagenpflege und mehr Überblick.",
 };
 
 export default async function PricingPage() {
@@ -41,12 +41,12 @@ export default async function PricingPage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-heading font-semibold leading-[1.02] tracking-tight text-dark sm:text-5xl lg:text-[4rem]">
-              Eine faire kostenlose Stufe und ein ruhiges Premium-Modell.
+              Ein fairer kostenloser Start und später ein Premium, das wirklich Mehrwert bringt.
             </h1>
 
             <p className="mt-6 max-w-xl text-lg font-body leading-relaxed text-dark-500 sm:text-[1.15rem]">
-              Laufbahn soll schon kostenlos im Alltag helfen. Premium wird später
-              echte Tiefe freischalten, nicht die Grundlagen künstlich beschneiden.
+              Laufbahn soll dir schon kostenlos im Alltag helfen. Premium schaltet
+              später mehr Tiefe frei, statt die Grundlagen künstlich knapp zu halten.
             </p>
           </div>
 
@@ -59,8 +59,8 @@ export default async function PricingPage() {
             </h2>
             <p className="mt-4 text-sm font-body leading-relaxed text-dark-500 sm:text-[15px]">
               Die Preisstruktur, die geplanten Unterschiede und die passenden
-              Oberflächen sind schon da. Stripe und die eigentliche Freischaltung
-              folgen im nächsten Produktabschnitt.
+              Oberflächen stehen schon. Die eigentliche Freischaltung folgt im
+              nächsten Ausbauschritt.
             </p>
 
             <div className="mt-6 space-y-3">
@@ -75,8 +75,8 @@ export default async function PricingPage() {
               <div className="rounded-[24px] border border-orange-200/80 bg-orange-50/74 px-4 py-4">
                 <p className="text-sm font-heading font-medium text-dark">Premium</p>
                 <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-                  Startet später mit unbegrenzteren Arbeitsabläufen, tieferer
-                  Dokumentenpflege und erweiterten Auswertungen.
+                  Startet später mit mehr Raum für längere Suchphasen, tiefere
+                  Dokumentarbeit und stärkere Auswertung.
                 </p>
               </div>
             </div>
@@ -90,7 +90,7 @@ export default async function PricingPage() {
                 key={plan.id}
                 plan={plan}
                 ctaHref={user ? "/board" : "/registrieren"}
-                ctaLabel={user ? "Zum Produkt" : "Kostenlos starten"}
+                ctaLabel={user ? "Zur Übersicht" : "Kostenlos starten"}
               />
             ))}
           </div>
@@ -124,12 +124,11 @@ export default async function PricingPage() {
                 Was Premium freischalten soll
               </p>
               <h2 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.15rem]">
-                Mehr Raum für längere Suchphasen, Varianten und künftige
-                Komfortfunktionen.
+                Mehr Raum für längere Suchphasen, Varianten und spätere Komfortfunktionen.
               </h2>
               <p className="mt-4 text-base font-body leading-relaxed text-dark-500">
-                Premium soll dann sinnvoll werden, wenn Laufbahn nicht nur ein
-                Überblick, sondern dein dauerhaftes Bewerbungswerkzeug wird.
+                Premium soll dann sinnvoll werden, wenn Laufbahn nicht nur dein
+                Überblick, sondern dein dauerhaftes Zuhause für Bewerbungen wird.
               </p>
             </div>
 
@@ -177,11 +176,11 @@ export default async function PricingPage() {
                   Loslegen
                 </p>
                 <h2 className="mt-3 text-3xl font-heading font-semibold text-white sm:text-[2.25rem]">
-                  Du musst nicht auf Premium warten, um sofort ruhiger zu arbeiten.
+                  Du musst nicht auf Premium warten, um heute schon ruhiger zu arbeiten.
                 </h2>
                 <p className="mt-4 text-base font-body leading-relaxed text-white/74">
-                  Starte kostenlos und nimm deine Bewerbungen schon jetzt an einen
-                  klaren Ort. Die spätere Erweiterung ist vorbereitet.
+                  Starte kostenlos und bringe deine Bewerbungen schon jetzt an
+                  einen klaren Ort. Alles Weitere kann später sinnvoll mitwachsen.
                 </p>
               </div>
 
@@ -189,7 +188,7 @@ export default async function PricingPage() {
                 href={user ? "/board" : "/registrieren"}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-heading font-medium text-dark shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/92 hover:shadow-card-hover"
               >
-                {user ? "Zum Produkt" : "Kostenlos starten"}
+                {user ? "Zur Übersicht" : "Kostenlos starten"}
                 <ArrowRight size={16} />
               </Link>
             </div>

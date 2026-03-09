@@ -61,7 +61,7 @@ export function DocumentEditor({
   const helperText = useMemo(
     () =>
       rawMode
-        ? "Direkt im Markdown. Gut für Feinschliff oder sauberes Copy-Paste aus anderen Tools."
+        ? "Direkte Textansicht für Feinschliff oder sauberes Einfügen aus anderen Tools."
         : "Schreibe natürlich und nutze bei Bedarf Überschriften, Listen oder Links.",
     [rawMode]
   );
@@ -139,7 +139,7 @@ export function DocumentEditor({
                   : "border-border/80 bg-white/86 text-dark-500 hover:text-dark"
               )}
             >
-              {rawMode ? "Markdown direkt" : "Erweiterter Modus"}
+              {rawMode ? "Textansicht" : "Mehr Kontrolle"}
             </button>
           </div>
         </div>
@@ -181,7 +181,7 @@ export function DocumentEditor({
           <div className="rounded-[28px] border border-border/80 bg-white/82 shadow-card">
             <div className="border-b border-border/70 px-5 py-4">
               <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-                {rawMode ? "Markdown" : "Editor"}
+                {rawMode ? "Textansicht" : "Editor"}
               </p>
             </div>
             <div className="p-4 sm:p-5">
@@ -199,7 +199,7 @@ export function DocumentEditor({
                 spellCheck={!rawMode}
                 placeholder={
                   rawMode
-                    ? "# Dein Dokument\n\nSchreibe oder füge hier Markdown ein."
+                    ? "# Dein Dokument\n\nSchreibe oder füge hier Text mit Formatzeichen ein."
                     : "Schreibe hier deinen Lebenslauf oder dein Anschreiben."
                 }
               />

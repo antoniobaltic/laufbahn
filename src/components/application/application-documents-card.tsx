@@ -396,7 +396,7 @@ export function ApplicationDocumentsCard({
               </h2>
             </div>
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Verknüpfe feste Versionen aus Dokumente und halte zusätzliche Links
+              Verknüpfe feste Fassungen aus deiner Dokumenten-Bibliothek und halte zusätzliche Links
               wie Portfolio, Zeugnisse oder Arbeitsproben daneben bereit.
             </p>
           </div>
@@ -423,15 +423,15 @@ export function ApplicationDocumentsCard({
             value={`${completedChecklistItems}/3 bereit`}
             hint={
               completedChecklistItems === documentChecklist.length
-                ? "Die wichtigsten Unterlagen sind an dieser Bewerbung bereits dran."
-                : "Ergänze fehlende Kernunterlagen oder fixe Versionen aus Dokumente."
+                ? "Die wichtigsten Unterlagen sind für diese Bewerbung schon dran."
+                : "Ergänze fehlende Kernunterlagen oder feste Fassungen aus deiner Dokumenten-Bibliothek."
             }
           />
           <SummaryTile
             icon={<FileText size={14} className="text-accent-blue" />}
-            label="Fix verknüpft"
+            label="Fest verknüpft"
             value={`${linkedDocuments.length}/2`}
-            hint="Lebenslauf und Anschreiben bleiben hier auf die gewählte Version fixiert."
+            hint="Lebenslauf und Anschreiben bleiben hier auf die gewählte Fassung festgelegt."
           />
           <SummaryTile
             icon={<Files size={14} className="text-accent-green" />}
@@ -462,12 +462,12 @@ export function ApplicationDocumentsCard({
         <section className="space-y-3 rounded-[24px] border border-border/80 bg-white/76 p-4 sm:p-5">
           <div className="space-y-1">
             <h3 className="text-sm font-heading font-semibold text-dark">
-              Lebenslauf & Anschreiben aus Dokumente
+              Lebenslauf & Anschreiben aus der Dokumenten-Bibliothek
             </h3>
             <p className="text-sm font-body leading-relaxed text-dark-500">
               Sobald du hier verknüpfst, bleibt diese Bewerbung auf genau diese
               Fassung festgelegt. Spätere Änderungen am Dokument überschreiben die
-              Bewerbung nicht still.
+              Bewerbung nicht still im Hintergrund.
             </p>
           </div>
 
@@ -605,7 +605,7 @@ export function ApplicationDocumentsCard({
                               {isPending ? (
                                 <>
                                   <Loader2 size={14} className="animate-spin" />
-                                  Speichert...
+                                  Wird gespeichert...
                                 </>
                               ) : (
                                 "Link aktualisieren"
@@ -623,7 +623,7 @@ export function ApplicationDocumentsCard({
             <div className="rounded-[24px] border border-dashed border-border bg-dark-50/70 p-5">
               <p className="text-sm font-body leading-relaxed text-dark-500">
                 Noch keine zusätzlichen Links hinterlegt. Das ist völlig okay, wenn
-                du Lebenslauf und Anschreiben bereits oben aus Dokumente verknüpft
+                du Lebenslauf und Anschreiben bereits oben aus deiner Dokumenten-Bibliothek verknüpft
                 hast.
               </p>
               {!isFormOpen && (
@@ -645,7 +645,7 @@ export function ApplicationDocumentsCard({
             <div className="surface-muted rounded-[24px] p-4 sm:p-5">
               <p className="mb-4 text-sm font-body leading-relaxed text-dark-500">
                 Nutze diese Fläche für zusätzliche Unterlagen, die nicht als feste
-                Markdown-Version in Dokumente liegen.
+                Fassung in deiner Dokumenten-Bibliothek liegen.
               </p>
               <DocumentFormFields
                 form={form}
@@ -674,7 +674,7 @@ export function ApplicationDocumentsCard({
                   {isPending ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      Speichert...
+                      Wird gespeichert...
                     </>
                   ) : (
                     "Link speichern"
@@ -729,7 +729,7 @@ function LibraryLinkCard({
           <p className="text-sm font-body leading-relaxed text-dark-500">
             {linkedDocument
               ? "Diese Bewerbung bleibt auf die unten gezeigte Version festgelegt."
-              : "Wähle ein Dokument aus deiner Bibliothek. Beim Verknüpfen wird ein fixer Schnappschuss gespeichert."}
+              : "Wähle ein Dokument aus deiner Bibliothek. Beim Verknüpfen wird eine feste Fassung gespeichert."}
           </p>
         </div>
 
@@ -755,7 +755,7 @@ function LibraryLinkCard({
                 prefetch={false}
                 className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-white/88 px-3 py-1.5 text-xs font-heading text-dark-500 transition-colors hover:text-dark"
               >
-                In Dokumente öffnen
+                In der Bibliothek öffnen
                 <ExternalLink size={12} />
               </Link>
             </div>
@@ -828,10 +828,10 @@ function LibraryLinkCard({
                 {isPending ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    Speichert...
+                    Wird gespeichert...
                   </>
                 ) : linkedDocument ? (
-                  "Auf aktuelle Fassung wechseln"
+                  "Auf aktuelle Fassung umstellen"
                 ) : (
                   "Fix verknüpfen"
                 )}
@@ -841,7 +841,7 @@ function LibraryLinkCard({
         ) : (
           <div className="rounded-[22px] border border-dashed border-border/80 bg-white/78 px-4 py-4">
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              In Dokumente ist noch kein {getSourceDocumentTypeLabel(documentType).toLowerCase()} hinterlegt.
+              In deiner Dokumenten-Bibliothek ist noch kein {getSourceDocumentTypeLabel(documentType).toLowerCase()} hinterlegt.
             </p>
             <div className="mt-4">
               <Link
@@ -849,7 +849,7 @@ function LibraryLinkCard({
                 prefetch={false}
                 className="inline-flex items-center gap-2 rounded-xl bg-accent-orange px-4 py-2 text-sm font-heading text-white shadow-card transition-colors hover:bg-orange-500"
               >
-                Zu Dokumente
+                Zur Bibliothek
               </Link>
             </div>
           </div>

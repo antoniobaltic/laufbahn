@@ -18,9 +18,9 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Laufbahn — Bewerbungen im Griff",
+  title: "Laufbahn | Bewerbungen entspannt organisieren",
   description:
-    "Dein persoenlicher Bewerbungstracker. Behalte den Ueberblick ueber alle deine Bewerbungen — von der ersten Idee bis zum Angebot.",
+    "Organisiere Bewerbungen, Gespräche, Fristen und Unterlagen an einem klaren Ort. Laufbahn begleitet deine Jobsuche in Deutschland und Österreich.",
 };
 
 export default function RootLayout({

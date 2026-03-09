@@ -141,14 +141,14 @@ function buildInterviewReminder(
       diffHours <= 24 ? "high" : diffHours <= 48 ? "medium" : "low",
     title:
       diffHours < 0
-        ? "Interview läuft oder ist gerade vorbei"
+        ? "Gespräch läuft oder ist gerade vorbei"
         : diffHours <= 6
-          ? "Interview in wenigen Stunden"
+          ? "Gespräch in wenigen Stunden"
           : diffHours <= 24
-            ? "Interview heute"
+            ? "Gespräch heute"
             : diffHours <= 48
-              ? "Interview morgen"
-              : "Interview bald",
+              ? "Gespräch morgen"
+              : "Gespräch bald",
     body: `${application.company_name} · ${application.role_title}`,
     dueAt: application.next_interview_at,
     ctaLabel: "Vorbereiten",
@@ -185,8 +185,8 @@ function buildFollowUpReminder(application: ReminderApplication, now: Date) {
     roleTitle: application.role_title,
     type: "follow_up",
     urgency: ageDays >= 18 ? "high" : ageDays >= 14 ? "medium" : "low",
-    title: "Follow-up prüfen",
-    body: `${application.company_name} wartet seit ${ageDays} Tagen im Status Beworben.`,
+    title: "Nachfassen prüfen",
+    body: `${application.company_name} wartet seit ${ageDays} Tagen im Stand Beworben.`,
     dueAt,
     ctaLabel: "Nächsten Schritt planen",
     meta: application.notes || undefined,

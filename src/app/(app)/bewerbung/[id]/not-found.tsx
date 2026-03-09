@@ -9,7 +9,7 @@ export default function ApplicationNotFound() {
       <EmptyState
         icon={<SearchX size={40} />}
         title="Bewerbung nicht gefunden"
-        description="Der Eintrag existiert nicht mehr oder gehört nicht zu deinem Konto."
+        description="Diese Bewerbung existiert nicht mehr oder gehört nicht zu deinem Konto."
         action={
           <Link
             href="/bewerbung"

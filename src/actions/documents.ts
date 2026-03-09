@@ -137,7 +137,7 @@ async function insertActivity(
 
   if (error) {
     console.error("Error inserting activity from document action:", error);
-    throw new Error("Aktivität konnte nicht gespeichert werden.");
+    throw new Error("Der Verlaufseintrag konnte nicht gespeichert werden.");
   }
 }
 
@@ -928,7 +928,7 @@ export async function linkSourceDocumentToApplication(
 
   if (error) {
     console.error("Error linking source document to application:", error);
-    throw new Error("Dokument konnte nicht mit der Bewerbung verknüpft werden.");
+    throw new Error("Die Unterlage konnte nicht mit der Bewerbung verknüpft werden.");
   }
 
   await insertActivity(supabase, {
@@ -971,7 +971,7 @@ export async function unlinkSourceDocumentFromApplication(
 
   if (existingError) {
     console.error("Error fetching source document link for removal:", existingError);
-    throw new Error("Dokumentverknüpfung konnte nicht geladen werden.");
+    throw new Error("Die Verknüpfung konnte nicht geladen werden.");
   }
 
   if (!existing) {
@@ -986,7 +986,7 @@ export async function unlinkSourceDocumentFromApplication(
 
   if (error) {
     console.error("Error unlinking source document from application:", error);
-    throw new Error("Dokumentverknüpfung konnte nicht entfernt werden.");
+    throw new Error("Die Verknüpfung konnte nicht entfernt werden.");
   }
 
   await insertActivity(supabase, {

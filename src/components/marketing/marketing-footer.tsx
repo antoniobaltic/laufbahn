@@ -14,11 +14,11 @@ export function MarketingFooter({ isAuthenticated }: MarketingFooterProps) {
               Laufbahn
             </p>
             <p className="mt-3 text-lg font-heading font-semibold text-dark">
-              Für Menschen, die ihre Bewerbungen klar und ruhig organisieren wollen.
+              Für Menschen, die ihre Bewerbungen klar, ruhig und mit etwas Freude organisieren wollen.
             </p>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              DACH-fokussiert, freundlich im Ton und bewusst ohne Recruiter- oder
-              Admin-Gefühl.
+              Für Deutschland und Österreich geschrieben, freundlich im Ton und
+              bewusst ohne Verwaltungskälte.
             </p>
           </div>
 
@@ -40,7 +40,7 @@ export function MarketingFooter({ isAuthenticated }: MarketingFooterProps) {
 
         <div className="flex flex-col gap-2 border-t border-border/70 pt-4 text-xs font-heading text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>Für Bewerbungen in Deutschland und Österreich</span>
-          <span>Premium startet bald. Die klare Struktur ist schon vorbereitet.</span>
+          <span>Premium folgt später. Der kostenlose Einstieg ist schon heute sinnvoll nutzbar.</span>
         </div>
       </div>
     </footer>

@@ -52,13 +52,13 @@ export function Sidebar() {
                 Laufbahn
               </span>
               <span className="mt-1 block text-sm font-body leading-relaxed text-dark-500">
-                Der ruhige Ort fuer Bewerbungen, Gespräche und feste Dokumentfassungen.
+                Der ruhige Ort für Bewerbungen, Gespräche und passende Unterlagen.
               </span>
             </div>
           </Link>
 
           <div className="mt-5 flex items-center gap-2 text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            <span className="eyebrow-badge">DACH Fokus</span>
+            <span className="eyebrow-badge">Für DACH gemacht</span>
           </div>
         </div>
 
@@ -112,10 +112,10 @@ export function Sidebar() {
 
         <div className="surface-rail rounded-[28px] px-4 py-4">
           <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-muted-foreground">
-            Produktprinzip
+            So bleibt es ruhig
           </p>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Erst klar sehen, was heute wichtig ist. Mehr Tiefe oeffnet sich erst
+            Erst klar sehen, was heute wichtig ist. Mehr Tiefe öffnet sich erst
             dann, wenn du sie wirklich brauchst.
           </p>
         </div>
@@ -130,12 +130,12 @@ function getNavHint(href: string) {
   }
 
   if (href === "/bewerbung") {
-    return "Alle Eintraege";
+    return "Alle Einträge";
   }
 
   if (href === "/dokumente") {
-    return "Versionen & Varianten";
+    return "Unterlagen sortiert";
   }
 
-  return "Fortschritt lesen";
+  return "Muster erkennen";
 }

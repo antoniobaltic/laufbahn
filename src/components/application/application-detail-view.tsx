@@ -163,15 +163,15 @@ export function ApplicationDetailView({
           ? `${linkedDocuments.length} feste Fassung${
               linkedDocuments.length === 1 ? "" : "en"
             } verknüpft`
-          : "Lebenslauf und Anschreiben koennen hier fixiert werden.",
+          : "Lebenslauf und Anschreiben lassen sich hier fest verknüpfen.",
     },
     hasJobPosting
       ? {
           id: "ausschreibung" as const,
           icon: <Workflow size={15} className="text-accent-orange" />,
           title: "Ausschreibung",
-          value: "Importiert",
-          hint: "Anforderungen, Benefits und der Originaltext bleiben abrufbar.",
+          value: "Vorhanden",
+          hint: "Anforderungen, Benefits und der Text der Stelle bleiben griffbereit.",
         }
       : {
           id: "ueberblick" as const,
@@ -244,7 +244,7 @@ export function ApplicationDetailView({
                 <p className="max-w-2xl text-sm font-body leading-relaxed text-dark-500 sm:text-base">
                   {application.notes?.trim()
                     ? application.notes
-                    : "Diese Bewerbung ist jetzt klarer gegliedert: zuerst der Stand und der nächste Schritt, danach Verlauf, Kontakte, Unterlagen und die Ausschreibung."}
+                    : "Hier zählt zuerst der Stand und der nächste Schritt. Alles Weitere bleibt ordentlich dahinter sortiert."}
                 </p>
               </div>
 
@@ -263,7 +263,7 @@ export function ApplicationDetailView({
                       "hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
                     )}
                   >
-                    Originale Ausschreibung
+                    Stellenanzeige öffnen
                     <ExternalLink size={14} />
                   </Link>
                 )}
@@ -333,7 +333,7 @@ export function ApplicationDetailView({
                     ? `${linkedDocuments.length} feste Fassung${
                         linkedDocuments.length === 1 ? "" : "en"
                       }`
-                    : "Dokumente koennen hier fixiert werden."
+                    : "Unterlagen lassen sich hier fest verknüpfen."
                 }
               />
             </div>
@@ -347,9 +347,9 @@ export function ApplicationDetailView({
                 </p>
                 <p className="mt-3 text-2xl font-heading font-semibold leading-tight text-white">
                   {application.next_interview_at
-                    ? "Das nächste Gespräch ist vorbereitet und sichtbar."
+                    ? "Das nächste Gespräch ist sichtbar und gut vorbereitet."
                     : application.deadline
-                      ? "Die Frist ist sichtbar. Alles Weitere kann dahinter liegen."
+                      ? "Die Frist ist sichtbar. Alles Weitere darf dahinter ruhiger werden."
                       : "Stand und nächste Schritte sind jetzt sauber getrennt."}
                 </p>
               </div>
@@ -365,7 +365,7 @@ export function ApplicationDetailView({
                   <p className="mt-2 text-sm font-body leading-relaxed text-white/72">
                     {latestActivity
                       ? `${relativeDate(latestActivity.created_at)}`
-                      : "Sobald etwas passiert, erscheint es hier."}
+                      : "Sobald etwas passiert, taucht es hier auf."}
                   </p>
                 </div>
                 <div className="marketing-floating-card rounded-[24px] px-4 py-4">
@@ -463,7 +463,7 @@ export function ApplicationDetailView({
               <Card className="rounded-[30px]">
                 <CardContent className="px-5 py-5 sm:px-6 sm:py-6">
                   <p className="text-sm font-body leading-relaxed text-dark-500">
-                    Für diese Bewerbung liegt noch kein importierter Ausschreibungstext vor.
+                    Zu dieser Bewerbung liegt noch kein Text aus der Stellenanzeige vor.
                   </p>
                 </CardContent>
               </Card>
@@ -502,7 +502,7 @@ export function ApplicationDetailView({
               <div className="flex items-center gap-2">
                 <Sparkles size={16} className="text-accent-orange" />
                 <h2 className="text-lg font-heading font-medium text-dark">
-                  Kurz gelesen
+                  Kurzüberblick
                 </h2>
               </div>
             </CardHeader>
@@ -516,7 +516,7 @@ export function ApplicationDetailView({
                 value={formatDate(application.updated_at)}
               />
               <DetailRow
-                label="Remote"
+                label="Arbeitsort"
                 value={application.remote_policy || "Nicht angegeben"}
               />
               <DetailRow

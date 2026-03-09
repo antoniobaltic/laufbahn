@@ -58,13 +58,13 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
       <div className="space-y-6">
         <AnalyticsHero
           title="Auswertung"
-          description="Sobald Bewerbungen angelegt sind, zeigt dir diese Seite, wo du Rückmeldungen bekommst und was gerade Aufmerksamkeit braucht."
+          description="Sobald Bewerbungen angelegt sind, zeigt dir diese Seite, wo Rückmeldungen kommen und was gerade Aufmerksamkeit braucht."
         />
         <div className="surface-panel rounded-[32px] px-4">
           <EmptyState
             icon={<BarChart3 size={40} />}
             title="Noch keine Auswertung verfügbar"
-            description="Lege zuerst ein paar Bewerbungen an. Dann zeigt dir diese Seite, wo du Rückmeldungen bekommst und was gerade Aufmerksamkeit braucht."
+            description="Lege zuerst ein paar Bewerbungen an. Dann zeigt dir diese Seite, wo Rückmeldungen kommen und was gerade Aufmerksamkeit braucht."
             action={
               <Link
                 href="/board"
@@ -125,11 +125,11 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
                 Überblick
               </p>
               <h2 className="mt-2 text-xl font-heading font-semibold text-dark">
-                Fortschritt im Prozess
+                Wie sich deine Bewerbungen entwickeln
               </h2>
               <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
                 Hier siehst du, wie weit deine Bewerbungen im Schnitt kommen und
-                an welcher Stelle Bewegung entsteht.
+                an welcher Stelle am meisten Bewegung entsteht.
               </p>
             </div>
             <Badge variant="default">{offerRate}% mit Angebot</Badge>
@@ -158,8 +158,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             </h2>
           </div>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Diese Hinweise sollen dir Arbeit abnehmen, nicht neue Komplexität
-            schaffen.
+            Diese Hinweise sollen dir Arbeit abnehmen, nicht neue Komplexität schaffen.
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
@@ -230,11 +229,11 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             <div className="flex items-center gap-2">
               <FileText size={15} className="text-accent-orange" />
               <h2 className="text-xl font-heading font-semibold text-dark">
-                Arbeitsstand
+                Pflegestand
               </h2>
             </div>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Diese Karten zeigen, wie vollständig deine Bewerbungen gepflegt sind.
+              Diese Karten zeigen, wie vollständig deine Bewerbungen bisher gepflegt sind.
             </p>
             <div className="mt-5 grid gap-3">
               {workspaceCoverage.map((metric) => (
@@ -247,7 +246,7 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
             <div className="flex items-center gap-2">
               <MessageSquareMore size={15} className="text-accent-blue" />
               <h2 className="text-xl font-heading font-semibold text-dark">
-                Zuletzt passiert
+                Zuletzt bewegt
               </h2>
             </div>
             {recentMovement.length > 0 ? (
@@ -258,8 +257,8 @@ export function AnalyticsDashboard({ snapshot }: AnalyticsDashboardProps) {
               </div>
             ) : (
               <p className="mt-4 text-sm font-body leading-relaxed text-dark-500">
-                Noch keine Aktivitäten protokolliert. Sobald Status, Notizen oder
-                Dokumente gepflegt werden, erscheinen die letzten Änderungen hier.
+                Noch keine Aktivitäten protokolliert. Sobald Stand, Notizen oder
+                Unterlagen gepflegt werden, erscheinen die letzten Änderungen hier.
               </p>
             )}
           </div>
@@ -312,7 +311,7 @@ function AnalyticsHero({
                 {activeApplications}
               </p>
               <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-                Bewerbungen laufen gerade noch aktiv.
+                Bewerbungen sind gerade noch offen.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">

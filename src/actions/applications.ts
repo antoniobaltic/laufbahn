@@ -84,7 +84,7 @@ async function insertActivity(
 
   if (error) {
     console.error("Error inserting activity:", error);
-    throw new Error("Aktivität konnte nicht gespeichert werden.");
+    throw new Error("Der Verlaufseintrag konnte nicht gespeichert werden.");
   }
 }
 
@@ -941,7 +941,7 @@ export async function undoImportedContactCreation(
 
   if (contactError) {
     console.error("Error loading imported contact for undo:", contactError);
-    throw new Error("Kontakt konnte nicht rückgängig gemacht werden.");
+    throw new Error("Das Rückgängigmachen des Kontakts hat nicht geklappt.");
   }
 
   if (!contact) {
@@ -958,7 +958,7 @@ export async function undoImportedContactCreation(
 
   if (deleteContactError) {
     console.error("Error deleting imported contact during undo:", deleteContactError);
-    throw new Error("Kontakt konnte nicht rückgängig gemacht werden.");
+    throw new Error("Das Rückgängigmachen des Kontakts hat nicht geklappt.");
   }
 
   const { data: activities, error: activitiesError } = await supabase
@@ -1036,7 +1036,7 @@ export async function updateApplicationNotes(id: string, notes: string) {
       userId: user.id,
       applicationId: id,
       activityType: "note_added",
-      title: existingNotes ? "Notiz aktualisiert" : "Notiz hinzugefügt",
+      title: existingNotes ? "Notiz aktualisiert" : "Notiz ergänzt",
       metadata: {
         note_excerpt: buildExcerpt(trimmedNotes),
       },
@@ -1137,7 +1137,7 @@ export async function updateApplicationInterview(
 
   if (currentError) {
     console.error("Error fetching application interview:", currentError);
-    throw new Error("Gespräch konnte nicht geladen werden.");
+    throw new Error("Die Gesprächsdaten konnten nicht geladen werden.");
   }
 
   if (
@@ -1171,7 +1171,7 @@ export async function updateApplicationInterview(
 
   if (error) {
     console.error("Error updating application interview:", error);
-    throw new Error("Gespräch konnte nicht gespeichert werden.");
+    throw new Error("Die Gesprächsdaten konnten nicht gespeichert werden.");
   }
 
   if (nextInterviewAt) {
@@ -1269,7 +1269,7 @@ export async function createApplicationContact(
     userId: user.id,
     applicationId,
     activityType: "contact_added",
-    title: `Kontakt hinzugefügt: ${data.full_name}`,
+    title: `Kontakt ergänzt: ${data.full_name}`,
     metadata: {
       contact_name: data.full_name,
       contact_role: data.role_title || undefined,
@@ -1416,7 +1416,7 @@ export async function createApplicationDocument(
     userId: user.id,
     applicationId,
     activityType: "document_uploaded",
-    title: `Dokument hinzugefügt: ${data.title}`,
+    title: `Unterlage ergänzt: ${data.title}`,
     metadata: {
       document_title: data.title,
       document_type: data.document_type,

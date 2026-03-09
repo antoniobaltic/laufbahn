@@ -17,7 +17,7 @@ export default function AuthLayout({
                   Laufbahn
                 </h1>
                 <p className="text-sm font-body text-white/72">
-                  Bewerbungen entspannt organisieren
+                  Klar durch die Jobsuche
                 </p>
               </div>
             </div>
@@ -27,10 +27,12 @@ export default function AuthLayout({
                 Klarer Start
               </p>
               <h2 className="mt-4 text-4xl font-heading font-semibold leading-tight text-white">
-                Eine Bewerbungssuche, die sich ruhig und hochwertig anfuehlt.
+                Eine Bewerbungssuche, die sich ruhiger und leichter anfühlt.
               </h2>
               <p className="mt-5 text-base font-body leading-relaxed text-white/76">
-                Erst sehen, was wichtig ist. Dann tiefer gehen. Laufbahn hält Stand, Gespräche, Fristen, Kontakte und Unterlagen so zusammen, dass du dich nicht mehr durch verstreute Tools arbeiten musst.
+                Erst sehen, was wichtig ist. Dann tiefer gehen. Laufbahn hält
+                Stand, Gespräche, Fristen, Kontakte und Unterlagen so zusammen,
+                dass du nicht mehr zwischen verstreuten Tools springen musst.
               </p>
             </div>
           </div>
@@ -43,7 +45,7 @@ export default function AuthLayout({
               <ul className="mt-3 space-y-2 text-sm font-body leading-relaxed text-white/76">
                 <li>ein ruhiger Überblick über alle laufenden Bewerbungen</li>
                 <li>klare Detailseiten mit Verlauf, Kontakten und Unterlagen</li>
-                <li>eine Oberfläche, die auch mobil ruhig bleibt</li>
+                <li>eine Oberfläche, die auch mobil leicht lesbar bleibt</li>
               </ul>
             </div>
           </div>
@@ -59,7 +61,7 @@ export default function AuthLayout({
                 Laufbahn
               </h1>
               <p className="mt-1 text-sm font-body text-muted-foreground">
-                Klar sehen, dann tiefer gehen
+                Klar sehen, dann weiterkommen
               </p>
             </div>
             {children}

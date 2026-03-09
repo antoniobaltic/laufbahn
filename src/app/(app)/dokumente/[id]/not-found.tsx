@@ -13,13 +13,13 @@ export default function DocumentNotFound() {
           Dokument nicht gefunden
         </h1>
         <p className="mt-3 text-sm font-body leading-relaxed text-dark-500 sm:text-base">
-          Diese Ansicht existiert nicht mehr oder gehört nicht zu deinem Konto.
+          Dieses Dokument existiert nicht mehr oder gehört nicht zu deinem Konto.
         </p>
         <div className="mt-6">
           <Link href="/dokumente">
             <Button type="button" variant="secondary">
               <ArrowLeft size={14} />
-              Zurück zu Dokumente
+              Zurück zu den Dokumenten
             </Button>
           </Link>
         </div>

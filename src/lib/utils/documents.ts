@@ -23,20 +23,20 @@ export function getSourceDocumentTypePluralLabel(type: SourceDocumentType) {
 export function getSourceKindLabel(sourceKind: SourceDocumentSourceKind) {
   switch (sourceKind) {
     case "import_docx":
-      return "Aus DOCX importiert";
+      return "Aus DOCX übernommen";
     case "import_pdf":
-      return "Aus PDF importiert";
+      return "Aus PDF übernommen";
     case "restore":
-      return "Aus älterer Version wiederhergestellt";
+      return "Aus einer älteren Fassung zurückgeholt";
     case "variant":
-      return "Aus einer Basis gestartet";
+      return "Aus einer Grundlage gestartet";
     default:
-      return "Manuell erstellt";
+      return "Direkt in Laufbahn erstellt";
   }
 }
 
 export function getEditorModeLabel(editorMode: SourceDocumentEditorMode) {
-  return editorMode === "markdown" ? "Markdown-Modus" : "Schreibansicht";
+  return editorMode === "markdown" ? "Textansicht" : "Schreibansicht";
 }
 
 export function normalizeMarkdown(value: string) {

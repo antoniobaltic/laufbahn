@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         error:
           error instanceof Error
             ? error.message
-            : "Die Datei konnte nicht in Markdown umgewandelt werden.",
+            : "Die Datei konnte nicht in bearbeitbaren Text umgewandelt werden.",
       },
       { status: 400 }
     );

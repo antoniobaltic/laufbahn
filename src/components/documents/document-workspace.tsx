@@ -240,7 +240,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   </h1>
                   <p className="text-sm font-body leading-relaxed text-dark-500 sm:text-base">
                     Jede gespeicherte Fassung bleibt nachvollziehbar. Verknüpfungen mit
-                    Bewerbungen bleiben auf die jeweils verwendete Version fixiert.
+                    Bewerbungen bleiben auf genau die verwendete Fassung festgelegt.
                   </p>
                 </div>
 
@@ -343,10 +343,10 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
               />
 
               <div className="flex flex-wrap gap-2 pt-2">
-                <Button type="button" variant="secondary" size="sm" onClick={handleDownload}>
-                  <Download size={14} />
-                  Markdown laden
-                </Button>
+                  <Button type="button" variant="secondary" size="sm" onClick={handleDownload}>
+                    <Download size={14} />
+                    Als Textdatei laden
+                  </Button>
                 <Button
                   type="button"
                   size="sm"
@@ -404,7 +404,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   <p className="text-sm font-body leading-relaxed text-dark-500">
                     Titel und Tags ändern nur die Dokumentkarte. Eine neue Version
                     entsteht erst, wenn du Inhalt oder Versionsnotizen anpasst. Die
-                    Schreibansicht merkt sich Laufbahn separat.
+                    gewählte Schreibansicht merkt sich Laufbahn separat.
                   </p>
                 </div>
 
@@ -441,7 +441,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                     {isPending ? (
                       <>
                         <Loader2 size={14} className="animate-spin" />
-                        Speichert...
+                        Wird gespeichert...
                       </>
                     ) : (
                       <>
@@ -503,13 +503,13 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                             disabled={isPending}
                           >
                             {restoreVersionId === version.id ? (
-                              <>
-                                <Loader2 size={14} className="animate-spin" />
-                                Lädt...
-                              </>
-                            ) : (
-                              <>
-                                <RotateCcw size={14} />
+                                <>
+                                  <Loader2 size={14} className="animate-spin" />
+                                  Wird wiederhergestellt...
+                                </>
+                              ) : (
+                                <>
+                                  <RotateCcw size={14} />
                                 Wiederherstellen
                               </>
                             )}
@@ -555,7 +555,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   ))
                 ) : (
                   <p className="text-sm font-body leading-relaxed text-dark-500">
-                    Noch nicht mit einer Bewerbung verknüpft.
+                    Noch mit keiner Bewerbung verknüpft.
                   </p>
                 )}
               </CardContent>
@@ -602,7 +602,7 @@ export function DocumentWorkspace({ workspace }: DocumentWorkspaceProps) {
                   <div className="rounded-[22px] border border-dashed border-border/80 bg-dark-50/62 px-4 py-4">
                     <p className="text-sm font-body leading-relaxed text-dark-500">
                       Noch keine Varianten darunter. Lege eine Variante an, wenn du
-                      von dieser Basis für einen anderen Fokus starten möchtest.
+                      von dieser Grundlage aus für einen anderen Fokus starten möchtest.
                     </p>
                     <div className="mt-4">
                       <Button

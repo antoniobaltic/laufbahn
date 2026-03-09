@@ -48,7 +48,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 Laufbahn
               </span>
               <span className="block text-xs font-heading text-muted-foreground">
-                Klar sehen, dann tiefer gehen
+                Klar sehen, dann weiterkommen
               </span>
             </div>
           </div>
@@ -110,8 +110,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               Tipp
             </p>
             <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Auf der Detailseite kannst du jetzt gezielt zwischen Verlauf,
-              Kontakten und Unterlagen wechseln, statt alles gleichzeitig zu lesen.
+              Öffne auf der Detailseite nur den Bereich, den du gerade brauchst,
+              statt alles gleichzeitig lesen zu müssen.
             </p>
           </div>
         </div>
@@ -122,7 +122,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
 function getNavHint(href: string) {
   if (href === "/board") return "Heute im Blick";
-  if (href === "/bewerbung") return "Alle Eintraege";
-  if (href === "/dokumente") return "Versionen & Varianten";
-  return "Fortschritt lesen";
+  if (href === "/bewerbung") return "Alle Einträge";
+  if (href === "/dokumente") return "Unterlagen sortiert";
+  return "Muster erkennen";
 }

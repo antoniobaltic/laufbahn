@@ -125,7 +125,7 @@ export function KanbanCard({ application, index, onDelete }: KanbanCardProps) {
           <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
             <span className="flex items-center gap-1 text-[11px] font-heading uppercase tracking-[0.08em] text-muted-foreground">
               <Clock size={10} />
-              Hinzugefügt {relativeDate(application.date_saved)}
+              Gemerkt {relativeDate(application.date_saved)}
             </span>
 
             {hasDeadline && (

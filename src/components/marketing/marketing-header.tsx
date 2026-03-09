@@ -26,7 +26,7 @@ export function MarketingHeader({
               Laufbahn
             </span>
             <span className="block text-xs font-heading text-muted-foreground">
-              Bewerbungen entspannt organisieren
+              Klar durch die Jobsuche
             </span>
           </div>
         </Link>
@@ -60,7 +60,7 @@ export function MarketingHeader({
               href="/board"
               className="rounded-full px-3 py-2 text-sm font-heading font-medium text-dark-500 transition-colors hover:bg-white hover:text-dark"
             >
-              Zum Produkt
+              Zur Übersicht
             </Link>
           ) : (
             <Link

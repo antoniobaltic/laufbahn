@@ -24,9 +24,9 @@ import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Laufbahn",
+  title: "Laufbahn | Bewerbungen entspannt organisieren",
   description:
-    "Laufbahn bringt Bewerbungen, Gespräche, Fristen und Unterlagen an einen ruhigen Ort. Für Menschen in Deutschland und Österreich, die Klarheit statt Chaos wollen.",
+    "Organisiere Bewerbungen, Gespräche, Fristen und Unterlagen an einem klaren Ort. Laufbahn begleitet deine Jobsuche in Deutschland und Österreich.",
 };
 
 const accentStyles = {
@@ -79,13 +79,13 @@ export default async function HomePage() {
             </div>
 
             <h1 className="mt-6 text-4xl font-heading font-semibold leading-[1.01] tracking-tight text-dark sm:text-5xl lg:text-[4.35rem]">
-              Bewerbungen, die sich endlich geordnet anfühlen.
+              Organisiere deine Bewerbungen, ohne den Kopf voll zu haben.
             </h1>
 
             <p className="mt-6 max-w-xl text-lg font-body leading-relaxed text-dark-500 sm:text-[1.15rem]">
-              Laufbahn bringt Stellen, Gespräche, Fristen und Unterlagen an einen
-              ruhigen Ort. Klar genug für jeden Tag, stark genug für längere
-              Bewerbungsphasen und mehrere Richtungen zugleich.
+              Laufbahn sammelt Stellen, Gespräche, Fristen und Unterlagen an einem
+              klaren Ort. So weißt du schneller, was jetzt dran ist und was noch
+              warten kann.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -100,14 +100,14 @@ export default async function HomePage() {
                 href="/preise"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border/80 bg-white/84 px-6 py-3.5 text-base font-heading font-medium text-dark shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-card-hover"
               >
-                Preise ansehen
+                Preise & Pläne
                 <MoveRight size={18} />
               </Link>
             </div>
 
             <p className="mt-4 text-sm font-body leading-relaxed text-dark-500">
-              Kostenlos bis zu 10 Bewerbungen. Premium ist vorbereitet und startet
-              später ohne Bruch im Produkt.
+              Kostenlos bis zu 10 Bewerbungen. Premium ist in Vorbereitung und
+              erweitert später genau dort, wo mehr Tiefe hilft.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -140,23 +140,22 @@ export default async function HomePage() {
                 Warum Laufbahn
               </p>
               <h2 className="mt-3 text-3xl font-heading font-semibold text-dark sm:text-[2.15rem]">
-                Weniger Hektik vorne. Mehr Substanz darunter.
+                Weniger Durcheinander vorne. Mehr Tiefe, wenn du sie willst.
               </h2>
               <p className="mt-4 text-base font-body leading-relaxed text-dark-500">
-                Gute Bewerbungssoftware soll dir Arbeit abnehmen, nicht neue
-                Komplexität aufdrücken. Darum beginnt Laufbahn mit einem ruhigen
-                ersten Blick und geht erst dann tiefer, wenn du wirklich mehr
-                brauchst.
+                Gute Bewerbungssoftware nimmt dir Arbeit ab, statt neue zu machen.
+                Darum beginnt Laufbahn mit einem ruhigen ersten Blick und wird
+                erst dann ausführlicher, wenn du wirklich mehr brauchst.
               </p>
 
               <div className="mt-8 rounded-[30px] border border-border/80 bg-dark text-light shadow-floating">
                 <div className="grid gap-4 px-5 py-6 sm:grid-cols-2 sm:px-6">
                   <div>
                     <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-white/58">
-                      Für den Alltag
+                      Für jeden Tag
                     </p>
                     <p className="mt-3 text-2xl font-heading font-semibold text-white">
-                      Ein klarer nächster Schritt statt lauter Produktversprechen.
+                      Ein klarer nächster Schritt statt lauter Funktionslisten.
                     </p>
                   </div>
                   <div className="grid gap-3 self-end">
@@ -165,8 +164,7 @@ export default async function HomePage() {
                         Schnell verständlich
                       </p>
                       <p className="mt-1 text-sm font-body leading-relaxed text-white/72">
-                        Schon im ersten Blick ist klar, worum du dich heute kümmern
-                        solltest.
+                        Schon im ersten Blick ist klar, worum du dich heute kümmern solltest.
                       </p>
                     </div>
                     <div className="rounded-[22px] border border-white/12 bg-white/8 px-4 py-3">
@@ -174,8 +172,7 @@ export default async function HomePage() {
                         Für echte Bewerbungsphasen
                       </p>
                       <p className="mt-1 text-sm font-body leading-relaxed text-white/72">
-                        Mehrere Richtungen, Varianten und Gespräche bleiben trotzdem
-                        ordentlich.
+                        Mehrere Richtungen, Varianten und Gespräche bleiben trotzdem ordentlich.
                       </p>
                     </div>
                   </div>
@@ -257,7 +254,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <div className="rounded-full border border-border/80 bg-white/80 px-4 py-2 text-sm font-heading text-dark-500 shadow-card">
-                Kein Methodik-Gerede. Einfach ein klarer Prozess.
+                Kein Systemsprech. Einfach ein klarer Ablauf.
               </div>
             </div>
 
@@ -293,9 +290,9 @@ export default async function HomePage() {
                 wollen.
               </h2>
               <p className="mt-4 text-base font-body leading-relaxed text-dark-500">
-                Die Premium-Stufe ist schon mitgedacht, damit spätere Grenzen und
-                Freischaltungen nicht wie ein Fremdkörper wirken. So bleibt auch
-                Monetarisierung ruhig, ehrlich und nachvollziehbar.
+                Premium ist schon mitgedacht, damit spätere Grenzen und
+                Freischaltungen nicht wie ein Fremdkörper wirken. So bleibt der
+                Einstieg ruhig, ehrlich und nachvollziehbar.
               </p>
 
               <div className="mt-8 rounded-[30px] border border-orange-200/90 bg-white/82 p-5 shadow-card sm:p-6">
@@ -309,8 +306,8 @@ export default async function HomePage() {
                     </p>
                     <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
                       Premium ist noch nicht freigeschaltet. Die spätere Struktur ist
-                      aber bereits im Produkt und auf der Preisseite sichtbar, damit
-                      sich Laufbahn konsistent anfühlt.
+                      aber bereits sichtbar, damit sich Laufbahn von Anfang an
+                      konsistent anfühlt.
                     </p>
                   </div>
                 </div>

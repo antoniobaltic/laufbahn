@@ -125,7 +125,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
                 Bibliothek
               </p>
               <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
-                Suche nach Titeln, Tags oder Inhalt. Wechsle zwischen einer ruhigen Bibliothek und der Variantenansicht, wenn du Abstammung sehen willst.
+                Suche nach Titeln, Tags oder Inhalt. Wechsle zwischen einer ruhigen Bibliothek und der Variantenansicht, wenn du Zusammenhänge sehen willst.
               </p>
             </div>
 
@@ -247,7 +247,7 @@ export function DocumentsDashboard({ items }: DocumentsDashboardProps) {
             <EmptyState
               icon={<Layers3 size={40} />}
               title="Noch keine Dokumente"
-              description="Lege hier deine Lebensläufe und Anschreiben an. Jede gespeicherte Version bleibt nachvollziehbar und kann später gezielt mit Bewerbungen verknüpft werden."
+              description="Lege hier deine Lebensläufe und Anschreiben an. Jede gespeicherte Fassung bleibt nachvollziehbar und kann später gezielt mit Bewerbungen verknüpft werden."
               action={
                 <Button type="button" onClick={() => setDialogOpen(true)}>
                   <FilePenLine size={15} />
@@ -414,7 +414,7 @@ function DocumentCard({
               {currentVersion
                 ? currentVersion.plain_text.slice(0, 160).trimEnd() +
                   (currentVersion.plain_text.length > 160 ? "…" : "")
-                : "Noch keine Version gespeichert."}
+                : "Noch keine Fassung gespeichert."}
             </p>
           </div>
 

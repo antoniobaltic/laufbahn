@@ -282,28 +282,28 @@ function buildWorkspaceCoverage(
       label: "Notizen",
       count: withNotes,
       share: toPercent(withNotes, totalApplications),
-      helper: "Gedanken, Gesprächsnotizen und Nachfassen sind festgehalten.",
+      helper: "Gedanken, Gesprächsnotizen und nächste Schritte sind festgehalten.",
     },
     {
       id: "deadlines",
       label: "Fristen",
       count: withDeadlines,
       share: toPercent(withDeadlines, totalApplications),
-      helper: "Bewerbungsfristen sind als strukturierte Daten gepflegt.",
+      helper: "Wichtige Termine und Fristen sind sauber hinterlegt.",
     },
     {
       id: "contacts",
       label: "Kontakte",
       count: withContacts,
       share: toPercent(withContacts, totalApplications),
-      helper: "Mindestens ein Ansprechpartner ist pro Bewerbung hinterlegt.",
+      helper: "Mindestens eine Ansprechperson ist pro Bewerbung hinterlegt.",
     },
     {
       id: "documents",
       label: "Dokumente",
       count: withDocuments,
       share: toPercent(withDocuments, totalApplications),
-      helper: "Lebenslauf, Anschreiben oder weitere Unterlagen sind verlinkt.",
+      helper: "Lebenslauf, Anschreiben oder weitere Unterlagen sind verknüpft.",
     },
   ];
 }

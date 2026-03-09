@@ -96,7 +96,7 @@ export function ApplicationNotesCard({
                 {isPending ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    Speichert...
+                    Wird gespeichert...
                   </>
                 ) : (
                   "Notizen speichern"
@@ -111,7 +111,7 @@ export function ApplicationNotesCard({
         ) : (
           <div className="rounded-[22px] border border-dashed border-border bg-dark-50/70 p-5">
             <p className="text-sm font-body leading-relaxed text-dark-500">
-              Noch keine Notizen hinterlegt. Halte hier fest, was dir zu dieser
+              Noch keine Notizen hinterlegt. Halte hier fest, was dir an dieser
               Bewerbung wichtig ist.
             </p>
             <div className="mt-4">

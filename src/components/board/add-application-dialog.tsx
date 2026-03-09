@@ -133,7 +133,7 @@ export function AddApplicationDialog({
 
       if (!res.ok) {
         const err = await res.json();
-        setScrapeError(err.error || "Fehler beim Lesen der Seite.");
+        setScrapeError(err.error || "Die Stelle konnte nicht sauber gelesen werden.");
         return;
       }
 
@@ -156,7 +156,7 @@ export function AddApplicationDialog({
         description: data.description || prev.description,
       }));
     } catch {
-      setScrapeError("Verbindungsfehler. Bitte manuell eingeben.");
+      setScrapeError("Verbindung fehlgeschlagen. Trag die Angaben notfalls kurz manuell ein.");
     } finally {
       setScraping(false);
     }
@@ -197,7 +197,7 @@ export function AddApplicationDialog({
     try {
       await persistApplication();
     } catch {
-      setError("Bewerbung konnte nicht erstellt werden.");
+      setError("Die Bewerbung konnte gerade nicht gespeichert werden.");
     } finally {
       setLoading(false);
     }
@@ -244,8 +244,8 @@ export function AddApplicationDialog({
       <DialogHeader onClose={handleClose}>Neue Bewerbung</DialogHeader>
       <DialogContent>
         <p className="mb-6 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
-          Starte mit den wichtigsten Angaben. Alles Weitere kannst du direkt
-          jetzt ergänzen oder später in Ruhe nachtragen.
+          Starte mit dem Nötigsten. Alles Weitere kannst du jetzt ergänzen oder
+          später in Ruhe nachtragen.
         </p>
 
         <div className="surface-muted mb-6 rounded-[24px] p-4 sm:p-5">
@@ -253,11 +253,11 @@ export function AddApplicationDialog({
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-blue-600">
-                  Ausschreibung übernehmen
+                  Stelle übernehmen
                 </p>
                 <p className="mt-2 max-w-2xl text-sm font-body leading-relaxed text-dark-500">
-                  Wir lesen Rolle, Unternehmen, Gehalt, Ansprechpartner, Benefits
-                  und den Ausschreibungstext so weit wie möglich automatisch aus.
+                  Laufbahn zieht Rolle, Unternehmen, Gehalt, Ansprechpartner,
+                  Benefits und den Ausschreibungstext so weit wie möglich automatisch heraus.
                 </p>
               </div>
 
@@ -318,7 +318,7 @@ export function AddApplicationDialog({
                   {scraping ? (
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
-                    "Ausschreibung lesen"
+                    "Stelle auslesen"
                   )}
                 </Button>
               </div>
@@ -352,14 +352,14 @@ export function AddApplicationDialog({
                       {scraping ? (
                         <Loader2 size={14} className="animate-spin" />
                       ) : (
-                        "Text auslesen"
+                        "Text übernehmen"
                       )}
                     </Button>
                   </div>
                 </div>
                 <p className="text-xs font-body leading-relaxed text-dark-500">
                   Für das Firmenlogo hilft ein Link oder eine Firmen-Website. Ohne
-                  Domain können wir nur ein Monogramm zeigen.
+                  Domain zeigen wir stattdessen ein Monogramm.
                 </p>
               </div>
             )}
@@ -408,7 +408,7 @@ export function AddApplicationDialog({
               {(importedJob.description || importedJob.recruiter_name) && (
                 <p className="mt-3 text-sm font-body leading-relaxed text-dark-500">
                   Beschreibung, Benefits und ein gefundener Ansprechpartner werden
-                  beim Speichern direkt mit übernommen.
+                  beim Speichern direkt übernommen.
                 </p>
               )}
             </div>
@@ -461,7 +461,7 @@ export function AddApplicationDialog({
                     try {
                       await persistApplication();
                     } catch {
-                      setError("Fehler beim Speichern.");
+                      setError("Beim Speichern ist etwas schiefgelaufen.");
                     } finally {
                       setLoading(false);
                     }
@@ -507,7 +507,7 @@ export function AddApplicationDialog({
                 label="Rolle"
                 value={fields.role_title}
                 onChange={setField("role_title")}
-                placeholder="z. B. Product Manager"
+                placeholder="z. B. Produktmanager:in"
                 required
               />
             </div>
@@ -535,7 +535,7 @@ export function AddApplicationDialog({
                 label="Erste Notiz"
                 value={fields.notes}
                 onChange={setField("notes")}
-                placeholder="Was ist an der Stelle spannend? Was willst du später noch prüfen?"
+                placeholder="Was macht die Stelle spannend? Was willst du später noch prüfen?"
                 rows={4}
               />
             </div>
@@ -548,7 +548,7 @@ export function AddApplicationDialog({
                   Weitere Angaben
                 </p>
                 <p className="mt-1 text-sm font-body text-dark-500">
-                  Füge Arbeitsmodell, Frist, Gehalt oder den Ausschreibungstext hinzu.
+                  Ergänze Arbeitsmodell, Frist, Gehalt oder den Text der Ausschreibung.
                 </p>
               </div>
               <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white/86 text-dark-500">
@@ -620,7 +620,7 @@ export function AddApplicationDialog({
                   label="Ausschreibungstext"
                   value={fields.description}
                   onChange={setField("description")}
-                  placeholder="Hier kann die vollständige Beschreibung der Rolle stehen. In den Details wird sie später vollständig angezeigt."
+                  placeholder="Hier kann die vollständige Stellenbeschreibung stehen. In den Details wird sie später vollständig angezeigt."
                   rows={7}
                 />
               </section>
@@ -640,7 +640,7 @@ export function AddApplicationDialog({
           {loading ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              Speichert...
+              Wird gespeichert...
             </>
           ) : (
             "Bewerbung speichern"

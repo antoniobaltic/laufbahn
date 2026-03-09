@@ -80,7 +80,7 @@ export function ProfileSettingsForm({ profile }: ProfileSettingsFormProps) {
               Profil
             </p>
             <h2 className="text-lg font-heading font-semibold text-dark">
-              So erscheinst du in Laufbahn
+              So wirkst du in Laufbahn
             </h2>
           </div>
         </CardHeader>
@@ -107,7 +107,7 @@ export function ProfileSettingsForm({ profile }: ProfileSettingsFormProps) {
                 Hintergrund der Initialen
               </p>
               <p className="mt-1 text-sm font-body leading-relaxed text-dark-500">
-                Die Farbe erscheint oben rechts im Profilkreis.
+                Die Farbe erscheint oben rechts in deinem Profilkreis.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -228,7 +228,7 @@ export function ProfileSettingsForm({ profile }: ProfileSettingsFormProps) {
               {isPending ? (
                 <>
                   <Loader2 size={14} className="animate-spin" />
-                  Speichert...
+                  Wird gespeichert...
                 </>
               ) : (
                 "Speichern"

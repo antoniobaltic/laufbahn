@@ -83,7 +83,7 @@ export function Topbar({
                   {todayLabel}
                 </div>
                 <p className="hidden text-sm font-body text-dark-500 xl:block">
-                  Ruhig arbeiten, Details erst bei Bedarf.
+                  Klar arbeiten, Details nur dann, wenn du sie brauchst.
                 </p>
               </div>
             )}
@@ -180,7 +180,7 @@ function getRouteMeta(pathname: string) {
       kicker: "Konto",
       title: "Profil & Einstellungen",
       description:
-        "Passe Name, Erinnerungen und die Darstellung deines Profils an.",
+        "Passe Name, Erinnerungen und den Auftritt deines Profils an.",
       showInTopbar: false,
     };
   }
@@ -188,9 +188,9 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith("/analytics")) {
     return {
       kicker: "Auswertung",
-      title: "Bewerbungen verstehen",
+      title: "Bewerbungen besser lesen",
       description:
-        "Sieh, wie viele Bewerbungen offen sind, wo Antworten kommen und was gerade Aufmerksamkeit braucht.",
+        "Sieh, wie viele Bewerbungen offen sind, wo Rückmeldungen kommen und was gerade Aufmerksamkeit braucht.",
       showInTopbar: false,
     };
   }
@@ -198,9 +198,9 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith("/dokumente/")) {
     return {
       kicker: "Dokumente",
-      title: "Versionen und Varianten pflegen",
+      title: "Fassungen pflegen und wiederfinden",
       description:
-        "Bearbeite Fassungen, stelle frühere Versionen wieder her und sieh, wo sie schon verwendet werden.",
+        "Bearbeite Fassungen, hole frühere Stände zurück und sieh, wo sie schon verwendet werden.",
       showInTopbar: true,
     };
   }
@@ -210,7 +210,7 @@ function getRouteMeta(pathname: string) {
       kicker: "Dokumente",
       title: "Lebensläufe und Anschreiben",
       description:
-        "Halte gute Basisdokumente bereit, leite Varianten daraus ab und verknüpfe feste Versionen mit Bewerbungen.",
+        "Halte gute Grundlagen bereit, leite Varianten daraus ab und verknüpfe feste Fassungen mit Bewerbungen.",
       showInTopbar: false,
     };
   }
@@ -218,9 +218,9 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith("/bewerbung/")) {
     return {
       kicker: "Bewerbung",
-      title: "Eintrag mit klarem Fokus",
+      title: "Alles zu dieser Bewerbung an einem Ort",
       description:
-        "Stand, Verlauf, Kontakte und Unterlagen bleiben in einer ruhigeren, besser sortierten Ansicht zusammen.",
+        "Stand, Verlauf, Kontakte und Unterlagen bleiben in einer klaren, gut sortierten Ansicht zusammen.",
       showInTopbar: true,
     };
   }
@@ -230,7 +230,7 @@ function getRouteMeta(pathname: string) {
       kicker: "Bewerbungen",
       title: "Alle Einträge",
       description:
-        "Hier findest du jede Bewerbung gesammelt und kommst mit einem Klick zu allen Details.",
+        "Hier findest du jede Bewerbung gesammelt und springst mit einem Klick in die Details.",
       showInTopbar: false,
     };
   }

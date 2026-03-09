@@ -9,21 +9,21 @@ import {
 
 const showcaseSignals = [
   {
-    label: "Heute wichtig",
-    title: "Nachfassen einplanen",
+    label: "Heute dran",
+    title: "Nachfassen vormerken",
     text: "Vor 10 Tagen beworben · Produktmarketing bei Nordlicht Digital",
     tone: "orange",
   },
   {
-    label: "Dokumente",
-    title: "IT Variante fixiert",
+    label: "Unterlagen",
+    title: "Fassung fest verknüpft",
     text: "Lebenslauf Version 3 · Anschreiben Version 2",
     tone: "blue",
   },
   {
     label: "Gespräch",
     title: "Mittwoch, 10:00 Uhr",
-    text: "Ort, Kontaktperson und Vorbereitung bleiben direkt an der Bewerbung.",
+    text: "Ort, Ansprechperson und Vorbereitung bleiben direkt an der Bewerbung.",
     tone: "green",
   },
 ] as const;
@@ -31,15 +31,15 @@ const showcaseSignals = [
 const panelCards = [
   {
     title: "Übersicht",
-    body: "Offen, im Gespräch, Entscheidungen. Ein ruhiger Blick statt zehn Tabs.",
+    body: "Offen, im Gespräch, entschieden. Ein ruhiger Blick statt zehn offener Tabs.",
   },
   {
     title: "Bewerbung",
-    body: "Kontakte, Notizen, Unterlagen und Fristen bleiben bei diesem einen Eintrag.",
+    body: "Kontakte, Notizen, Unterlagen und Fristen bleiben bei genau diesem Eintrag.",
   },
   {
     title: "Dokumente",
-    body: "Basisdokumente, Varianten und feste Fassungen je Bewerbung.",
+    body: "Gute Grundlagen, passende Varianten und feste Fassungen je Bewerbung.",
   },
 ];
 
@@ -50,11 +50,11 @@ export function TrackShowcase() {
         <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] font-heading uppercase tracking-[0.14em] text-white/78">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/8 px-3 py-1.5">
             <Sparkles size={12} />
-            Ruhiger Überblick
+            Klarer Überblick
           </span>
           <span className="inline-flex items-center gap-2">
             <Workflow size={13} />
-            Stellen · Gespräche · Dokumente
+            Stellen · Gespräche · Unterlagen
           </span>
         </div>
 
@@ -101,14 +101,14 @@ export function TrackShowcase() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-white/62">
-                    Der ruhige Ablauf
+                    Der rote Faden
                   </p>
                   <h3 className="mt-3 text-2xl font-heading font-semibold text-white">
-                    Ein Produkt, das sich nach Bewerben anfühlt.
+                    Ein Ort, der sich nach Bewerben anfühlt statt nach Verwaltung.
                   </h3>
                 </div>
                 <span className="rounded-full border border-white/14 bg-white/8 px-3 py-1.5 text-xs font-heading text-white/72">
-                  DACH-fokussiert
+                  Für DACH gemacht
                 </span>
               </div>
 

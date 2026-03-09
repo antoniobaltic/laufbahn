@@ -51,7 +51,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                 </p>
                 <h2 className="mt-1 text-base font-heading font-semibold text-dark">
                   {counts.total > 0
-                    ? `${counts.total} offene Aufgaben`
+                    ? `${counts.total} offene Hinweise`
                     : "Nichts Dringendes"}
                 </h2>
               </div>
@@ -124,7 +124,7 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
                 ))}
                 {reminders.length > visibleReminders.length && (
                   <div className="px-2 py-1 text-center text-xs font-heading text-muted-foreground">
-                    Wir zeigen zuerst die wichtigsten Hinweise.
+                    Wir zeigen dir zuerst das, was gerade am meisten zählt.
                   </div>
                 )}
               </div>
@@ -132,8 +132,8 @@ export function NotificationCenter({ reminders }: NotificationCenterProps) {
               <div className="rounded-[20px] border border-dashed border-border bg-dark-50/72 px-4 py-5">
                 <p className="text-sm font-body leading-relaxed text-dark-500">
                   Im Moment ist alles ruhig. Sobald eine Frist näher rückt, ein
-                  Gespräch bevorsteht oder ein Follow-up sinnvoll wird, taucht der
-                  Hinweis hier auf.
+                  Gespräch bevorsteht oder Nachfassen sinnvoll wird, taucht der
+                  passende Hinweis hier auf.
                 </p>
               </div>
             )}
@@ -158,7 +158,7 @@ function ReminderIcon({ type }: { type: ReminderItem["type"] }) {
 
 function getUrgencyLabel(urgency: ReminderItem["urgency"]) {
   if (urgency === "high") return "Heute";
-  if (urgency === "medium") return "Demnächst";
+  if (urgency === "medium") return "Bald";
   return "Im Blick";
 }
 

@@ -113,7 +113,7 @@ export function ApplicationStatusEditor({
             Erst den Stand festlegen
           </h2>
           <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-            Alles Weitere ordnet sich danach. Änderungen erscheinen automatisch in der Übersicht und im Verlauf.
+            Danach ordnen sich Verlauf, Hinweise und Erinnerungen automatisch. Änderungen erscheinen auch in der Übersicht und im Verlauf.
           </p>
         </div>
       </div>
@@ -159,7 +159,7 @@ export function ApplicationStatusEditor({
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs font-heading text-muted-foreground">
           <Sparkles size={12} className="text-accent-orange" />
-          Jeder Stand bleibt später im Verlauf nachvollziehbar.
+          Jede Änderung bleibt später im Verlauf sichtbar.
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -183,10 +183,10 @@ export function ApplicationStatusEditor({
             {isPending ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                Speichert...
+                Wird gespeichert...
               </>
             ) : (
-              "Status speichern"
+              "Stand speichern"
             )}
           </Button>
         </div>

@@ -103,9 +103,9 @@ function buildInterviewPrepPrompt(
     type: "interview_prep",
     title: `${formatInterviewLead(diffHours)} Vorbereitung ergänzen?`,
     body: `${application.company_name} · ${application.role_title}`,
-    ctaLabel: "Zum Gespräch",
+    ctaLabel: "Zum Gesprächstermin",
     dueAt: application.next_interview_at,
-    meta: `Noch offen: ${missingBits.join(", ")}`,
+    meta: `Fehlt noch: ${missingBits.join(", ")}`,
   } satisfies NextStepPrompt;
 }
 
@@ -139,7 +139,7 @@ function buildDeadlinePrompt(
     body: `${application.company_name} · ${application.role_title}`,
     ctaLabel: "Frist prüfen",
     dueAt: application.deadline,
-    meta: "Noch keine Notiz zur Frist hinterlegt",
+    meta: "Zur Frist gibt es noch keine Notiz",
   } satisfies NextStepPrompt;
 }
 
@@ -172,7 +172,7 @@ function buildFollowUpPrompt(application: NextStepApplication, now: Date) {
     body: `${application.company_name} · ${application.role_title}`,
     ctaLabel: "Bewerbung öffnen",
     dueAt,
-    meta: application.notes?.trim() || "Noch keine Rückmeldung sichtbar",
+    meta: application.notes?.trim() || "Bisher ist noch keine Rückmeldung sichtbar",
   } satisfies NextStepPrompt;
 }
 
