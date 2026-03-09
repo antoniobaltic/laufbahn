@@ -35,6 +35,22 @@ import type { ReminderItem } from "@/types/reminder";
 import type { UserProfile } from "@/types/profile";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+type ReorderApplicationsInput = {
+  id: string;
+  position_in_column: number;
+  status: ApplicationStatus;
+};
+type ApplicationSnapshotInput = Pick<
+  ApplicationOverview,
+  | "id"
+  | "status"
+  | "position_in_column"
+  | "date_saved"
+  | "date_applied"
+  | "date_interview"
+  | "date_offer"
+  | "date_rejected"
+>;
 
 function revalidateApplicationPaths(applicationIds: string[] = []) {
   revalidatePath("/board");
@@ -818,17 +834,7 @@ export async function updateApplicationStatusFromDetail(
 }
 
 export async function restoreApplicationSnapshots(
-  snapshots: Pick<
-    ApplicationOverview,
-    | "id"
-    | "status"
-    | "position_in_column"
-    | "date_saved"
-    | "date_applied"
-    | "date_interview"
-    | "date_offer"
-    | "date_rejected"
-  >[]
+  snapshots: ApplicationSnapshotInput[]
 ) {
   if (snapshots.length === 0) {
     return;
@@ -855,52 +861,15 @@ export async function restoreApplicationSnapshots(
     ])
   );
 
-  const updateTimestamp = new Date().toISOString();
-  const updates = await Promise.all(
-    snapshots.map((snapshot) =>
-      supabase
-        .from("applications")
-        .update({
-          status: snapshot.status,
-          position_in_column: snapshot.position_in_column,
-          updated_at: updateTimestamp,
-        })
-        .eq("id", snapshot.id)
-        .eq("user_id", user.id)
-    )
+  const { error: restoreError } = await supabase.rpc(
+    "restore_application_snapshots",
+    {
+      p_snapshots: snapshots,
+    }
   );
 
-  const updateErrors = updates.filter((result) => result.error);
-
-  if (updateErrors.length > 0) {
-    console.error("Error restoring application snapshots:", updateErrors);
-    throw new Error("Status konnte nicht wiederhergestellt werden.");
-  }
-
-  const milestoneUpdates = await Promise.all(
-    snapshots.map((snapshot) =>
-      supabase
-        .from("applications")
-        .update({
-          date_saved: snapshot.date_saved,
-          date_applied: snapshot.date_applied,
-          date_interview: snapshot.date_interview,
-          date_offer: snapshot.date_offer,
-          date_rejected: snapshot.date_rejected,
-          updated_at: updateTimestamp,
-        })
-        .eq("id", snapshot.id)
-        .eq("user_id", user.id)
-    )
-  );
-
-  const milestoneErrors = milestoneUpdates.filter((result) => result.error);
-
-  if (milestoneErrors.length > 0) {
-    console.error(
-      "Error restoring application milestone dates:",
-      milestoneErrors
-    );
+  if (restoreError) {
+    console.error("Error restoring application snapshots:", restoreError);
     throw new Error("Status konnte nicht wiederhergestellt werden.");
   }
 
@@ -1193,27 +1162,19 @@ export async function updateApplicationInterview(
 }
 
 export async function reorderApplications(
-  updates: { id: string; position_in_column: number; status: ApplicationStatus }[]
+  updates: ReorderApplicationsInput[]
 ) {
-  const { supabase, user } = await getAuthenticatedClient();
+  if (updates.length === 0) {
+    return;
+  }
 
-  const promises = updates.map((update) =>
-    supabase
-      .from("applications")
-      .update({
-        position_in_column: update.position_in_column,
-        status: update.status,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", update.id)
-      .eq("user_id", user.id)
-  );
+  const { supabase } = await getAuthenticatedClient();
+  const { error } = await supabase.rpc("reorder_applications", {
+    p_updates: updates,
+  });
 
-  const results = await Promise.all(promises);
-  const errors = results.filter((result) => result.error);
-
-  if (errors.length > 0) {
-    console.error("Error reordering applications:", errors);
+  if (error) {
+    console.error("Error reordering applications:", error);
     throw new Error("Reihenfolge konnte nicht aktualisiert werden.");
   }
 
@@ -1231,34 +1192,31 @@ export async function createApplicationContact(
     throw new Error("Name ist erforderlich.");
   }
 
-  if (payload.is_primary) {
-    const { error: resetError } = await supabase
-      .from("application_contacts")
-      .update({ is_primary: false, updated_at: new Date().toISOString() })
-      .eq("application_id", applicationId)
-      .eq("user_id", user.id);
-
-    if (resetError) {
-      console.error("Error resetting primary contact:", resetError);
-      throw new Error("Kontakt konnte nicht vorbereitet werden.");
-    }
-  }
-
-  const { data, error } = await supabase
-    .from("application_contacts")
-    .insert({
-      user_id: user.id,
-      application_id: applicationId,
-      full_name: payload.full_name,
-      role_title: payload.role_title,
-      email: payload.email,
-      phone: payload.phone,
-      linkedin_url: payload.linkedin_url,
-      notes: payload.notes,
-      is_primary: payload.is_primary,
-    })
-    .select()
-    .single();
+  const { data, error } = payload.is_primary
+    ? await supabase.rpc("create_primary_application_contact", {
+        p_application_id: applicationId,
+        p_full_name: payload.full_name,
+        p_role_title: payload.role_title,
+        p_email: payload.email,
+        p_phone: payload.phone,
+        p_linkedin_url: payload.linkedin_url,
+        p_notes: payload.notes,
+      })
+    : await supabase
+        .from("application_contacts")
+        .insert({
+          user_id: user.id,
+          application_id: applicationId,
+          full_name: payload.full_name,
+          role_title: payload.role_title,
+          email: payload.email,
+          phone: payload.phone,
+          linkedin_url: payload.linkedin_url,
+          notes: payload.notes,
+          is_primary: false,
+        })
+        .select()
+        .single();
 
   if (error) {
     console.error("Error creating application contact:", error);
@@ -1313,37 +1271,20 @@ export async function updateApplicationContact(
     return current as ApplicationContact;
   }
 
-  if (payload.is_primary) {
-    const { error: resetError } = await supabase
-      .from("application_contacts")
-      .update({ is_primary: false, updated_at: new Date().toISOString() })
-      .eq("application_id", applicationId)
-      .eq("user_id", user.id)
-      .neq("id", id);
-
-    if (resetError) {
-      console.error("Error resetting primary contact during update:", resetError);
-      throw new Error("Kontakt konnte nicht vorbereitet werden.");
+  const { data, error } = await supabase.rpc(
+    "update_application_contact_atomic",
+    {
+      p_contact_id: id,
+      p_application_id: applicationId,
+      p_full_name: payload.full_name,
+      p_role_title: payload.role_title,
+      p_email: payload.email,
+      p_phone: payload.phone,
+      p_linkedin_url: payload.linkedin_url,
+      p_notes: payload.notes,
+      p_is_primary: payload.is_primary,
     }
-  }
-
-  const { data, error } = await supabase
-    .from("application_contacts")
-    .update({
-      full_name: payload.full_name,
-      role_title: payload.role_title,
-      email: payload.email,
-      phone: payload.phone,
-      linkedin_url: payload.linkedin_url,
-      notes: payload.notes,
-      is_primary: payload.is_primary,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id)
-    .eq("application_id", applicationId)
-    .eq("user_id", user.id)
-    .select()
-    .single();
+  );
 
   if (error) {
     console.error("Error updating application contact:", error);

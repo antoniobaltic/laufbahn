@@ -843,7 +843,7 @@ Document-action rules:
 - The marketing hero is prepared for a future running-track image via `--marketing-track-image`, but the final artwork asset still needs to be supplied separately.
 - `/einstellungen` is now implemented. Keep it behind the authenticated app shell.
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
-- `00011_harden_database_security.sql` contains the database-side advisor hardening, but clearing the hosted Supabase advisor items still requires applying it on the remote project with valid management access.
+- Supabase migrations should use the native timestamp-based filename format so local history and hosted history stay aligned.
 - Leaked-password protection is a Supabase Auth project setting, not a repo-level code change. It still requires enabling in the hosted dashboard/API context with the right permissions.
 - Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
 - In development, `@hello-pangea/dnd` can produce hydration/setup noise if drag-and-drop SSR markup differs. Keep the board’s DnD layer behind a client-only mount guard if needed.
@@ -857,17 +857,20 @@ Document-action rules:
 - **Status:** Active & healthy
 
 ### Migrations
-- `00001_create_profiles.sql`
-- `00002_create_applications.sql`
-- `00003_create_activities.sql`
-- `00004_create_application_detail_entities.sql`
-- `00005_extend_activity_types_for_detail_workflows.sql`
-- `00006_add_workflow_fields_to_applications.sql`
-- `00007_add_company_branding_to_applications.sql`
-- `00008_add_profile_preferences.sql`
-- `00009_add_profile_insert_policy.sql`
-- `00010_create_source_documents.sql`
-- `00011_harden_database_security.sql`
+- `20260306180411_create_profiles.sql`
+- `20260306180433_create_applications.sql`
+- `20260306180445_create_activities.sql`
+- `20260306193216_create_application_detail_entities.sql`
+- `20260306204438_extend_activity_types_for_detail_workflows.sql`
+- `20260306215234_add_workflow_fields_to_applications.sql`
+- `20260307093424_add_company_branding_to_applications.sql`
+- `20260307105541_add_profile_preferences.sql`
+- `20260307110052_add_profile_insert_policy.sql`
+- `20260307145529_create_source_documents.sql`
+- `20260309173811_harden_database_security.sql`
+- `20260309173812_serialize_application_limit_checks.sql`
+- `20260309173813_add_activity_delete_policy.sql`
+- `20260309174500_add_atomic_application_mutations.sql`
 
 ### Key Tables
 - `profiles`
