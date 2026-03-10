@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   X,
@@ -38,10 +39,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       <div className="surface-panel fade-in-up fixed inset-y-3 left-3 w-[min(23rem,calc(100vw-1.5rem))] rounded-[32px] border border-white/75 bg-[#fcfbf8]/96 p-3 shadow-dialog">
         <div className="surface-stage rounded-[26px] px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[18px] bg-accent-orange shadow-card">
-              <span className="text-white font-heading font-bold text-sm">
-                L
-              </span>
+            <div className="h-11 w-11 overflow-hidden rounded-[18px] shadow-card">
+              <Image src="/images/laufbahn-favicon.png" alt="Laufbahn" width={44} height={44} className="h-full w-full object-cover" />
             </div>
             <div>
               <span className="block font-heading text-lg font-semibold text-dark">

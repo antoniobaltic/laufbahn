@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ArrowRight,
@@ -44,8 +45,8 @@ export function Sidebar() {
       <div className="surface-panel flex h-full w-full flex-col rounded-[34px] p-4">
         <div className="surface-stage rounded-[28px] px-5 py-5">
           <Link href="/board" className="flex items-start gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-[20px] bg-accent-orange shadow-[0_14px_28px_rgba(217,119,87,0.24)]">
-              <span className="text-sm font-heading font-bold text-white">L</span>
+            <div className="h-12 w-12 overflow-hidden rounded-[20px] shadow-[0_14px_28px_rgba(217,119,87,0.24)]">
+              <Image src="/images/laufbahn-favicon.png" alt="Laufbahn" width={48} height={48} className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0">
               <span className="block font-heading text-xl font-semibold tracking-tight text-dark">

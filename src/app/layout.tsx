@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   title: "Laufbahn | Bewerbungen entspannt organisieren",
   description:
     "Organisiere Bewerbungen, Gespräche, Fristen und Unterlagen an einem klaren Ort. Laufbahn begleitet deine Jobsuche in Deutschland und Österreich.",
+  icons: {
+    icon: [{ url: "/images/laufbahn-favicon.png", type: "image/png" }],
+    apple: [{ url: "/images/laufbahn-favicon.png" }],
+    shortcut: "/images/laufbahn-favicon.png",
+  },
 };
 
 export default function RootLayout({
