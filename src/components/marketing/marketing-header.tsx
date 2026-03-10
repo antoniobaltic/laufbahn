@@ -34,7 +34,7 @@ export function MarketingHeader({
 
         <nav className="hidden items-center gap-2 rounded-full border border-border/80 bg-white/72 p-1 shadow-card lg:flex">
           {[
-            { href: "/#warum", label: "Warum" },
+            { href: "/#warum", label: "Warum?" },
             { href: "/#ablauf", label: "Ablauf" },
             { href: "/preise", label: "Preise", active: active === "pricing" },
           ].map((item) => (
