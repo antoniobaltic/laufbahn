@@ -98,7 +98,7 @@
       Example:
       --marketing-track-image: url("/images/landing-track.jpg");
     */
-    --marketing-track-image: none;
+    --marketing-track-image: url("/images/landing-track.jpg");
   }
 
   html {

@@ -14,11 +14,7 @@ export function MarketingFooter({ isAuthenticated }: MarketingFooterProps) {
               Laufbahn
             </p>
             <p className="mt-3 text-lg font-heading font-semibold text-dark">
-              Für Menschen, die ihre Bewerbungen klar, ruhig und mit etwas Freude organisieren wollen.
-            </p>
-            <p className="mt-2 text-sm font-body leading-relaxed text-dark-500">
-              Für Deutschland und Österreich geschrieben, freundlich im Ton und
-              bewusst ohne Verwaltungskälte.
+              Damit die Jobsuche nicht auch noch Stress macht.
             </p>
           </div>
 
@@ -39,8 +35,8 @@ export function MarketingFooter({ isAuthenticated }: MarketingFooterProps) {
         </div>
 
         <div className="flex flex-col gap-2 border-t border-border/70 pt-4 text-xs font-heading text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>Für Bewerbungen in Deutschland und Österreich</span>
-          <span>Premium folgt später. Der kostenlose Einstieg ist schon heute sinnvoll nutzbar.</span>
+          <span>Kostenlos starten · Kein Setup nötig</span>
+          <span>Premium kommt bald.</span>
         </div>
       </div>
     </footer>

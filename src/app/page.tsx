@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Laufbahn | Klarer Kopf in der Jobsuche",
   description:
-    "Laufbahn bringt Stellen, Gespräche, Fristen und Unterlagen an einen klaren Ort. Bewerbungen organisieren für Deutschland und Österreich.",
+    "Alle Bewerbungen, Gespräche und Unterlagen an einem ruhigen Ort. Laufbahn bringt Ordnung in die Jobsuche – ohne Aufwand.",
 };
 
 const features = [
@@ -22,13 +22,13 @@ const features = [
   {
     icon: CalendarClock,
     title: "Bewerbung",
-    body: "Kontakte, Gesprächsnotizen, Fristen und Unterlagen bleiben genau bei dieser einen Bewerbung.",
+    body: "Kontakte, Gesprächsnotizen, Fristen und Unterlagen bleiben genau bei dieser einen Stelle.",
     accent: "blue" as const,
   },
   {
     icon: FileText,
     title: "Dokumente",
-    body: "Lebensläufe und Anschreiben mit Varianten und Verlauf – fest verknüpft mit jeder Stelle.",
+    body: "Lebensläufe und Anschreiben mit eigenem Verlauf – jede Bewerbung bekommt die passende Fassung.",
     accent: "green" as const,
   },
 ];
@@ -37,7 +37,7 @@ const steps = [
   {
     n: "01",
     title: "Stelle merken oder importieren",
-    body: "Link einfügen, Text einfügen oder manuell anlegen. Die wichtigsten Infos landen direkt am richtigen Platz.",
+    body: "Einen Link einfügen, Text übernehmen oder selbst eintragen. Die wichtigsten Infos landen sofort am richtigen Platz.",
   },
   {
     n: "02",
@@ -77,14 +77,7 @@ export default async function HomePage() {
           <div className="marketing-track-stage rounded-[40px]">
             <div className="relative z-10 flex min-h-[62vh] flex-col px-8 py-8 sm:min-h-[70vh] sm:px-12 sm:py-10 lg:min-h-[78vh] lg:px-16 lg:py-12">
 
-              {/* Eyebrow – top */}
-              <div className="self-start">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/8 px-4 py-2 text-[11px] font-heading uppercase tracking-[0.14em] text-white/72 backdrop-blur-sm">
-                  Für Deutschland und Österreich
-                </span>
-              </div>
-
-              {/* Main content – pushed to bottom */}
+              {/* All content pushed to bottom so track image breathes at top */}
               <div className="mt-auto max-w-2xl">
                 <h1 className="text-5xl font-heading font-semibold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[5.25rem]">
                   Klarer Kopf.
@@ -92,9 +85,9 @@ export default async function HomePage() {
                   <span className="text-accent-orange">Ruhige Jobsuche.</span>
                 </h1>
 
-                <p className="mt-6 max-w-[42ch] text-lg font-body leading-relaxed text-white/75 sm:text-[1.15rem]">
-                  Laufbahn bringt alle Stellen, Gespräche, Fristen und Unterlagen
-                  an einen Ort. Du weißt immer, was heute dran ist.
+                <p className="mt-6 max-w-[44ch] text-lg font-body leading-relaxed text-white/75 sm:text-[1.15rem]">
+                  Alle Bewerbungen, Gespräche und Unterlagen an einem Ort.
+                  Kein Suchen mehr, kein Durcheinander.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -135,9 +128,8 @@ export default async function HomePage() {
               Weniger Chaos. Mehr Fokus.
             </h2>
             <p className="mt-3 text-base font-body leading-relaxed text-dark-500">
-              Gute Werkzeuge schaffen Klarheit, nicht mehr Arbeit. Laufbahn
-              beginnt ruhig und wird erst dann ausführlicher, wenn du es
-              wirklich brauchst.
+              Du hast genug damit zu tun, dich zu bewerben. Laufbahn kümmert
+              sich darum, dass dabei nichts verloren geht.
             </p>
           </div>
 
@@ -180,7 +172,8 @@ export default async function HomePage() {
                 </h2>
               </div>
               <p className="max-w-xs text-sm font-body leading-relaxed text-dark-500 lg:text-right">
-                Kein Einrichten. Kein Systemsprech. Einfach loslegen.
+                Kein Einrichten, keine Lernkurve. Du fängst an, und der Rest
+                passt sich an.
               </p>
             </div>
 
@@ -215,8 +208,8 @@ export default async function HomePage() {
                   Bring Ruhe in deine Jobsuche.
                 </h2>
                 <p className="mt-4 text-base font-body leading-relaxed text-white/68">
-                  Laufbahn ist kostenlos. Keine Kreditkarte, kein Setup.
-                  Einfach starten.
+                  Kostenlos loslegen, ohne Kreditkarte und ohne Setup. Einfach
+                  anfangen.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
