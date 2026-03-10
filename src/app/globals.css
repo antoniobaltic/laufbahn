@@ -559,8 +559,7 @@
     inset: -24% -16%;
     background-image:
       radial-gradient(circle at 16% 18%, rgba(217, 119, 87, 0.26), transparent 22%),
-      radial-gradient(circle at 78% 20%, rgba(106, 155, 204, 0.2), transparent 18%),
-      repeating-radial-gradient(circle at 108% 56%, rgba(250, 249, 245, 0) 0 52px, rgba(250, 249, 245, 0.14) 52px 56px);
+      radial-gradient(circle at 78% 20%, rgba(106, 155, 204, 0.2), transparent 18%);
     mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 100%);
     opacity: 0.9;
     z-index: 0;
