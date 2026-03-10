@@ -817,6 +817,7 @@ Document-action rules:
 - The Supabase secret key is configured for future privileged backend work, but the current MVP primarily runs on user-session auth and RLS.
 - Supabase migrations should use the native timestamp-based filename format so local history and hosted history stay aligned.
 - Leaked-password protection is a Supabase Auth project setting, not a repo-level code change. It still requires enabling in the hosted dashboard/API context with the right permissions.
+- Hosted Supabase Auth should keep `site_url` on `https://laufbahn.vercel.app`, with callback URLs allow-listed for both production and local development.
 - Production stability on Vercel currently depends on `npm run vercel-build` using Webpack.
 - In development, `@hello-pangea/dnd` can produce hydration/setup noise if drag-and-drop SSR markup differs. Keep the board’s DnD layer behind a client-only mount guard if needed.
 
@@ -890,13 +891,13 @@ All app tables use `user_id = auth.uid()` ownership policies.
 NEXT_PUBLIC_SUPABASE_URL=https://wqsndsezguuiryxgqcaj.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<set in .env.local>
 SUPABASE_SECRET_KEY=<set in .env.local>
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000 # local development only
 ```
 
 ### Vercel Environment Variables
 - `NEXT_PUBLIC_SUPABASE_URL` is configured in `production`, `preview`, and `development`.
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` is configured in `production`, `preview`, and `development`.
-- `NEXT_PUBLIC_APP_URL` is configured in `production`, `preview`, and `development`.
+- If `NEXT_PUBLIC_APP_URL` is set in Vercel, production must use `https://laufbahn.vercel.app` rather than `http://localhost:3000`.
 - `SUPABASE_SECRET_KEY` is configured in `production`, `preview`, and `development`.
 - `SUPABASE_SECRET_KEY` is server-only. Never expose it via a `NEXT_PUBLIC_*` variable.
 
@@ -913,7 +914,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
   - `npm run build`
   - `npm run vercel-build` for deployment-sensitive checks
   - Playwright/manual browser verification for product flows and responsive UI
-  - Supabase MCP checks when validating persisted data or activity logging
+  - direct Supabase Management API / SQL checks when validating persisted data, auth config, or activity logging
 - When changing UI/UX, prefer Playwright plus screenshots on desktop and mobile over assuming layout quality.
 - When changing server actions or status transitions, verify both UI behavior and the resulting Supabase rows/activities.
 

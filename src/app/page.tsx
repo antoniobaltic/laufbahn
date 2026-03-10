@@ -107,7 +107,7 @@ export default async function HomePage() {
                 </div>
 
                 <p className="mt-5 text-sm font-body text-white/48">
-                  Kostenlos · Bis zu 10 Bewerbungen · Keine Kreditkarte
+                  Kostenlos für bis zu 10 Bewerbungen · Keine Kreditkarte notwendig
                 </p>
               </div>
             </div>
