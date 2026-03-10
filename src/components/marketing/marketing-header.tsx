@@ -20,7 +20,7 @@ export function MarketingHeader({
       <div className="mx-auto flex h-[74px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="h-11 w-11 overflow-hidden rounded-2xl shadow-card">
-            <Image src="/images/laufbahn-favicon.png" alt="Laufbahn" width={44} height={44} className="h-full w-full object-cover" />
+            <Image src="/images/laufbahn-favicon2.png" alt="Laufbahn" width={44} height={44} className="h-full w-full object-cover" />
           </div>
           <div>
             <span className="block font-heading text-lg font-semibold tracking-tight text-dark">

@@ -46,7 +46,7 @@ export function Sidebar() {
         <div className="surface-stage rounded-[28px] px-5 py-5">
           <Link href="/board" className="flex items-start gap-3">
             <div className="h-12 w-12 overflow-hidden rounded-[20px] shadow-[0_14px_28px_rgba(217,119,87,0.24)]">
-              <Image src="/images/laufbahn-favicon.png" alt="Laufbahn" width={48} height={48} className="h-full w-full object-cover" />
+              <Image src="/images/laufbahn-favicon2.png" alt="Laufbahn" width={48} height={48} className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0">
               <span className="block font-heading text-xl font-semibold tracking-tight text-dark">

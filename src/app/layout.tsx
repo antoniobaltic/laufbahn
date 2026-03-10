@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   description:
     "Organisiere Bewerbungen, Gespräche, Fristen und Unterlagen an einem klaren Ort. Laufbahn begleitet deine Jobsuche in Deutschland und Österreich.",
   icons: {
-    icon: [{ url: "/images/laufbahn-favicon.png", type: "image/png" }],
-    apple: [{ url: "/images/laufbahn-favicon.png" }],
-    shortcut: "/images/laufbahn-favicon.png",
+    icon: [{ url: "/images/laufbahn-favicon2.png", type: "image/png" }],
+    apple: [{ url: "/images/laufbahn-favicon2.png" }],
+    shortcut: "/images/laufbahn-favicon2.png",
   },
 };
 

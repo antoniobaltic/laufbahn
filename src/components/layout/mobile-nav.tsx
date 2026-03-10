@@ -40,7 +40,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         <div className="surface-stage rounded-[26px] px-4 py-4">
           <div className="flex items-center gap-2">
             <div className="h-11 w-11 overflow-hidden rounded-[18px] shadow-card">
-              <Image src="/images/laufbahn-favicon.png" alt="Laufbahn" width={44} height={44} className="h-full w-full object-cover" />
+              <Image src="/images/laufbahn-favicon2.png" alt="Laufbahn" width={44} height={44} className="h-full w-full object-cover" />
             </div>
             <div>
               <span className="block font-heading text-lg font-semibold text-dark">
