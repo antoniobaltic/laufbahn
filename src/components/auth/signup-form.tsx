@@ -112,7 +112,7 @@ export function SignUpForm() {
           <p className="text-sm font-heading text-orange-600">{error}</p>
         )}
 
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button type="submit" disabled={loading} size="lg" className="w-full">
           {loading ? "Einen Moment..." : "Konto erstellen"}
         </Button>
       </form>
