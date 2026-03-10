@@ -35,9 +35,7 @@ export function MarketingHeader({
           {[
             { href: "/#warum", label: "Warum" },
             { href: "/#ablauf", label: "Ablauf" },
-            { href: "/#premium", label: "Premium" },
             { href: "/preise", label: "Preise", active: active === "pricing" },
-            { href: "/#faq", label: "FAQ" },
           ].map((item) => (
             <Link
               key={item.href}
